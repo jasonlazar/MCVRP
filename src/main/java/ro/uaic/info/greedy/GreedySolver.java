@@ -1,6 +1,7 @@
 package ro.uaic.info.greedy;
 
 import ro.uaic.info.Node;
+import ro.uaic.info.SimpleVehicle;
 import ro.uaic.info.VRPLibReader;
 import ro.uaic.info.VRPRunner;
 import ro.uaic.info.Vehicle;
@@ -34,7 +35,7 @@ public class GreedySolver {
         this.vehicles = new Vehicle[this.noOfVehicles];
 
         for (int i = 0; i < this.noOfVehicles; i++) {
-            vehicles[i] = new Vehicle(reader.getVehicleCapacity());
+            vehicles[i] = new SimpleVehicle(reader.getVehicleCapacity());
         }
     }
 
@@ -61,7 +62,7 @@ public class GreedySolver {
 
             for (int i = 0; i < noOfCustomers; i++) {
                 if (!nodes[i].IsRouted) {
-                    if (vehicles[VehIndex].CheckIfFits(nodes[i].demand)) {
+                    if (vehicles[VehIndex].CheckIfFits(nodes[i].demands)) {
                         CandCost = distances[vehicles[VehIndex].currentLocation][i];
                         if (minCost > CandCost) {
                             minCost = CandCost;

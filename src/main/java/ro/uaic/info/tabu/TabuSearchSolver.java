@@ -1,6 +1,7 @@
 package ro.uaic.info.tabu;
 
 import ro.uaic.info.Node;
+import ro.uaic.info.SimpleVehicle;
 import ro.uaic.info.VRPLibReader;
 import ro.uaic.info.VRPRunner;
 import ro.uaic.info.Vehicle;
@@ -39,7 +40,7 @@ public class TabuSearchSolver {
         this.BestSolutionVehicles = new Vehicle[this.noOfVehicles];
 
         for (int i = 0; i < this.noOfVehicles; i++) {
-            this.BestSolutionVehicles[i] = new Vehicle(reader.getVehicleCapacity());
+            this.BestSolutionVehicles[i] = new SimpleVehicle(reader.getVehicleCapacity());
         }
     }
 
@@ -48,7 +49,7 @@ public class TabuSearchSolver {
         ArrayList<Node> routesFrom;
         ArrayList<Node> routesTo;
 
-        int MovingNodeDemand = 0;
+        int MovingNodeDemand[] = null;
 
         int VehIndexFrom, VehIndexTo;
         double BestNCost, NeighborCost;
@@ -74,7 +75,7 @@ public class TabuSearchSolver {
                         int RouteToLength = routesTo.size();
                         for (int j = 0; (j < RouteToLength - 1); j++) {//Not possible to move after last Depot!
 
-                            MovingNodeDemand = routesFrom.get(i).demand;
+                            MovingNodeDemand = routesFrom.get(i).demands;
 
                             if ((VehIndexFrom == VehIndexTo) || this.vehicles[VehIndexTo].CheckIfFits(MovingNodeDemand)) {
                                 //If we assign to a different route check capacity constrains
@@ -156,10 +157,10 @@ public class TabuSearchSolver {
             }
 
             this.vehicles[SwapRouteFrom].routes = routesFrom;
-            this.vehicles[SwapRouteFrom].load -= MovingNodeDemand;
+            this.vehicles[SwapRouteFrom].load -= MovingNodeDemand[0];
 
             this.vehicles[SwapRouteTo].routes = routesTo;
-            this.vehicles[SwapRouteTo].load += MovingNodeDemand;
+            this.vehicles[SwapRouteTo].load += MovingNodeDemand[0];
 
             this.cost += BestNCost;
 
