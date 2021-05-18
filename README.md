@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# MCVRP
-=======
 # Vehicle Routing Problem
 
 Vehicle Routing Problem or simply VRP is a well known combinatorial optimization problem and a generalization of the 
