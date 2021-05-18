@@ -26,3 +26,9 @@ target/*
 results
 tuning/tuning-arena/*
 !.gitkeep
+/target/
+
+# eclipse project file
+.settings/
+.classpath
+.project
