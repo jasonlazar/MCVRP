@@ -4,6 +4,12 @@
     <groupId>uaic.info</groupId>
     <artifactId>vrp</artifactId>
     <version>1.0.0</version>
+    <properties>
+    	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    	<maven.compiler.source>11</maven.compiler.source>
+    	<maven.compiler.target>11</maven.compiler.target>
+    	<exec.mainClass>ro.uaic.info.VRPRunner</exec.mainClass>
+    </properties>
     <build>
         <plugins>
             <plugin>
@@ -42,6 +48,29 @@
                 </configuration>
                 <version>3.0.2</version>
             </plugin>
+            <plugin>
+            	<artifactId>maven-surefire-plugin</artifactId>
+            	<version>2.22.2</version>
+            	<configuration>
+            		<argLine>-Djava.library.path=/opt/ibm/ILOG/CPLEX_Studio201/cplex/bin/x86-64_linux</argLine>
+            	</configuration>
+            </plugin>
+            <plugin>
+            	<artifactId>maven-failsafe-plugin</artifactId>
+            	<version>2.22.2</version>
+            </plugin>
+            <plugin>
+            	<groupId>org.codehaus.mojo</groupId>
+            	<artifactId>exec-maven-plugin</artifactId>
+            	<version>3.0.0</version>
+            	<configuration>
+            		<mainClass>ro.uaic.info.VRPRunner</mainClass>
+            		<arguments>
+            			<argument>--algorithm</argument>
+            			<argument>tabu</argument>
+            		</arguments>
+            	</configuration>
+            </plugin>
         </plugins>
     </build>
     <repositories>
@@ -60,6 +89,23 @@
             <groupId>com.beust</groupId>
             <artifactId>jcommander</artifactId>
             <version>1.48</version>
+        </dependency>
+        <dependency>
+        	<groupId>cplex</groupId>
+        	<artifactId>cplex</artifactId>
+        	<version>20.1.0</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.junit.jupiter</groupId>
+        	<artifactId>junit-jupiter-api</artifactId>
+        	<version>5.7.0</version>
+        	<scope>test</scope>
+        </dependency>
+        <dependency>
+        	<groupId>org.junit.jupiter</groupId>
+        	<artifactId>junit-jupiter-engine</artifactId>
+        	<version>5.7.0</version>
+        	<scope>test</scope>
         </dependency>
     </dependencies>
 </project>

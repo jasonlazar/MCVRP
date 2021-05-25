@@ -9,11 +9,15 @@ public class SimpleVehicle extends Vehicle {
 	}
 
 	@Override
-	public void AddNode(Node Customer) {
+	public boolean AddNode(Node Customer) {
 		// TODO Auto-generated method stub
+		if (!CheckIfFits(Customer.demands))
+			return false;
+		
 		routes.add(Customer);
         this.load += Customer.demands[0];
         this.currentLocation = Customer.NodeId;
+        return true;
 	}
 
 	@Override

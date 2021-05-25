@@ -13,7 +13,7 @@ public abstract class Vehicle {
         this.routes.clear();
     }
 
-    public abstract void AddNode(Node Customer); //Add Customer to Vehicle routes
+    public abstract boolean AddNode(Node Customer); //Add Customer to Vehicle routes
 
     public abstract boolean CheckIfFits(int[] dem); //Check if we have Capacity Violation
 }
