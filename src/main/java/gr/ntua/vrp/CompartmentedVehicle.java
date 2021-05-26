@@ -21,6 +21,11 @@ public class CompartmentedVehicle extends Vehicle {
 	}
 
 	@Override
+	public Vehicle makeCopy() {
+		return new CompartmentedVehicle(compartments);
+	}
+	
+	@Override
 	public boolean AddNode(Node Customer) {
 		if (!CheckIfFits(Customer.demands))
 			return false;

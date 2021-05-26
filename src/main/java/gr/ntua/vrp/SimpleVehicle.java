@@ -19,6 +19,11 @@ public class SimpleVehicle extends Vehicle {
         this.currentLocation = Customer.NodeId;
         return true;
 	}
+	
+	@Override
+	public Vehicle makeCopy() {
+		return new SimpleVehicle(this.capacity);
+	}
 
 	@Override
 	public boolean CheckIfFits(int[] dem) {

@@ -9,40 +9,35 @@ import java.util.Random;
 
 import gr.ntua.vrp.Node;
 import gr.ntua.vrp.SimpleVehicle;
+import gr.ntua.vrp.Solver;
 import gr.ntua.vrp.VRPLibReader;
 import gr.ntua.vrp.VRPRunner;
 import gr.ntua.vrp.Vehicle;
 import gr.ntua.vrp.greedy.GreedySolver;
 
-public class TabuSearchSolver {
-    private final double[][] distances;
-    private final int noOfVehicles;
+public class TabuSearchSolver extends Solver {
     private final int TABU_Horizon;
     private final int iterations;
     private final Vehicle[] BestSolutionVehicles;
 
-    private Vehicle[] vehicles;
-    private double cost;
 
     private double BestSolutionCost;
 
     public TabuSearchSolver(VRPRunner jct) throws IOException {
-        VRPLibReader reader = new VRPLibReader(new InstanceReader(new File(jct.instance)));
-        this.noOfVehicles = reader.getDimension();
+        super(jct);
         this.TABU_Horizon = jct.TabuHorizon;
-        this.distances = reader.getDistance();
         this.iterations = jct.iterations;
-
-        GreedySolver greedySolver = new GreedySolver(jct);
-        greedySolver.solve();
-        this.vehicles = greedySolver.getVehicles();
-        this.cost = greedySolver.getCost();
 
         this.BestSolutionVehicles = new Vehicle[this.noOfVehicles];
 
         for (int i = 0; i < this.noOfVehicles; i++) {
-            this.BestSolutionVehicles[i] = new SimpleVehicle(reader.getVehicleCapacity());
+            this.BestSolutionVehicles[i] = this.vehicles[i].makeCopy();
         }
+        
+        GreedySolver greedySolver = new GreedySolver(this);
+        greedySolver.solve();
+        this.vehicles = greedySolver.getVehicles();
+        this.cost = greedySolver.getCost();
     }
 
     public TabuSearchSolver solve() {

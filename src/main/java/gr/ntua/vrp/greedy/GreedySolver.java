@@ -7,37 +7,19 @@ import java.io.IOException;
 
 import gr.ntua.vrp.Node;
 import gr.ntua.vrp.SimpleVehicle;
+import gr.ntua.vrp.Solver;
 import gr.ntua.vrp.VRPLibReader;
 import gr.ntua.vrp.VRPRunner;
 import gr.ntua.vrp.Vehicle;
 
-public class GreedySolver {
-    private final int noOfVehicles;
-    private final Node[] nodes;
-    private final double[][] distances;
-    private final int noOfCustomers;
-    private final Vehicle[] vehicles;
-
-    private double cost;
+public class GreedySolver extends Solver {
 
     public GreedySolver(VRPRunner jct) throws IOException {
-        VRPLibReader reader = new VRPLibReader(new InstanceReader(new File(jct.instance)));
-        this.noOfCustomers = reader.getDimension();
-        this.noOfVehicles = reader.getDimension();
-        this.distances = reader.getDistance();
-        this.cost = 0;
-
-        nodes = new Node[noOfCustomers];
-
-        for (int i = 0; i < noOfCustomers; i++) {
-            nodes[i] = new Node(i, reader.getDemand()[i]);
-        }
-
-        this.vehicles = new Vehicle[this.noOfVehicles];
-
-        for (int i = 0; i < this.noOfVehicles; i++) {
-            vehicles[i] = new SimpleVehicle(reader.getVehicleCapacity());
-        }
+        super(jct);
+    }
+    
+    public GreedySolver(Solver s) {
+    	super(s);
     }
 
     private boolean unassignedCustomerExists(Node[] Nodes) {
@@ -48,6 +30,7 @@ public class GreedySolver {
         return false;
     }
 
+    @Override
     public GreedySolver solve() {
         double CandCost, EndCost;
         int VehIndex = 0;
@@ -104,6 +87,7 @@ public class GreedySolver {
         return this;
     }
 
+    @Override
     public void print() {
         System.out.println("=========================================================");
 
