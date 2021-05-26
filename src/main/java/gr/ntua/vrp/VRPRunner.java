@@ -1,11 +1,12 @@
-package ro.uaic.info;
+package gr.ntua.vrp;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import ro.uaic.info.acs.VehicleRoutingProblem;
-import ro.uaic.info.acs.VrpAcsSolver;
-import ro.uaic.info.greedy.GreedySolver;
-import ro.uaic.info.tabu.TabuSearchSolver;
+
+import gr.ntua.vrp.acs.VehicleRoutingProblem;
+import gr.ntua.vrp.acs.VrpAcsSolver;
+import gr.ntua.vrp.greedy.GreedySolver;
+import gr.ntua.vrp.tabu.TabuSearchSolver;
 import thiagodnf.jacof.problem.Problem;
 import thiagodnf.jacof.util.ExecutionStats;
 import thiagodnf.jacof.util.io.InstanceReader;

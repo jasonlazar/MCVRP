@@ -1,4 +1,4 @@
-package ro.uaic.info;
+package gr.ntua.vrp;
 
 public class VRP {
     public static final String FILE = "X_X-n1001-k43";

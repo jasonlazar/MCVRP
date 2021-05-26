@@ -1,14 +1,15 @@
-package ro.uaic.info.greedy;
+package gr.ntua.vrp.greedy;
 
-import ro.uaic.info.Node;
-import ro.uaic.info.SimpleVehicle;
-import ro.uaic.info.VRPLibReader;
-import ro.uaic.info.VRPRunner;
-import ro.uaic.info.Vehicle;
 import thiagodnf.jacof.util.io.InstanceReader;
 
 import java.io.File;
 import java.io.IOException;
+
+import gr.ntua.vrp.Node;
+import gr.ntua.vrp.SimpleVehicle;
+import gr.ntua.vrp.VRPLibReader;
+import gr.ntua.vrp.VRPRunner;
+import gr.ntua.vrp.Vehicle;
 
 public class GreedySolver {
     private final int noOfVehicles;

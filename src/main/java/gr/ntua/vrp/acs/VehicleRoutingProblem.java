@@ -1,6 +1,5 @@
-package ro.uaic.info.acs;
+package gr.ntua.vrp.acs;
 
-import ro.uaic.info.VRPLibReader;
 import thiagodnf.jacof.problem.Problem;
 import thiagodnf.jacof.util.io.InstanceReader;
 
@@ -8,6 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import gr.ntua.vrp.VRPLibReader;
 
 public class VehicleRoutingProblem extends Problem {
     private double Q = 1.0;

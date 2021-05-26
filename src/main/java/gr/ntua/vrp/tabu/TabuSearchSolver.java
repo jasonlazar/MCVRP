@@ -1,17 +1,18 @@
-package ro.uaic.info.tabu;
+package gr.ntua.vrp.tabu;
 
-import ro.uaic.info.Node;
-import ro.uaic.info.SimpleVehicle;
-import ro.uaic.info.VRPLibReader;
-import ro.uaic.info.VRPRunner;
-import ro.uaic.info.Vehicle;
-import ro.uaic.info.greedy.GreedySolver;
 import thiagodnf.jacof.util.io.InstanceReader;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+
+import gr.ntua.vrp.Node;
+import gr.ntua.vrp.SimpleVehicle;
+import gr.ntua.vrp.VRPLibReader;
+import gr.ntua.vrp.VRPRunner;
+import gr.ntua.vrp.Vehicle;
+import gr.ntua.vrp.greedy.GreedySolver;
 
 public class TabuSearchSolver {
     private final double[][] distances;

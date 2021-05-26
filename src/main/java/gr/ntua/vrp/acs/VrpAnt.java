@@ -1,4 +1,4 @@
-package ro.uaic.info.acs;
+package gr.ntua.vrp.acs;
 
 import thiagodnf.jacof.aco.ACO;
 import thiagodnf.jacof.aco.ant.Ant;

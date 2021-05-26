@@ -1,4 +1,4 @@
-package ro.uaic.info;
+package gr.ntua.vrp;
 
 public class SimpleVehicle extends Vehicle {
 	private int capacity;

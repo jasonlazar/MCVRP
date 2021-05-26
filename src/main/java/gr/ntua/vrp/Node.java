@@ -1,4 +1,4 @@
-package ro.uaic.info;
+package gr.ntua.vrp;
 
 public class Node {
     public int NodeId;

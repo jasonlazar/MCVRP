@@ -1,10 +1,12 @@
-package ro.uaic.info;
+package gr.ntua.vrp;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import gr.ntua.vrp.CompartmentedVehicle;
 
 class CompartmentedVehicleTest {
 	
