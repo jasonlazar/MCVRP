@@ -26,13 +26,13 @@ public class CompartmentedVehicle extends Vehicle {
 	}
 	
 	@Override
-	public void AddNode(Node Customer) {		
+	public void appendNode(Node Customer) {		
 		routes.add(Customer);
 		this.currentLocation = Customer.NodeId;
 	}
 
 	@Override
-	public boolean CheckIfFits(int[] dem) {
+	public boolean checkIfFits(int[] dem) {
 		Deque<Integer> items = new ArrayDeque<Integer>();
 		for (Integer comp : compartments)
 			items.addLast(comp);
@@ -95,10 +95,10 @@ public class CompartmentedVehicle extends Vehicle {
 			cplex.setOut(null);
 			ret = cplex.solve();
 			cplex.end();
+			cplex.close();
 		} catch (IloException e) {
 			System.err.println("Concert exception '" + e + "' caught");
 		}
 		return ret;
 	}
-
 }

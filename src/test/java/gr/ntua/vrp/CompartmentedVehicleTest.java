@@ -25,13 +25,13 @@ class CompartmentedVehicleTest {
 		int[] order2 = { 20, 10, 20, 30 };
 		int[] order3 = { 20, 20, 20 };
 		int[] order4 = { 20, 20, 20, 20 };
-		assertEquals(true, vehicle.CheckIfFits(order1),
+		assertEquals(true, vehicle.checkIfFits(order1),
 				"First test should be true");
-		assertEquals(true, vehicle.CheckIfFits(order2),
+		assertEquals(true, vehicle.checkIfFits(order2),
 				"Second test should be true");
-		assertEquals(true, vehicle.CheckIfFits(order3),
+		assertEquals(true, vehicle.checkIfFits(order3),
 				"Third test should be true");
-		assertEquals(false, vehicle.CheckIfFits(order4),
+		assertEquals(false, vehicle.checkIfFits(order4),
 				"Fourth test should be false");
 	}
 }

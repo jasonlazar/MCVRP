@@ -1,14 +1,9 @@
 package gr.ntua.vrp.greedy;
 
-import thiagodnf.jacof.util.io.InstanceReader;
-
-import java.io.File;
 import java.io.IOException;
 
 import gr.ntua.vrp.Node;
-import gr.ntua.vrp.SimpleVehicle;
 import gr.ntua.vrp.Solver;
-import gr.ntua.vrp.VRPLibReader;
 import gr.ntua.vrp.VRPRunner;
 import gr.ntua.vrp.Vehicle;
 
@@ -41,12 +36,12 @@ public class GreedySolver extends Solver {
             double minCost = (float) Double.MAX_VALUE;
 
             if (vehicles[VehIndex].routes.isEmpty()) {
-                vehicles[VehIndex].AddNode(nodes[0]);
+                vehicles[VehIndex].appendNode(nodes[0]);
             }
 
             for (int i = 0; i < noOfCustomers; i++) {
                 if (!nodes[i].IsRouted) {
-                    if (vehicles[VehIndex].CheckIfFits(nodes[i].demands)) {
+                    if (vehicles[VehIndex].checkIfFits(nodes[i].demands)) {
                         CandCost = distances[vehicles[VehIndex].currentLocation][i];
                         if (minCost > CandCost) {
                             minCost = CandCost;
@@ -63,7 +58,7 @@ public class GreedySolver extends Solver {
                 {
                     if (vehicles[VehIndex].currentLocation != 0) {//End this route
                         EndCost = distances[vehicles[VehIndex].currentLocation][0];
-                        vehicles[VehIndex].AddNode(nodes[0]);
+                        vehicles[VehIndex].appendNode(nodes[0]);
                         this.cost += EndCost;
                     }
                     VehIndex = VehIndex + 1; //Go to next Vehicle
@@ -74,14 +69,14 @@ public class GreedySolver extends Solver {
                     System.exit(0);
                 }
             } else {
-                vehicles[VehIndex].AddNode(Candidate);//If a fitting Customer is Found
+                vehicles[VehIndex].appendNode(Candidate);//If a fitting Customer is Found
                 nodes[CustIndex].IsRouted = true;
                 this.cost += minCost;
             }
         }
 
         EndCost = distances[vehicles[VehIndex].currentLocation][0];
-        vehicles[VehIndex].AddNode(nodes[0]);
+        vehicles[VehIndex].appendNode(nodes[0]);
         this.cost += EndCost;
 
         return this;

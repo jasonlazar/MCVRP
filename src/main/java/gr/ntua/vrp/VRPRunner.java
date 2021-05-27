@@ -3,15 +3,10 @@ package gr.ntua.vrp;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
-import gr.ntua.vrp.acs.VehicleRoutingProblem;
 import gr.ntua.vrp.acs.VrpAcsSolver;
 import gr.ntua.vrp.greedy.GreedySolver;
 import gr.ntua.vrp.tabu.TabuSearchSolver;
-import thiagodnf.jacof.problem.Problem;
 import thiagodnf.jacof.util.ExecutionStats;
-import thiagodnf.jacof.util.io.InstanceReader;
-
-import java.io.File;
 import java.io.IOException;
 
 public class VRPRunner {

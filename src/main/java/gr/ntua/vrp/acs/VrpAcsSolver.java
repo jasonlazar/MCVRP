@@ -6,8 +6,6 @@ import gr.ntua.vrp.VRPRunner;
 import thiagodnf.jacof.aco.ACO;
 import thiagodnf.jacof.aco.AntColonySystem;
 import thiagodnf.jacof.aco.ant.Ant;
-import thiagodnf.jacof.problem.Problem;
-
 import java.io.IOException;
 
 public class VrpAcsSolver extends AntColonySystem {
