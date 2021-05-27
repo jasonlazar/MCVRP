@@ -17,6 +17,8 @@ public class VRPLibReader {
     private LocalTime[][] timeWindows;
     private int[] standTime;
     private int[] depots;
+    private Integer[] compartments;
+    private String type;
 
     public VRPLibReader(InstanceReader reader) {
         this.reader = reader;
@@ -38,13 +40,24 @@ public class VRPLibReader {
             String[] split = line.split(":");
 
             String key = split[0].trim();
+            
+            if (key.equalsIgnoreCase("TYPE")) {
+            	type = split[1].trim();
+            }
 
             if (key.equalsIgnoreCase("DIMENSION")) {
                 dimension = Integer.valueOf(split[1].trim());
             }
 
             if (key.equalsIgnoreCase("CAPACITY")) {
-                vehicleCapacity = Integer.valueOf(split[1].trim());
+            	if (type.equalsIgnoreCase("CVRP"))
+            		vehicleCapacity = Integer.valueOf(split[1].trim());
+            	else {
+            		String[] comps = split[1].split(",");
+            		compartments = new Integer[comps.length];
+            		for (int i=0; i<comps.length; ++i)
+            			compartments[i] = Integer.valueOf(comps[i].trim());
+            	}
             }
 
             line = reader.readLine();
@@ -198,4 +211,12 @@ public class VRPLibReader {
     public int[] getDepots() {
         return depots;
     }
+
+	public Integer[] getCompartments() {
+		return compartments;
+	}
+
+	public String getType() {
+		return type;
+	}
 }

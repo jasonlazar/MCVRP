@@ -26,13 +26,9 @@ public class CompartmentedVehicle extends Vehicle {
 	}
 	
 	@Override
-	public boolean AddNode(Node Customer) {
-		if (!CheckIfFits(Customer.demands))
-			return false;
-		
+	public void AddNode(Node Customer) {		
 		routes.add(Customer);
 		this.currentLocation = Customer.NodeId;
-        return true;
 	}
 
 	@Override

@@ -27,9 +27,21 @@ public abstract class Solver {
         }
         
         this.vehicles = new Vehicle[this.noOfVehicles];
+        
+        if (reader.getType().equalsIgnoreCase("CVRP")) {
+        	int capacity = reader.getVehicleCapacity(); 
 
-        for (int i = 0; i < this.noOfVehicles; i++) {
-            vehicles[i] = new SimpleVehicle(reader.getVehicleCapacity());
+	        for (int i = 0; i < this.noOfVehicles; i++) {
+	            vehicles[i] = new SimpleVehicle(capacity);
+	        }
+        }
+        
+        else {
+        	Integer[] compartments = reader.getCompartments(); 
+
+	        for (int i = 0; i < this.noOfVehicles; i++) {
+	            vehicles[i] = new CompartmentedVehicle(compartments);
+	        }
         }
         
         cost = 0;
