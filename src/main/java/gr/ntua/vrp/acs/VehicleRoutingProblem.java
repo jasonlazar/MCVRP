@@ -34,7 +34,10 @@ public class VehicleRoutingProblem extends Problem {
 
         numberOfClients = r.getDimension();
         distance = r.getDistance();
-        demands = r.getDemand();
+        int[][] dem = r.getDemand();
+        demands = new int[numberOfClients];
+        for (int i=0; i<numberOfClients; ++i)
+        	demands[i] = dem[i][0];
         vehicleCapacity = r.getVehicleCapacity();
 
         NearestNeighbour nn = new NearestNeighbour();

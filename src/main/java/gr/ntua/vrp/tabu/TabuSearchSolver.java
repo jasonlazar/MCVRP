@@ -69,34 +69,30 @@ public class TabuSearchSolver extends Solver {
 
                             MovingNodeDemand = routesFrom.get(i).demands;
 
-                            if (this.vehicles[VehIndexTo].checkIfFits(MovingNodeDemand)) {
-                                //If we assign to a different route check capacity constrains
+                            double MinusCost1 = this.distances[routesFrom.get(i - 1).NodeId][routesFrom.get(i).NodeId];
+                            double MinusCost2 = this.distances[routesFrom.get(i).NodeId][routesFrom.get(i + 1).NodeId];
+                            double MinusCost3 = this.distances[routesTo.get(j).NodeId][routesTo.get(j + 1).NodeId];
 
-                                double MinusCost1 = this.distances[routesFrom.get(i - 1).NodeId][routesFrom.get(i).NodeId];
-                                double MinusCost2 = this.distances[routesFrom.get(i).NodeId][routesFrom.get(i + 1).NodeId];
-                                double MinusCost3 = this.distances[routesTo.get(j).NodeId][routesTo.get(j + 1).NodeId];
+                            double AddedCost1 = this.distances[routesFrom.get(i - 1).NodeId][routesFrom.get(i + 1).NodeId];
+                            double AddedCost2 = this.distances[routesTo.get(j).NodeId][routesFrom.get(i).NodeId];
+                            double AddedCost3 = this.distances[routesFrom.get(i).NodeId][routesTo.get(j + 1).NodeId];
 
-                                double AddedCost1 = this.distances[routesFrom.get(i - 1).NodeId][routesFrom.get(i + 1).NodeId];
-                                double AddedCost2 = this.distances[routesTo.get(j).NodeId][routesFrom.get(i).NodeId];
-                                double AddedCost3 = this.distances[routesFrom.get(i).NodeId][routesTo.get(j + 1).NodeId];
+                            //Check if the move is a Tabu! - If it is Tabu break
+                            if ((TABU_Matrix[routesFrom.get(i - 1).NodeId][routesFrom.get(i + 1).NodeId] != 0)
+                                    || (TABU_Matrix[routesTo.get(j).NodeId][routesFrom.get(i).NodeId] != 0)
+                                    || (TABU_Matrix[routesFrom.get(i).NodeId][routesTo.get(j + 1).NodeId] != 0)) {
+                                break;
+                            }
 
-                                //Check if the move is a Tabu! - If it is Tabu break
-                                if ((TABU_Matrix[routesFrom.get(i - 1).NodeId][routesFrom.get(i + 1).NodeId] != 0)
-                                        || (TABU_Matrix[routesTo.get(j).NodeId][routesFrom.get(i).NodeId] != 0)
-                                        || (TABU_Matrix[routesFrom.get(i).NodeId][routesTo.get(j + 1).NodeId] != 0)) {
-                                    break;
-                                }
+                            NeighborCost = AddedCost1 + AddedCost2 + AddedCost3
+                                    - MinusCost1 - MinusCost2 - MinusCost3;
 
-                                NeighborCost = AddedCost1 + AddedCost2 + AddedCost3
-                                        - MinusCost1 - MinusCost2 - MinusCost3;
-
-                                if (NeighborCost < BestNCost) {
-                                    BestNCost = NeighborCost;
-                                    SwapIndexA = i;
-                                    SwapIndexB = j;
-                                    SwapRouteFrom = VehIndexFrom;
-                                    SwapRouteTo = VehIndexTo;
-                                }
+                            if (NeighborCost < BestNCost && this.vehicles[VehIndexTo].checkIfFits(MovingNodeDemand)) {
+                                BestNCost = NeighborCost;
+                                SwapIndexA = i;
+                                SwapIndexB = j;
+                                SwapRouteFrom = VehIndexFrom;
+                                SwapRouteTo = VehIndexTo;
                             }
                         }
                     }
@@ -130,18 +126,10 @@ public class TabuSearchSolver extends Solver {
             TABU_Matrix[SwapNode.NodeId][NodeIDAfter] = this.TABU_Horizon + randomDelay2;
             TABU_Matrix[NodeID_F][NodeID_G] = this.TABU_Horizon + randomDelay3;
 
-//            routesFrom.remove(SwapIndexA);
             this.vehicles[SwapRouteFrom].removeNode(SwapIndexA);
             this.vehicles[SwapRouteTo].addNode(SwapNode, SwapIndexB+1);
 
 
-//            routesTo.add(SwapIndexB + 1, SwapNode);
-
-//            this.vehicles[SwapRouteFrom].routes = routesFrom;
-//            this.vehicles[SwapRouteFrom].load -= MovingNodeDemand[0];
-//
-//            this.vehicles[SwapRouteTo].routes = routesTo;
-//            this.vehicles[SwapRouteTo].load += MovingNodeDemand[0];
 
             this.cost += BestNCost;
 

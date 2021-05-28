@@ -12,31 +12,34 @@ public class VRPLibReader {
     private int vehicleCapacity;
     private double[][] coord;
     private double[][] distance;
-    private int[] demand;
+    private int[][] demand;
     private double[][] pickup;
     private LocalTime[][] timeWindows;
     private int[] standTime;
     private int[] depots;
     private Integer[] compartments;
     private String type;
+    private String edge_type;
 
     public VRPLibReader(InstanceReader reader) {
         this.reader = reader;
 
         readHeader();
-        readCoordinates();
+        if (edge_type == "DISTANCE_MATRIX") readDistances();
+        else readCoordinates();
         readDemand();
         //        readPickup();
         //        readTimeWindows();
         //        readStandtime();
         // readDepots();
-        convertCoordToDistance();
+        if (edge_type != "DISTANCE_MATRIX") convertCoordToDistance();
     }
 
-    private void readHeader() {
+	private void readHeader() {
         String line = reader.readLine();
 
-        while (!line.equalsIgnoreCase("NODE_COORD_SECTION")) {
+        while (!line.equalsIgnoreCase("NODE_COORD_SECTION")
+        		&& !line.equalsIgnoreCase("DISTANCE_SECTION")) {
             String[] split = line.split(":");
 
             String key = split[0].trim();
@@ -45,11 +48,15 @@ public class VRPLibReader {
             	type = split[1].trim();
             }
 
-            if (key.equalsIgnoreCase("DIMENSION")) {
+            else if (key.equalsIgnoreCase("DIMENSION")) {
                 dimension = Integer.valueOf(split[1].trim());
             }
+            
+            else if (key.equalsIgnoreCase("EDGE_WEIGHT_TYPE")) {
+            	edge_type = split[1].trim();
+            }
 
-            if (key.equalsIgnoreCase("CAPACITY")) {
+            else if (key.equalsIgnoreCase("CAPACITY")) {
             	if (type.equalsIgnoreCase("CVRP"))
             		vehicleCapacity = Integer.valueOf(split[1].trim());
             	else {
@@ -67,6 +74,18 @@ public class VRPLibReader {
             }
         }
     }
+	
+    private void readDistances() {
+    	distance = new double[dimension][dimension];
+    	String line = reader.readLine();
+    	for (int i=0; i<dimension; ++i) {
+    		String[] split = line.split("\\s+");
+    		for (int j=0; j<dimension; ++j) {
+    			distance[i][j] = Integer.parseInt(split[j+1].trim());
+    		}
+    		line = reader.readLine();
+    	}
+	}
 
     private void readCoordinates() {
         coord = new double[dimension][2];
@@ -88,21 +107,29 @@ public class VRPLibReader {
     }
 
     private void readDemand() {
-        demand = new int[dimension];
+        demand = new int[dimension][];
 
         String line = reader.readLine();
         while (!line.equalsIgnoreCase("DEPOT_SECTION")) {
 
             String[] split = line.split("\\s+");
+            
 
             int i = Integer.valueOf(split[0].trim()) - 1;
-            demand[i] = Integer.valueOf(split[1].trim());
+            int nr_demands = split.length-1;
+            
+            demand[i] = new int[nr_demands];
+            
+            for (int j=0; j<nr_demands; ++j) {
+            	demand[i][j] = Integer.valueOf(split[j+1].trim());
+            }
 
             line = reader.readLine();
         }
     }
 
-    private void readPickup() {
+    @SuppressWarnings("unused")
+	private void readPickup() {
         pickup = new double[dimension][2];
 
         String line = reader.readLine();
@@ -113,7 +140,8 @@ public class VRPLibReader {
         }
     }
 
-    private void readTimeWindows() {
+    @SuppressWarnings("unused")
+	private void readTimeWindows() {
         timeWindows = new LocalTime[dimension][2];
 
         String line = reader.readLine();
@@ -140,7 +168,8 @@ public class VRPLibReader {
         }
     }
 
-    private void readStandtime() {
+    @SuppressWarnings("unused")
+	private void readStandtime() {
         standTime = new int[dimension];
 
         String line = reader.readLine();
@@ -154,7 +183,8 @@ public class VRPLibReader {
         }
     }
 
-    private void readDepots() {
+    @SuppressWarnings("unused")
+	private void readDepots() {
         depots = new int[2];
 
         String line = reader.readLine();
@@ -204,7 +234,7 @@ public class VRPLibReader {
         return vehicleCapacity;
     }
 
-    public int[] getDemand() {
+    public int[][] getDemand() {
         return demand;
     }
 

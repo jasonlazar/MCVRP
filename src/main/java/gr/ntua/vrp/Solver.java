@@ -17,7 +17,7 @@ public abstract class Solver {
     public Solver(VRPRunner jct) throws IOException {
     	VRPLibReader reader = new VRPLibReader(new InstanceReader(new File(jct.instance)));
         this.noOfCustomers = reader.getDimension();
-        this.noOfVehicles = reader.getDimension();
+        
         this.distances = reader.getDistance();
         
         nodes = new Node[noOfCustomers];
@@ -25,10 +25,12 @@ public abstract class Solver {
         for (int i = 0; i < noOfCustomers; i++) {
             nodes[i] = new Node(i, reader.getDemand()[i]);
         }
+        nodes[0].IsRouted = true;
         
-        this.vehicles = new Vehicle[this.noOfVehicles];
         
         if (reader.getType().equalsIgnoreCase("CVRP")) {
+        	this.noOfVehicles = reader.getDimension() / 3;
+        	this.vehicles = new Vehicle[this.noOfVehicles];
         	int capacity = reader.getVehicleCapacity(); 
 
 	        for (int i = 0; i < this.noOfVehicles; i++) {
@@ -37,6 +39,9 @@ public abstract class Solver {
         }
         
         else {
+        	this.noOfVehicles = reader.getDimension() * 2 / 3;
+        	this.vehicles = new Vehicle[this.noOfVehicles];
+        	
         	Integer[] compartments = reader.getCompartments(); 
 
 	        for (int i = 0; i < this.noOfVehicles; i++) {

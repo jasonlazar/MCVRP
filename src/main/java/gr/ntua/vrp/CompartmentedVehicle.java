@@ -42,9 +42,11 @@ public class CompartmentedVehicle extends Vehicle {
 			bins.add(order);
 		}
 		for (Node customer : routes) {
+			if (customer.NodeId == 0) continue;
 			for (int order : customer.demands)
 				bins.add(order);
 		}
+		if (bins.size() > items.size()) return false;
 		
 		for (int order : bins) {
 			int filled = 0;
