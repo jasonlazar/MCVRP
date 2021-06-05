@@ -69,5 +69,9 @@ public abstract class Solver {
     public abstract Solver solve();
     
     public abstract void print();
+
+	public Vehicle[] getVehicles() {
+		return vehicles;
+	}
     
 }
