@@ -52,6 +52,11 @@ public class TabuSearchSolver extends Solver {
             
             if (NeighborMove.compareTo(BestMove) < 0)
             	BestMove = NeighborMove;
+            
+            NeighborMove = swap();
+            
+            if (NeighborMove.compareTo(BestMove) < 0)
+            	BestMove = NeighborMove;
 
             for (int o = 0; o < TABU_Matrix[0].length; o++) {
                 for (int p = 0; p < TABU_Matrix[0].length; p++) {
@@ -154,6 +159,78 @@ public class TabuSearchSolver extends Solver {
 	        }
 	    }
     	return new SingleInsertionMove(BestNCost, SwapRouteFrom, SwapIndexA, SwapRouteTo, SwapIndexB);
+    }
+    
+    public Move swap() {
+    	//We use 1-1 exchange move
+        ArrayList<Node> route1;
+        ArrayList<Node> route2;
+
+        int FirstNodeDemand[] = null;
+        int SecondNodeDemand[];
+
+        int VehIndex1, VehIndex2;
+        double BestNCost, NeighborCost;
+
+        int SwapIndexA = -1, SwapIndexB = -1, SwapRoute1 = -1, SwapRoute2 = -1;
+
+	    BestNCost = Double.MAX_VALUE;
+	
+	    for (VehIndex1 = 0; VehIndex1 < this.vehicles.length; VehIndex1++) {
+	        route1 = this.vehicles[VehIndex1].routes;
+	        int Route1Length = route1.size();
+	
+	        for (int i = 1; i < (Route1Length - 1); i++) { //Not possible to move depot!
+	            for (VehIndex2 = 0; VehIndex2 < this.vehicles.length; VehIndex2++) {
+	            	if (VehIndex1 == VehIndex2) continue;
+	                route2 = this.vehicles[VehIndex2].routes;
+	                int Route2Length = route2.size();
+	                
+	                // No point in swapping nodes from routes where they are alone
+	                if (Route1Length == 3 && Route2Length == 3) continue;
+	                
+	                for (int j = 1; j < (Route2Length - 1); j++) {//Not possible to move after last Depot!
+	
+	                	Node FirstNode = route1.get(i);
+	                	Node SecondNode = route2.get(j);
+	                    FirstNodeDemand = route1.get(i).demands;
+	                    SecondNodeDemand = route2.get(j).demands;
+	
+	                    double MinusCost1 = this.distances[route1.get(i - 1).NodeId][route1.get(i).NodeId];
+	                    double MinusCost2 = this.distances[route1.get(i).NodeId][route1.get(i + 1).NodeId];
+	                    double MinusCost3 = this.distances[route2.get(j-1).NodeId][route2.get(j).NodeId];
+	                    double MinusCost4 = this.distances[route2.get(j).NodeId][route2.get(j + 1).NodeId];
+	
+	                    double AddedCost1 = this.distances[route1.get(i - 1).NodeId][route2.get(j).NodeId];
+	                    double AddedCost2 = this.distances[route2.get(j).NodeId][route1.get(i+1).NodeId];
+	                    double AddedCost3 = this.distances[route2.get(j-1).NodeId][route1.get(i).NodeId];
+	                    double AddedCost4 = this.distances[route1.get(i).NodeId][route2.get(j + 1).NodeId];
+	
+	                    //Check if the move is a Tabu! - If it is Tabu break
+	                    if ((TABU_Matrix[route1.get(i - 1).NodeId][route2.get(j).NodeId] != 0)
+	                    		|| (TABU_Matrix[route2.get(j).NodeId][route1.get(i+1).NodeId] != 0)
+	                            || (TABU_Matrix[route2.get(j-1).NodeId][route1.get(i).NodeId] != 0)
+	                            || (TABU_Matrix[route1.get(i).NodeId][route2.get(j + 1).NodeId] != 0)) {
+	                        break;
+	                    }
+	
+	                    NeighborCost = AddedCost1 + AddedCost2 + AddedCost3 + AddedCost4
+	                            - MinusCost1 - MinusCost2 - MinusCost3 - MinusCost4;
+	
+	                    if (NeighborCost < BestNCost
+	                    		&& this.vehicles[VehIndex1].checkIfFits(SecondNodeDemand, FirstNode)
+	                    		&& this.vehicles[VehIndex2].checkIfFits(FirstNodeDemand, SecondNode)) {
+	                        BestNCost = NeighborCost;
+	                        SwapIndexA = i;
+	                        SwapIndexB = j;
+	                        SwapRoute1 = VehIndex1;
+	                        SwapRoute2 = VehIndex2;
+	                    }
+	                }
+	            }
+	        }
+	    }
+    	return new SwapMove(BestNCost, SwapRoute1, SwapIndexA, SwapRoute2, SwapIndexB);
     }
 
     public void print() {

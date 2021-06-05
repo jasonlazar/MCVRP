@@ -26,6 +26,11 @@ public class SimpleVehicle extends Vehicle {
 	public boolean checkIfFits(int[] dem) {
 		return load + dem[0] <= capacity;
 	}
+	
+	@Override
+	public boolean checkIfFits(int[] dem, Node remove) {
+		return load + dem[0] - remove.demands[0] <= capacity;
+	}
 
 	@Override
 	public void addNode(Node Customer, int pos) {

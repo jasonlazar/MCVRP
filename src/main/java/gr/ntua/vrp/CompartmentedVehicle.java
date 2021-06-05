@@ -33,6 +33,11 @@ public class CompartmentedVehicle extends Vehicle {
 
 	@Override
 	public boolean checkIfFits(int[] dem) {
+		return checkIfFits(dem, null);
+	}
+	
+	@Override
+	public boolean checkIfFits(int[] dem, Node remove) {
 		Deque<Integer> items = new ArrayDeque<Integer>();
 		for (Integer comp : compartments)
 			items.addLast(comp);
@@ -42,6 +47,7 @@ public class CompartmentedVehicle extends Vehicle {
 			bins.add(order);
 		}
 		for (Node customer : routes) {
+			if (customer == remove) continue;
 			if (customer.NodeId == 0) continue;
 			for (int order : customer.demands)
 				bins.add(order);

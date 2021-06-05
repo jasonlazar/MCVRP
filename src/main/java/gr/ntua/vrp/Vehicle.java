@@ -16,6 +16,7 @@ public abstract class Vehicle {
     public abstract void appendNode(Node Customer); //Add Customer to Vehicle routes
 
     public abstract boolean checkIfFits(int[] dem); //Check if we have Capacity Violation
+    public abstract boolean checkIfFits(int[] dem, Node remove); //Check if we have Capacity Violation
     
     public void addNode(Node Customer, int pos) {
     	routes.add(pos, Customer);
