@@ -19,7 +19,7 @@ class CompartmentedVehicleTest {
 	}
 
 	@Test
-	@DisplayName("First test")
+	@DisplayName("Test fitness of demands")
 	void testCheckIfFits() {
 		int[] order1 = { 30, 40, 10 };
 		int[] order2 = { 20, 10, 20, 30 };
@@ -33,5 +33,24 @@ class CompartmentedVehicleTest {
 				"Third test should be true");
 		assertEquals(false, vehicle.checkIfFits(order4),
 				"Fourth test should be false");
+	}
+	
+	@Test
+	@DisplayName("Test fitness while excluding a node")
+	void testCheckIfFitsWithoutNode() {
+		Node n1 = new Node(1, 20);
+		Node n2 = new Node(2, 10);
+		vehicle.appendNode(n1);
+		vehicle.appendNode(n2);
+		int[] order1 = { 30, 40 };
+		int[] order2 = { 20, 10, 30 };
+		assertEquals(true, vehicle.checkIfFits(order1, n1),
+				"First test should be true");
+		assertEquals(false, vehicle.checkIfFits(order1, n2),
+				"Second test should be false");
+		assertEquals(true, vehicle.checkIfFits(order2, n1),
+				"Third test should be true");
+		assertEquals(true, vehicle.checkIfFits(order2, n2),
+				"Fourth test should be true");
 	}
 }
