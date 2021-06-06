@@ -6,47 +6,47 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NearestNeighbour {
-    private JMetalRandom rand = JMetalRandom.getInstance();
+	private JMetalRandom rand = JMetalRandom.getInstance();
 
-    public int[] solve(VehicleRoutingProblem p) {
+	public int[] solve(VehicleRoutingProblem p) {
 
-        List<Integer> citiesToVisit = new ArrayList<>();
-        List<Integer> solution = new ArrayList<>();
+		List<Integer> citiesToVisit = new ArrayList<>();
+		List<Integer> solution = new ArrayList<>();
 
-        int currentCity = rand.nextInt(0, p.getNumberOfNodes() - 1);
+		int currentCity = rand.nextInt(0, p.getNumberOfNodes() - 1);
 
-        for (int i = 0; i < p.getNumberOfNodes(); i++) {
-            if (i != currentCity) {
-                citiesToVisit.add(i);
-            }
-        }
+		for (int i = 0; i < p.getNumberOfNodes(); i++) {
+			if (i != currentCity) {
+				citiesToVisit.add(i);
+			}
+		}
 
-        solution.add(currentCity);
+		solution.add(currentCity);
 
-        while (!citiesToVisit.isEmpty()) {
+		while (!citiesToVisit.isEmpty()) {
 
-            int nextCity = -1;
+			int nextCity = -1;
 
-            double minDistance = Double.MAX_VALUE;
+			double minDistance = Double.MAX_VALUE;
 
-            for (Integer j : citiesToVisit) {
+			for (Integer j : citiesToVisit) {
 
-                double distance = p.getDistance(currentCity, j);
+				double distance = p.getDistance(currentCity, j);
 
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    nextCity = j;
-                }
-            }
+				if (distance < minDistance) {
+					minDistance = distance;
+					nextCity = j;
+				}
+			}
 
-            solution.add(nextCity);
-            citiesToVisit.remove(Integer.valueOf(nextCity));
-            currentCity = nextCity;
-        }
+			solution.add(nextCity);
+			citiesToVisit.remove(Integer.valueOf(nextCity));
+			currentCity = nextCity;
+		}
 
-        //Add the start city in the solution
-        solution.add(solution.get(0));
+		// Add the start city in the solution
+		solution.add(solution.get(0));
 
-        return solution.stream().mapToInt(x -> x).toArray();
-    }
+		return solution.stream().mapToInt(x -> x).toArray();
+	}
 }

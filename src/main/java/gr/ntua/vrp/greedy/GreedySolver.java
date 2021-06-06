@@ -9,107 +9,106 @@ import gr.ntua.vrp.Vehicle;
 
 public class GreedySolver extends Solver {
 
-    public GreedySolver(VRPRunner jct) throws IOException {
-        super(jct);
-    }
-    
-    public GreedySolver(Solver s) {
-    	super(s);
-    }
+	public GreedySolver(VRPRunner jct) throws IOException {
+		super(jct);
+	}
 
-    private boolean unassignedCustomerExists(Node[] Nodes) {
-        for (int i = 1; i < Nodes.length; i++) {
-            if (!Nodes[i].IsRouted)
-                return true;
-        }
-        return false;
-    }
+	public GreedySolver(Solver s) {
+		super(s);
+	}
 
-    @Override
-    public GreedySolver solve() {
-        double CandCost, EndCost;
-        int VehIndex = 0;
+	private boolean unassignedCustomerExists(Node[] Nodes) {
+		for (int i = 1; i < Nodes.length; i++) {
+			if (!Nodes[i].IsRouted)
+				return true;
+		}
+		return false;
+	}
 
-        while (unassignedCustomerExists(nodes)) {
-            int CustIndex = 0;
-            Node Candidate = null;
-            double minCost = (float) Double.MAX_VALUE;
+	@Override
+	public GreedySolver solve() {
+		double CandCost, EndCost;
+		int VehIndex = 0;
 
-            if (vehicles[VehIndex].routes.isEmpty()) {
-                vehicles[VehIndex].appendNode(nodes[0]);
-            }
+		while (unassignedCustomerExists(nodes)) {
+			int CustIndex = 0;
+			Node Candidate = null;
+			double minCost = (float) Double.MAX_VALUE;
 
-            for (int i = 0; i < noOfCustomers; i++) {
-                if (!nodes[i].IsRouted) {
-                    if (vehicles[VehIndex].checkIfFits(nodes[i].demands)) {
-                        CandCost = distances[vehicles[VehIndex].currentLocation][i];
-                        if (minCost > CandCost) {
-                            minCost = CandCost;
-                            CustIndex = i;
-                            Candidate = nodes[i];
-                        }
-                    }
-                }
-            }
+			if (vehicles[VehIndex].routes.isEmpty()) {
+				vehicles[VehIndex].appendNode(nodes[0]);
+			}
 
-            if (Candidate == null) {
-                //Not a single Customer Fits
-                if (VehIndex + 1 < vehicles.length) //We have more vehicles to assign
-                {
-                    if (vehicles[VehIndex].currentLocation != 0) {//End this route
-                        EndCost = distances[vehicles[VehIndex].currentLocation][0];
-                        vehicles[VehIndex].appendNode(nodes[0]);
-                        this.cost += EndCost;
-                    }
-                    VehIndex = VehIndex + 1; //Go to next Vehicle
-                } else //We DO NOT have any more vehicle to assign. The problem is unsolved under these parameters
-                {
-                    System.out.println("\nThe rest customers do not fit in any Vehicle\n" +
-                            "The problem cannot be resolved under these constrains");
-                    System.exit(0);
-                }
-            } else {
-                vehicles[VehIndex].appendNode(Candidate);//If a fitting Customer is Found
-                nodes[CustIndex].IsRouted = true;
-                this.cost += minCost;
-            }
-        }
+			for (int i = 0; i < noOfCustomers; i++) {
+				if (!nodes[i].IsRouted) {
+					if (vehicles[VehIndex].checkIfFits(nodes[i].demands)) {
+						CandCost = distances[vehicles[VehIndex].currentLocation][i];
+						if (minCost > CandCost) {
+							minCost = CandCost;
+							CustIndex = i;
+							Candidate = nodes[i];
+						}
+					}
+				}
+			}
 
-        EndCost = distances[vehicles[VehIndex].currentLocation][0];
-        vehicles[VehIndex].appendNode(nodes[0]);
-        this.cost += EndCost;
+			if (Candidate == null) {
+				// Not a single Customer Fits
+				if (VehIndex + 1 < vehicles.length) // We have more vehicles to assign
+				{
+					if (vehicles[VehIndex].currentLocation != 0) {// End this route
+						EndCost = distances[vehicles[VehIndex].currentLocation][0];
+						vehicles[VehIndex].appendNode(nodes[0]);
+						this.cost += EndCost;
+					}
+					VehIndex = VehIndex + 1; // Go to next Vehicle
+				} else // We DO NOT have any more vehicle to assign. The problem is unsolved under
+						// these parameters
+				{
+					System.out.println("\nThe rest customers do not fit in any Vehicle\n"
+							+ "The problem cannot be resolved under these constrains");
+					System.exit(0);
+				}
+			} else {
+				vehicles[VehIndex].appendNode(Candidate);// If a fitting Customer is Found
+				nodes[CustIndex].IsRouted = true;
+				this.cost += minCost;
+			}
+		}
 
-        return this;
-    }
+		EndCost = distances[vehicles[VehIndex].currentLocation][0];
+		vehicles[VehIndex].appendNode(nodes[0]);
+		this.cost += EndCost;
 
-    @Override
-    public void print() {
-        System.out.println("=========================================================");
+		return this;
+	}
 
-        for (int j = 0; j < noOfVehicles; j++) {
-            if (!vehicles[j].routes.isEmpty()) {
-                System.out.print("Vehicle " + j + ":");
-                int RoutSize = vehicles[j].routes.size();
-                for (int k = 0; k < RoutSize; k++) {
-                    if (k == RoutSize - 1) {
-                        System.out.print(vehicles[j].routes.get(k).NodeId);
-                    } else {
-                        System.out.print(vehicles[j].routes.get(k).NodeId + "->");
-                    }
-                }
-                System.out.println();
-            }
-        }
-        System.out.println("\nBest Value: " + this.cost + "\n");
-    }
+	@Override
+	public void print() {
+		System.out.println("=========================================================");
 
-    public Vehicle[] getVehicles() {
-        return vehicles;
-    }
+		for (int j = 0; j < noOfVehicles; j++) {
+			if (!vehicles[j].routes.isEmpty()) {
+				System.out.print("Vehicle " + j + ":");
+				int RoutSize = vehicles[j].routes.size();
+				for (int k = 0; k < RoutSize; k++) {
+					if (k == RoutSize - 1) {
+						System.out.print(vehicles[j].routes.get(k).NodeId);
+					} else {
+						System.out.print(vehicles[j].routes.get(k).NodeId + "->");
+					}
+				}
+				System.out.println();
+			}
+		}
+		System.out.println("\nBest Value: " + this.cost + "\n");
+	}
 
-    public double getCost() {
-        return cost;
-    }
+	public Vehicle[] getVehicles() {
+		return vehicles;
+	}
+
+	public double getCost() {
+		return cost;
+	}
 }
-
-
