@@ -69,6 +69,10 @@ public class TabuSearchSolver extends Solver {
 
 			this.cost += BestMove.cost;
 
+			int[] MoveVehicles = BestMove.getVehicleIndexes();
+			for (int i : MoveVehicles)
+				this.cost += this.vehicles[i].optimizeRoute();
+
 			if (this.cost < this.BestSolutionCost) {
 				iteration_number = 0;
 				this.SaveBestSolution();

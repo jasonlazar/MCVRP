@@ -50,4 +50,9 @@ public class SingleInsertionMove extends Move {
 		vehicles[DstRoute].addNode(SwapNode, DstRouteIndex + 1);
 	}
 
+	@Override
+	public int[] getVehicleIndexes() {
+		return new int[] { SrcRoute, DstRoute };
+	}
+
 }

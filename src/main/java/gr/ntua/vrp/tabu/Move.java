@@ -19,4 +19,8 @@ public class Move implements Comparable<Move> {
 		else
 			return 1;
 	}
+
+	public int[] getVehicleIndexes() {
+		return new int[] {};
+	}
 }

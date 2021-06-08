@@ -54,4 +54,9 @@ public class SwapMove extends Move {
 		vehicles[SwapRoute2].removeNode(SwapRoute2Index);
 		vehicles[SwapRoute2].addNode(SwapNode1, SwapRoute2Index);
 	}
+
+	@Override
+	public int[] getVehicleIndexes() {
+		return new int[] { SwapRoute1, SwapRoute2 };
+	}
 }
