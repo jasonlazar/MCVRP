@@ -55,7 +55,7 @@ public abstract class Vehicle {
 		return final_cost - initial_cost;
 	}
 
-	private double getCost() {
+	public double getCost() {
 		double cost = 0;
 		for (int i = 1; i < routes.size(); ++i) {
 			int node1 = routes.get(i - 1).NodeId;
