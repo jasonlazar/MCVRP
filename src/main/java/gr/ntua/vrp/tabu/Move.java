@@ -1,14 +1,13 @@
 package gr.ntua.vrp.tabu;
 
-public class Move implements Comparable<Move> {
+public abstract class Move implements Comparable<Move> {
 	protected double cost;
 
 	public Move(double cost) {
 		this.cost = cost;
 	}
 
-	public void applyMove(TabuSearchSolver s) {
-	}
+	public abstract void applyMove(TabuSearchSolver s);
 
 	@Override
 	public int compareTo(Move m) {
@@ -20,7 +19,5 @@ public class Move implements Comparable<Move> {
 			return 1;
 	}
 
-	public int[] getVehicleIndexes() {
-		return new int[] {};
-	}
+	public abstract int[] getVehicleIndexes();
 }
