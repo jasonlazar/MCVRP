@@ -33,7 +33,7 @@ public abstract class Solver {
 			int capacity = reader.getVehicleCapacity();
 
 			for (int i = 0; i < this.noOfVehicles; i++) {
-				vehicles[i] = new SimpleVehicle(capacity);
+				vehicles[i] = new SimpleVehicle(distances, capacity);
 			}
 		}
 
@@ -44,7 +44,7 @@ public abstract class Solver {
 			Integer[] compartments = reader.getCompartments();
 
 			for (int i = 0; i < this.noOfVehicles; i++) {
-				vehicles[i] = new CompartmentedVehicle(compartments);
+				vehicles[i] = new CompartmentedVehicle(distances, compartments);
 			}
 		}
 
@@ -57,12 +57,7 @@ public abstract class Solver {
 		this.distances = s.distances;
 		this.noOfCustomers = s.noOfCustomers;
 		this.cost = s.cost;
-
-		this.vehicles = new Vehicle[this.noOfVehicles];
-
-		for (int i = 0; i < this.noOfVehicles; i++) {
-			this.vehicles[i] = s.vehicles[i].makeCopy();
-		}
+		this.vehicles = s.vehicles;
 	}
 
 	public abstract Solver solve();

@@ -1,12 +1,10 @@
 package gr.ntua.vrp;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import gr.ntua.vrp.CompartmentedVehicle;
 
 class CompartmentedVehicleTest {
 
@@ -15,7 +13,7 @@ class CompartmentedVehicleTest {
 	@BeforeEach
 	public void setUp() throws Exception {
 		Integer[] compartments = { 10, 20, 20, 30 };
-		vehicle = new CompartmentedVehicle(compartments);
+		vehicle = new CompartmentedVehicle(null, compartments);
 	}
 
 	@Test

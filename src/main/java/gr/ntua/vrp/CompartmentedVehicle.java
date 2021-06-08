@@ -14,15 +14,15 @@ import ilog.cplex.IloCplex;
 public class CompartmentedVehicle extends Vehicle {
 	private Integer[] compartments;
 
-	public CompartmentedVehicle(Integer[] comps) {
-		super();
+	public CompartmentedVehicle(double[][] distances, Integer[] comps) {
+		super(distances);
 		this.compartments = comps.clone();
 		Arrays.sort(this.compartments, Collections.reverseOrder());
 	}
 
 	@Override
 	public Vehicle makeCopy() {
-		return new CompartmentedVehicle(compartments);
+		return new CompartmentedVehicle(distances, compartments);
 	}
 
 	@Override

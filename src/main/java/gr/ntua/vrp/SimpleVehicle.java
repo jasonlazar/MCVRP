@@ -4,8 +4,8 @@ public class SimpleVehicle extends Vehicle {
 	private int capacity;
 	private int load;
 
-	public SimpleVehicle(int cap) {
-		super();
+	public SimpleVehicle(double[][] distances, int cap) {
+		super(distances);
 		this.capacity = cap;
 		this.load = 0;
 	}
@@ -19,7 +19,7 @@ public class SimpleVehicle extends Vehicle {
 
 	@Override
 	public Vehicle makeCopy() {
-		return new SimpleVehicle(this.capacity);
+		return new SimpleVehicle(this.distances, this.capacity);
 	}
 
 	@Override
