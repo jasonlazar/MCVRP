@@ -10,10 +10,10 @@ import gr.ntua.vrp.Vehicle;
 import gr.ntua.vrp.greedy.GreedySolver;
 
 public class TabuSearchSolver extends Solver {
-	protected final int TABU_Horizon;
+	final int TABU_Horizon;
+	final int TABU_Matrix[][];
 	private final int iterations;
 	private final Vehicle[] BestSolutionVehicles;
-	protected final int TABU_Matrix[][];
 
 	private double BestSolutionCost;
 
