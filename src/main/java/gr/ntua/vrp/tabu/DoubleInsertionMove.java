@@ -54,6 +54,23 @@ public class DoubleInsertionMove extends Move {
 	}
 
 	@Override
+	public boolean isFeasible(TabuSearchSolver s) {
+		ArrayList<Node> routesFrom;
+		int MovingNodeDemand[];
+
+		Vehicle[] vehicles = s.getVehicles();
+		routesFrom = vehicles[SrcRoute].routes;
+
+		int[] firstDemands = routesFrom.get(SrcRouteIndex).demands;
+		int[] secondDemands = routesFrom.get(SrcRouteIndex + 1).demands;
+		MovingNodeDemand = new int[firstDemands.length + secondDemands.length];
+		System.arraycopy(firstDemands, 0, MovingNodeDemand, 0, firstDemands.length);
+		System.arraycopy(secondDemands, 0, MovingNodeDemand, firstDemands.length, secondDemands.length);
+
+		return vehicles[DstRoute].checkIfFits(MovingNodeDemand);
+	}
+
+	@Override
 	public int[] getVehicleIndexes() {
 		return new int[] { SrcRoute, DstRoute };
 	}

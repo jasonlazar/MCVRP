@@ -51,8 +51,18 @@ public class SingleInsertionMove extends Move {
 	}
 
 	@Override
+	public boolean isFeasible(TabuSearchSolver s) {
+		ArrayList<Node> routesFrom;
+		Vehicle[] vehicles = s.getVehicles();
+		routesFrom = vehicles[SrcRoute].routes;
+
+		int MovingNodeDemand[] = routesFrom.get(SrcRouteIndex).demands;
+
+		return vehicles[DstRoute].checkIfFits(MovingNodeDemand);
+	}
+
+	@Override
 	public int[] getVehicleIndexes() {
 		return new int[] { SrcRoute, DstRoute };
 	}
-
 }

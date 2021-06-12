@@ -118,7 +118,7 @@ public class TabuSearchSolver extends Solver {
 						Move[] Neighbors = new Move[] { singleInsertion(VehIndex1, VehIndex2, i, j),
 								swap(VehIndex1, VehIndex2, i, j), doubleInsertion(VehIndex1, VehIndex2, i, j) };
 						for (Move neigh : Neighbors) {
-							if (neigh.compareTo(BestNeighbor) < 0)
+							if (neigh.compareTo(BestNeighbor) < 0 && neigh.isFeasible(this))
 								BestNeighbor = neigh;
 						}
 					}
@@ -135,11 +135,7 @@ public class TabuSearchSolver extends Solver {
 		if (routesFrom.size() == 3 && routesTo.size() == 2)
 			return new DummyMove();
 
-		int MovingNodeDemand[];
-
 		double NeighborCost;
-
-		MovingNodeDemand = routesFrom.get(index1).demands;
 
 		double MinusCost1 = this.distances[routesFrom.get(index1 - 1).NodeId][routesFrom.get(index1).NodeId];
 		double MinusCost2 = this.distances[routesFrom.get(index1).NodeId][routesFrom.get(index1 + 1).NodeId];
@@ -158,9 +154,7 @@ public class TabuSearchSolver extends Solver {
 
 		NeighborCost = AddedCost1 + AddedCost2 + AddedCost3 - MinusCost1 - MinusCost2 - MinusCost3;
 
-		return (this.vehicles[VehIndexTo].checkIfFits(MovingNodeDemand)
-				? new SingleInsertionMove(NeighborCost, VehIndexFrom, index1, VehIndexTo, index2)
-				: new DummyMove());
+		return new SingleInsertionMove(NeighborCost, VehIndexFrom, index1, VehIndexTo, index2);
 	}
 
 	public Move swap(int VehIndex1, int VehIndex2, int index1, int index2) {
@@ -170,9 +164,6 @@ public class TabuSearchSolver extends Solver {
 		ArrayList<Node> route1 = this.vehicles[VehIndex1].routes;
 		ArrayList<Node> route2 = this.vehicles[VehIndex2].routes;
 
-		int FirstNodeDemand[];
-		int SecondNodeDemand[];
-
 		double NeighborCost;
 
 		int Route1Length = route1.size();
@@ -181,11 +172,6 @@ public class TabuSearchSolver extends Solver {
 		// No point in swapping nodes from routes where they are alone
 		if (Route1Length == 3 && Route2Length == 3)
 			return new DummyMove();
-
-		Node FirstNode = route1.get(index1);
-		Node SecondNode = route2.get(index2);
-		FirstNodeDemand = route1.get(index1).demands;
-		SecondNodeDemand = route2.get(index2).demands;
 
 		double MinusCost1 = this.distances[route1.get(index1 - 1).NodeId][route1.get(index1).NodeId];
 		double MinusCost2 = this.distances[route1.get(index1).NodeId][route1.get(index1 + 1).NodeId];
@@ -208,17 +194,12 @@ public class TabuSearchSolver extends Solver {
 		NeighborCost = AddedCost1 + AddedCost2 + AddedCost3 + AddedCost4 - MinusCost1 - MinusCost2 - MinusCost3
 				- MinusCost4;
 
-		return ((this.vehicles[VehIndex1].checkIfFits(SecondNodeDemand, FirstNode)
-				&& this.vehicles[VehIndex2].checkIfFits(FirstNodeDemand, SecondNode))
-						? new SwapMove(NeighborCost, VehIndex1, index1, VehIndex2, index2)
-						: new DummyMove());
+		return new SwapMove(NeighborCost, VehIndex1, index1, VehIndex2, index2);
 	}
 
 	public Move doubleInsertion(int VehIndexFrom, int VehIndexTo, int index1, int index2) {
 		ArrayList<Node> routesFrom = this.vehicles[VehIndexFrom].routes;
 		ArrayList<Node> routesTo = this.vehicles[VehIndexTo].routes;
-
-		int MovingNodeDemand[];
 
 		double NeighborCost;
 
@@ -227,12 +208,6 @@ public class TabuSearchSolver extends Solver {
 
 		if ((RoutFromLength == 4 && RouteToLength == 2) || index1 >= RoutFromLength - 2)
 			return new DummyMove();
-
-		int[] firstDemands = routesFrom.get(index1).demands;
-		int[] secondDemands = routesFrom.get(index1 + 1).demands;
-		MovingNodeDemand = new int[firstDemands.length + secondDemands.length];
-		System.arraycopy(firstDemands, 0, MovingNodeDemand, 0, firstDemands.length);
-		System.arraycopy(secondDemands, 0, MovingNodeDemand, firstDemands.length, secondDemands.length);
 
 		double MinusCost1 = this.distances[routesFrom.get(index1 - 1).NodeId][routesFrom.get(index1).NodeId];
 		double MinusCost2 = this.distances[routesFrom.get(index1 + 1).NodeId][routesFrom.get(index1 + 2).NodeId];
@@ -251,9 +226,7 @@ public class TabuSearchSolver extends Solver {
 
 		NeighborCost = AddedCost1 + AddedCost2 + AddedCost3 - MinusCost1 - MinusCost2 - MinusCost3;
 
-		return (this.vehicles[VehIndexTo].checkIfFits(MovingNodeDemand)
-				? new DoubleInsertionMove(NeighborCost, VehIndexFrom, index1, VehIndexTo, index2)
-				: new DummyMove());
+		return new DoubleInsertionMove(NeighborCost, VehIndexFrom, index1, VehIndexTo, index2);
 	}
 
 	public void print() {

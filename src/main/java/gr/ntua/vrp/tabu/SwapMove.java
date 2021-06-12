@@ -56,7 +56,27 @@ public class SwapMove extends Move {
 	}
 
 	@Override
+	public boolean isFeasible(TabuSearchSolver s) {
+		ArrayList<Node> route1;
+		ArrayList<Node> route2;
+
+		Vehicle[] vehicles = s.getVehicles();
+
+		route1 = vehicles[SwapRoute1].routes;
+		route2 = vehicles[SwapRoute2].routes;
+
+		Node FirstNode = route1.get(SwapRoute1Index);
+		Node SecondNode = route2.get(SwapRoute2Index);
+		int FirstNodeDemand[] = route1.get(SwapRoute1Index).demands;
+		int SecondNodeDemand[] = route2.get(SwapRoute2Index).demands;
+
+		return (vehicles[SwapRoute1].checkIfFits(SecondNodeDemand, FirstNode)
+				&& vehicles[SwapRoute2].checkIfFits(FirstNodeDemand, SecondNode));
+	}
+
+	@Override
 	public int[] getVehicleIndexes() {
 		return new int[] { SwapRoute1, SwapRoute2 };
 	}
+
 }
