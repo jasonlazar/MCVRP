@@ -35,6 +35,9 @@ public abstract class Vehicle {
 	}
 
 	public double optimizeRoute() {
+		if (routes.size() <= 3)
+			return 0.0;
+
 		double initial_cost = getCost();
 		Map<Integer, Node> mapping = new HashMap<>();
 		double[][] myDist = new double[routes.size() - 1][routes.size() - 1];
