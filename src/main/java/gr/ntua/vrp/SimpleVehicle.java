@@ -24,12 +24,18 @@ public class SimpleVehicle extends Vehicle {
 
 	@Override
 	public boolean checkIfFits(int[] dem) {
-		return load + dem[0] <= capacity;
+		int totalDemands = 0;
+		for (int d : dem)
+			totalDemands += d;
+		return load + totalDemands <= capacity;
 	}
 
 	@Override
 	public boolean checkIfFits(int[] dem, Node remove) {
-		return load + dem[0] - remove.demands[0] <= capacity;
+		int totalDemands = 0;
+		for (int d : dem)
+			totalDemands += d;
+		return load + totalDemands - remove.demands[0] <= capacity;
 	}
 
 	@Override
