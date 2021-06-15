@@ -11,8 +11,12 @@ class DummyMove extends Move {
 	}
 
 	@Override
+	public boolean isFeasible(TabuSearchSolver s) {
+		return false;
+	}
+
+	@Override
 	public int[] getVehicleIndexes() {
 		return new int[] {};
 	}
-
 }

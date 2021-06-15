@@ -9,6 +9,10 @@ public abstract class Move implements Comparable<Move> {
 
 	public abstract void applyMove(TabuSearchSolver s);
 
+	public abstract boolean isFeasible(TabuSearchSolver s);
+
+	public abstract int[] getVehicleIndexes();
+
 	@Override
 	public int compareTo(Move m) {
 		if (cost < m.cost)
@@ -18,6 +22,4 @@ public abstract class Move implements Comparable<Move> {
 		else
 			return 1;
 	}
-
-	public abstract int[] getVehicleIndexes();
 }
