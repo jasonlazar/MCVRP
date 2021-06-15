@@ -5,7 +5,6 @@ import java.io.IOException;
 import gr.ntua.vrp.Node;
 import gr.ntua.vrp.Solver;
 import gr.ntua.vrp.VRPRunner;
-import gr.ntua.vrp.Vehicle;
 
 public class GreedySolver extends Solver {
 
@@ -63,10 +62,10 @@ public class GreedySolver extends Solver {
 					}
 					VehIndex = VehIndex + 1; // Go to next Vehicle
 				} else // We DO NOT have any more vehicle to assign. The problem is unsolved under
-						// these parameters
+				       // these parameters
 				{
 					System.out.println("\nThe rest customers do not fit in any Vehicle\n"
-							+ "The problem cannot be resolved under these constrains");
+					        + "The problem cannot be resolved under these constrains");
 					System.exit(0);
 				}
 			} else {
@@ -81,31 +80,6 @@ public class GreedySolver extends Solver {
 		this.cost += EndCost;
 
 		return this;
-	}
-
-	@Override
-	public void print() {
-		System.out.println("=========================================================");
-
-		for (int j = 0; j < noOfVehicles; j++) {
-			if (!vehicles[j].routes.isEmpty()) {
-				System.out.print("Vehicle " + j + ":");
-				int RoutSize = vehicles[j].routes.size();
-				for (int k = 0; k < RoutSize; k++) {
-					if (k == RoutSize - 1) {
-						System.out.print(vehicles[j].routes.get(k).NodeId);
-					} else {
-						System.out.print(vehicles[j].routes.get(k).NodeId + "->");
-					}
-				}
-				System.out.println();
-			}
-		}
-		System.out.println("\nBest Value: " + this.cost + "\n");
-	}
-
-	public Vehicle[] getVehicles() {
-		return vehicles;
 	}
 
 	public double getCost() {

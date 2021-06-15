@@ -62,7 +62,25 @@ public abstract class Solver {
 
 	public abstract Solver solve();
 
-	public abstract void print();
+	public void print() {
+		System.out.println("=========================================================");
+
+		for (int j = 0; j < this.noOfVehicles; j++) {
+			if (!this.vehicles[j].routes.isEmpty()) {
+				System.out.print("Vehicle " + j + ":");
+				int RoutSize = this.vehicles[j].routes.size();
+				for (int k = 0; k < RoutSize; k++) {
+					if (k == RoutSize - 1) {
+						System.out.print(this.vehicles[j].routes.get(k).NodeId);
+					} else {
+						System.out.print(this.vehicles[j].routes.get(k).NodeId + "->");
+					}
+				}
+				System.out.println();
+			}
+		}
+		System.out.println("\nBest Value: " + this.cost + "\n");
+	}
 
 	public Vehicle[] getVehicles() {
 		return vehicles;
