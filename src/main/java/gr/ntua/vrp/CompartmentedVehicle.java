@@ -3,6 +3,7 @@ package gr.ntua.vrp;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 
@@ -33,11 +34,11 @@ public class CompartmentedVehicle extends Vehicle {
 
 	@Override
 	public boolean checkIfFits(int[] dem) {
-		return checkIfFits(dem, null);
+		return checkIfFits(dem, Collections.emptyList());
 	}
 
 	@Override
-	public boolean checkIfFits(int[] dem, Node remove) {
+	public boolean checkIfFits(int[] dem, Collection<Node> remove) {
 		Deque<Integer> items = new ArrayDeque<Integer>();
 		for (Integer comp : compartments)
 			items.addLast(comp);
@@ -47,7 +48,7 @@ public class CompartmentedVehicle extends Vehicle {
 			bins.add(order);
 		}
 		for (Node customer : routes) {
-			if (customer == remove)
+			if (remove.contains(customer))
 				continue;
 			if (customer.NodeId == 0)
 				continue;

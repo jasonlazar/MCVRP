@@ -2,6 +2,8 @@ package gr.ntua.vrp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,9 +40,9 @@ class CompartmentedVehicleTest {
 		vehicle.appendNode(n2);
 		int[] order1 = { 30, 40 };
 		int[] order2 = { 20, 10, 30 };
-		assertEquals(true, vehicle.checkIfFits(order1, n1), "First test should be true");
-		assertEquals(false, vehicle.checkIfFits(order1, n2), "Second test should be false");
-		assertEquals(true, vehicle.checkIfFits(order2, n1), "Third test should be true");
-		assertEquals(true, vehicle.checkIfFits(order2, n2), "Fourth test should be true");
+		assertEquals(true, vehicle.checkIfFits(order1, List.of(n1)), "First test should be true");
+		assertEquals(false, vehicle.checkIfFits(order1, List.of(n2)), "Second test should be false");
+		assertEquals(true, vehicle.checkIfFits(order2, List.of(n1)), "Third test should be true");
+		assertEquals(true, vehicle.checkIfFits(order2, List.of(n2)), "Fourth test should be true");
 	}
 }

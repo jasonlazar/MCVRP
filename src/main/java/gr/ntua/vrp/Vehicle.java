@@ -1,6 +1,7 @@
 package gr.ntua.vrp;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ public abstract class Vehicle {
 
 	public abstract boolean checkIfFits(int[] dem); // Check if we have Capacity Violation
 
-	public abstract boolean checkIfFits(int[] dem, Node remove); // Check if we have Capacity Violation
+	public abstract boolean checkIfFits(int[] dem, Collection<Node> remove); // Check if we have Capacity Violation
 
 	public void addNode(Node Customer, int pos) {
 		routes.add(pos, Customer);

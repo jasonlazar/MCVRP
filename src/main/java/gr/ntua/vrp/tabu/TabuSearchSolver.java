@@ -120,7 +120,8 @@ public class TabuSearchSolver extends Solver {
 
 					for (int j = 0; j < (Route2Length - 1); j++) {// Not possible to move after last Depot!
 						Move[] Neighbors = new Move[] { singleInsertion(VehIndex1, VehIndex2, i, j),
-						        swap(VehIndex1, VehIndex2, i, j), doubleInsertion(VehIndex1, VehIndex2, i, j) };
+						        swap(VehIndex1, VehIndex2, i, j), doubleInsertion(VehIndex1, VehIndex2, i, j),
+						        swap21(VehIndex1, VehIndex2, i, j) };
 						for (Move neigh : Neighbors) {
 							if (neigh.compareTo(BestNeighbor) < 0 && neigh.isFeasible(this))
 								BestNeighbor = neigh;
@@ -231,5 +232,45 @@ public class TabuSearchSolver extends Solver {
 		NeighborCost = AddedCost1 + AddedCost2 + AddedCost3 - MinusCost1 - MinusCost2 - MinusCost3;
 
 		return new DoubleInsertionMove(NeighborCost, VehIndexFrom, index1, VehIndexTo, index2);
+	}
+
+	public Move swap21(int VehIndex1, int VehIndex2, int index1, int index2) {
+		ArrayList<Node> route1 = this.vehicles[VehIndex1].routes;
+		ArrayList<Node> route2 = this.vehicles[VehIndex2].routes;
+
+		double NeighborCost;
+
+		int Route1Length = route1.size();
+		int Route2Length = route2.size();
+
+		if (index2 == 0 || index1 >= Route1Length - 2)
+			return new DummyMove();
+
+		// No point in swapping nodes from routes where they are alone
+		if (Route1Length == 4 && Route2Length == 3)
+			return new DummyMove();
+
+		double MinusCost1 = this.distances[route1.get(index1 - 1).NodeId][route1.get(index1).NodeId];
+		double MinusCost2 = this.distances[route1.get(index1 + 1).NodeId][route1.get(index1 + 2).NodeId];
+		double MinusCost3 = this.distances[route2.get(index2 - 1).NodeId][route2.get(index2).NodeId];
+		double MinusCost4 = this.distances[route2.get(index2).NodeId][route2.get(index2 + 1).NodeId];
+
+		double AddedCost1 = this.distances[route1.get(index1 - 1).NodeId][route2.get(index2).NodeId];
+		double AddedCost2 = this.distances[route2.get(index2).NodeId][route1.get(index1 + 2).NodeId];
+		double AddedCost3 = this.distances[route2.get(index2 - 1).NodeId][route1.get(index1).NodeId];
+		double AddedCost4 = this.distances[route1.get(index1 + 1).NodeId][route2.get(index2 + 1).NodeId];
+
+		// Check if the move is a Tabu! - If it is Tabu break
+		if ((TABU_Matrix[route1.get(index1 - 1).NodeId][route2.get(index2).NodeId] != 0)
+		        || (TABU_Matrix[route2.get(index2).NodeId][route1.get(index1 + 2).NodeId] != 0)
+		        || (TABU_Matrix[route2.get(index2 - 1).NodeId][route1.get(index1).NodeId] != 0)
+		        || (TABU_Matrix[route1.get(index1 + 1).NodeId][route2.get(index2 + 1).NodeId] != 0)) {
+			return new DummyMove();
+		}
+
+		NeighborCost = AddedCost1 + AddedCost2 + AddedCost3 + AddedCost4 - MinusCost1 - MinusCost2 - MinusCost3
+		        - MinusCost4;
+
+		return new Swap21Move(NeighborCost, VehIndex1, index1, VehIndex2, index2);
 	}
 }

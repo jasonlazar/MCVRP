@@ -1,5 +1,7 @@
 package gr.ntua.vrp;
 
+import java.util.Collection;
+
 public class SimpleVehicle extends Vehicle {
 	private int capacity;
 	private int load;
@@ -31,11 +33,16 @@ public class SimpleVehicle extends Vehicle {
 	}
 
 	@Override
-	public boolean checkIfFits(int[] dem, Node remove) {
+	public boolean checkIfFits(int[] dem, Collection<Node> remove) {
 		int totalDemands = 0;
+		int totalRemove = 0;
+
 		for (int d : dem)
 			totalDemands += d;
-		return load + totalDemands - remove.demands[0] <= capacity;
+		for (Node n : remove)
+			totalRemove += n.demands[0];
+
+		return load + totalDemands - totalRemove <= capacity;
 	}
 
 	@Override
