@@ -42,6 +42,10 @@ public class TabuSearchSolver extends Solver {
 
 		Move BestMove;
 
+		for (Vehicle v : vehicles) {
+			this.cost += v.optimizeRoute();
+		}
+
 		this.BestSolutionCost = this.cost;
 
 		while (true) {
