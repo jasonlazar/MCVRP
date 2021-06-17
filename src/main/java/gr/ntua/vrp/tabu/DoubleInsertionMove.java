@@ -1,6 +1,6 @@
 package gr.ntua.vrp.tabu;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import gr.ntua.vrp.Node;
@@ -22,8 +22,8 @@ public class DoubleInsertionMove extends Move {
 
 	@Override
 	public void applyMove(TabuSearchSolver s) {
-		ArrayList<Node> routesFrom;
-		ArrayList<Node> routesTo;
+		List<Node> routesFrom;
+		List<Node> routesTo;
 
 		Vehicle[] vehicles = s.getVehicles();
 
@@ -55,7 +55,7 @@ public class DoubleInsertionMove extends Move {
 
 	@Override
 	public boolean isFeasible(TabuSearchSolver s) {
-		ArrayList<Node> routesFrom;
+		List<Node> routesFrom;
 		int MovingNodeDemand[];
 
 		Vehicle[] vehicles = s.getVehicles();

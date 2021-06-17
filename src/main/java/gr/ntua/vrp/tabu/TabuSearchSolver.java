@@ -1,7 +1,7 @@
 package gr.ntua.vrp.tabu;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 import gr.ntua.vrp.Node;
 import gr.ntua.vrp.Route;
@@ -89,7 +89,7 @@ public class TabuSearchSolver extends Solver {
 	private void SaveBestSolution() {
 		this.BestSolutionCost = this.cost;
 		for (int j = 0; j < this.noOfVehicles; j++) {
-			ArrayList<Node> currentRoute = this.vehicles[j].route.getRoutes();
+			List<Node> currentRoute = this.vehicles[j].route.getRoutes();
 			Route bestRoute = new Route(this.distances);
 			this.BestSolutionVehicles[j].route = bestRoute;
 			if (!currentRoute.isEmpty()) {
@@ -103,8 +103,8 @@ public class TabuSearchSolver extends Solver {
 	}
 
 	public Move findBestNeighbor() {
-		ArrayList<Node> route1;
-		ArrayList<Node> route2;
+		List<Node> route1;
+		List<Node> route2;
 
 		int VehIndex1, VehIndex2;
 
@@ -137,8 +137,8 @@ public class TabuSearchSolver extends Solver {
 	}
 
 	public Move singleInsertion(int VehIndexFrom, int VehIndexTo, int index1, int index2) {
-		ArrayList<Node> routesFrom = this.vehicles[VehIndexFrom].route.getRoutes();
-		ArrayList<Node> routesTo = this.vehicles[VehIndexTo].route.getRoutes();
+		List<Node> routesFrom = this.vehicles[VehIndexFrom].route.getRoutes();
+		List<Node> routesTo = this.vehicles[VehIndexTo].route.getRoutes();
 
 		if (routesFrom.size() == 3 && routesTo.size() == 2)
 			return new DummyMove();
@@ -169,8 +169,8 @@ public class TabuSearchSolver extends Solver {
 		if (index2 == 0)
 			return new DummyMove();
 
-		ArrayList<Node> route1 = this.vehicles[VehIndex1].route.getRoutes();
-		ArrayList<Node> route2 = this.vehicles[VehIndex2].route.getRoutes();
+		List<Node> route1 = this.vehicles[VehIndex1].route.getRoutes();
+		List<Node> route2 = this.vehicles[VehIndex2].route.getRoutes();
 
 		double NeighborCost;
 
@@ -206,8 +206,8 @@ public class TabuSearchSolver extends Solver {
 	}
 
 	public Move doubleInsertion(int VehIndexFrom, int VehIndexTo, int index1, int index2) {
-		ArrayList<Node> routesFrom = this.vehicles[VehIndexFrom].route.getRoutes();
-		ArrayList<Node> routesTo = this.vehicles[VehIndexTo].route.getRoutes();
+		List<Node> routesFrom = this.vehicles[VehIndexFrom].route.getRoutes();
+		List<Node> routesTo = this.vehicles[VehIndexTo].route.getRoutes();
 
 		double NeighborCost;
 
@@ -238,8 +238,8 @@ public class TabuSearchSolver extends Solver {
 	}
 
 	public Move swap21(int VehIndex1, int VehIndex2, int index1, int index2) {
-		ArrayList<Node> route1 = this.vehicles[VehIndex1].route.getRoutes();
-		ArrayList<Node> route2 = this.vehicles[VehIndex2].route.getRoutes();
+		List<Node> route1 = this.vehicles[VehIndex1].route.getRoutes();
+		List<Node> route2 = this.vehicles[VehIndex2].route.getRoutes();
 
 		double NeighborCost;
 

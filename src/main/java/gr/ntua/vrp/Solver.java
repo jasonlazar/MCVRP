@@ -2,7 +2,7 @@ package gr.ntua.vrp;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 import thiagodnf.jacof.util.io.InstanceReader;
 
@@ -67,7 +67,7 @@ public abstract class Solver {
 		System.out.println("=========================================================");
 
 		for (int j = 0; j < this.noOfVehicles; j++) {
-			ArrayList<Node> route = this.vehicles[j].route.getRoutes();
+			List<Node> route = this.vehicles[j].route.getRoutes();
 			if (!route.isEmpty()) {
 				System.out.print("Vehicle " + j + ":");
 				int RoutSize = route.size();

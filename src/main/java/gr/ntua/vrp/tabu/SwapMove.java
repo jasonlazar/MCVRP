@@ -1,6 +1,5 @@
 package gr.ntua.vrp.tabu;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -23,8 +22,8 @@ public class SwapMove extends Move {
 
 	@Override
 	public void applyMove(TabuSearchSolver s) {
-		ArrayList<Node> route1;
-		ArrayList<Node> route2;
+		List<Node> route1;
+		List<Node> route2;
 
 		Vehicle[] vehicles = s.getVehicles();
 
@@ -58,8 +57,8 @@ public class SwapMove extends Move {
 
 	@Override
 	public boolean isFeasible(TabuSearchSolver s) {
-		ArrayList<Node> route1;
-		ArrayList<Node> route2;
+		List<Node> route1;
+		List<Node> route2;
 
 		Vehicle[] vehicles = s.getVehicles();
 
