@@ -28,8 +28,8 @@ public class SwapMove extends Move {
 
 		Vehicle[] vehicles = s.getVehicles();
 
-		route1 = vehicles[SwapRoute1].routes;
-		route2 = vehicles[SwapRoute2].routes;
+		route1 = vehicles[SwapRoute1].route.getRoutes();
+		route2 = vehicles[SwapRoute2].route.getRoutes();
 
 		Node SwapNode1 = route1.get(SwapRoute1Index);
 		Node SwapNode2 = route2.get(SwapRoute2Index);
@@ -63,8 +63,8 @@ public class SwapMove extends Move {
 
 		Vehicle[] vehicles = s.getVehicles();
 
-		route1 = vehicles[SwapRoute1].routes;
-		route2 = vehicles[SwapRoute2].routes;
+		route1 = vehicles[SwapRoute1].route.getRoutes();
+		route2 = vehicles[SwapRoute2].route.getRoutes();
 
 		Node FirstNode = route1.get(SwapRoute1Index);
 		Node SecondNode = route2.get(SwapRoute2Index);

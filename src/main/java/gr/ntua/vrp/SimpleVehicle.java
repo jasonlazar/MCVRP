@@ -14,7 +14,7 @@ public class SimpleVehicle extends Vehicle {
 
 	@Override
 	public void appendNode(Node Customer) {
-		routes.add(Customer);
+		route.addNode(Customer);
 		this.load += Customer.demands[0];
 		this.currentLocation = Customer.NodeId;
 	}
@@ -47,14 +47,14 @@ public class SimpleVehicle extends Vehicle {
 
 	@Override
 	public void addNode(Node Customer, int pos) {
-		routes.add(pos, Customer);
+		route.addNode(Customer, pos);
 		this.load += Customer.demands[0];
 	}
 
 	@Override
 	public void removeNode(int pos) {
-		this.load -= routes.get(pos).demands[0];
-		routes.remove(pos);
+		this.load -= route.getRoutes().get(pos).demands[0];
+		route.removeNode(pos);
 	}
 
 }

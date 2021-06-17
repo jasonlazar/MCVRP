@@ -15,7 +15,7 @@ class CompartmentedVehicleTest {
 	@BeforeEach
 	public void setUp() throws Exception {
 		Integer[] compartments = { 10, 20, 20, 30 };
-		vehicle = new CompartmentedVehicle(null, compartments);
+		vehicle = new CompartmentedVehicle(new double[10][10], compartments);
 	}
 
 	@Test

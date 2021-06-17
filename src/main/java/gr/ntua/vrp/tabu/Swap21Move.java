@@ -28,8 +28,8 @@ public class Swap21Move extends Move {
 
 		Vehicle[] vehicles = s.getVehicles();
 
-		route1 = vehicles[SwapRoute1].routes;
-		route2 = vehicles[SwapRoute2].routes;
+		route1 = vehicles[SwapRoute1].route.getRoutes();
+		route2 = vehicles[SwapRoute2].route.getRoutes();
 
 		Node SwapNode11 = route1.get(SwapRoute1Index);
 		Node SwapNode12 = route1.get(SwapRoute1Index + 1);
@@ -66,8 +66,8 @@ public class Swap21Move extends Move {
 
 		Vehicle[] vehicles = s.getVehicles();
 
-		route1 = vehicles[SwapRoute1].routes;
-		route2 = vehicles[SwapRoute2].routes;
+		route1 = vehicles[SwapRoute1].route.getRoutes();
+		route2 = vehicles[SwapRoute2].route.getRoutes();
 
 		Node SwapNode11 = route1.get(SwapRoute1Index);
 		Node SwapNode12 = route1.get(SwapRoute1Index + 1);

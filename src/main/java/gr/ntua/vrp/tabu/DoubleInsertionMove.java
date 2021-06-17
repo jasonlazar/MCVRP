@@ -27,8 +27,8 @@ public class DoubleInsertionMove extends Move {
 
 		Vehicle[] vehicles = s.getVehicles();
 
-		routesFrom = vehicles[SrcRoute].routes;
-		routesTo = vehicles[DstRoute].routes;
+		routesFrom = vehicles[SrcRoute].route.getRoutes();
+		routesTo = vehicles[DstRoute].route.getRoutes();
 
 		Node SwapNode1 = routesFrom.get(SrcRouteIndex);
 		Node SwapNode2 = routesFrom.get(SrcRouteIndex + 1);
@@ -59,7 +59,7 @@ public class DoubleInsertionMove extends Move {
 		int MovingNodeDemand[];
 
 		Vehicle[] vehicles = s.getVehicles();
-		routesFrom = vehicles[SrcRoute].routes;
+		routesFrom = vehicles[SrcRoute].route.getRoutes();
 
 		int[] firstDemands = routesFrom.get(SrcRouteIndex).demands;
 		int[] secondDemands = routesFrom.get(SrcRouteIndex + 1).demands;

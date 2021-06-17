@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import gr.ntua.vrp.Node;
+import gr.ntua.vrp.Route;
 import gr.ntua.vrp.Solver;
 import gr.ntua.vrp.VRPRunner;
 import gr.ntua.vrp.Vehicle;
@@ -43,7 +44,7 @@ public class TabuSearchSolver extends Solver {
 		Move BestMove;
 
 		for (Vehicle v : vehicles) {
-			this.cost += v.optimizeRoute();
+			this.cost += v.route.optimize();
 		}
 
 		this.BestSolutionCost = this.cost;
@@ -65,7 +66,7 @@ public class TabuSearchSolver extends Solver {
 
 			int[] MoveVehicles = BestMove.getVehicleIndexes();
 			for (int i : MoveVehicles)
-				this.cost += this.vehicles[i].optimizeRoute();
+				this.cost += this.vehicles[i].route.optimize();
 
 			if (this.cost < this.BestSolutionCost) {
 				iteration_number = 0;
@@ -88,12 +89,14 @@ public class TabuSearchSolver extends Solver {
 	private void SaveBestSolution() {
 		this.BestSolutionCost = this.cost;
 		for (int j = 0; j < this.noOfVehicles; j++) {
-			this.BestSolutionVehicles[j].routes.clear();
-			if (!this.vehicles[j].routes.isEmpty()) {
-				int RoutSize = this.vehicles[j].routes.size();
+			ArrayList<Node> currentRoute = this.vehicles[j].route.getRoutes();
+			Route bestRoute = new Route(this.distances);
+			this.BestSolutionVehicles[j].route = bestRoute;
+			if (!currentRoute.isEmpty()) {
+				int RoutSize = currentRoute.size();
 				for (int k = 0; k < RoutSize; k++) {
-					Node n = this.vehicles[j].routes.get(k);
-					this.BestSolutionVehicles[j].routes.add(n);
+					Node n = currentRoute.get(k);
+					this.BestSolutionVehicles[j].appendNode(n);
 				}
 			}
 		}
@@ -108,14 +111,14 @@ public class TabuSearchSolver extends Solver {
 		Move BestNeighbor = new DummyMove();
 
 		for (VehIndex1 = 0; VehIndex1 < this.vehicles.length; VehIndex1++) {
-			route1 = this.vehicles[VehIndex1].routes;
+			route1 = this.vehicles[VehIndex1].route.getRoutes();
 			int Route1Length = route1.size();
 
 			for (int i = 1; i < (Route1Length - 1); i++) { // Not possible to move depot!
 				for (VehIndex2 = 0; VehIndex2 < this.vehicles.length; VehIndex2++) {
 					if (VehIndex1 == VehIndex2)
 						continue;
-					route2 = this.vehicles[VehIndex2].routes;
+					route2 = this.vehicles[VehIndex2].route.getRoutes();
 					int Route2Length = route2.size();
 
 					for (int j = 0; j < (Route2Length - 1); j++) {// Not possible to move after last Depot!
@@ -134,8 +137,8 @@ public class TabuSearchSolver extends Solver {
 	}
 
 	public Move singleInsertion(int VehIndexFrom, int VehIndexTo, int index1, int index2) {
-		ArrayList<Node> routesFrom = this.vehicles[VehIndexFrom].routes;
-		ArrayList<Node> routesTo = this.vehicles[VehIndexTo].routes;
+		ArrayList<Node> routesFrom = this.vehicles[VehIndexFrom].route.getRoutes();
+		ArrayList<Node> routesTo = this.vehicles[VehIndexTo].route.getRoutes();
 
 		if (routesFrom.size() == 3 && routesTo.size() == 2)
 			return new DummyMove();
@@ -166,8 +169,8 @@ public class TabuSearchSolver extends Solver {
 		if (index2 == 0)
 			return new DummyMove();
 
-		ArrayList<Node> route1 = this.vehicles[VehIndex1].routes;
-		ArrayList<Node> route2 = this.vehicles[VehIndex2].routes;
+		ArrayList<Node> route1 = this.vehicles[VehIndex1].route.getRoutes();
+		ArrayList<Node> route2 = this.vehicles[VehIndex2].route.getRoutes();
 
 		double NeighborCost;
 
@@ -203,8 +206,8 @@ public class TabuSearchSolver extends Solver {
 	}
 
 	public Move doubleInsertion(int VehIndexFrom, int VehIndexTo, int index1, int index2) {
-		ArrayList<Node> routesFrom = this.vehicles[VehIndexFrom].routes;
-		ArrayList<Node> routesTo = this.vehicles[VehIndexTo].routes;
+		ArrayList<Node> routesFrom = this.vehicles[VehIndexFrom].route.getRoutes();
+		ArrayList<Node> routesTo = this.vehicles[VehIndexTo].route.getRoutes();
 
 		double NeighborCost;
 
@@ -235,8 +238,8 @@ public class TabuSearchSolver extends Solver {
 	}
 
 	public Move swap21(int VehIndex1, int VehIndex2, int index1, int index2) {
-		ArrayList<Node> route1 = this.vehicles[VehIndex1].routes;
-		ArrayList<Node> route2 = this.vehicles[VehIndex2].routes;
+		ArrayList<Node> route1 = this.vehicles[VehIndex1].route.getRoutes();
+		ArrayList<Node> route2 = this.vehicles[VehIndex2].route.getRoutes();
 
 		double NeighborCost;
 

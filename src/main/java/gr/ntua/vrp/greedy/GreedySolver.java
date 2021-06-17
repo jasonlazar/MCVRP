@@ -34,7 +34,7 @@ public class GreedySolver extends Solver {
 			Node Candidate = null;
 			double minCost = (float) Double.MAX_VALUE;
 
-			if (vehicles[VehIndex].routes.isEmpty()) {
+			if (vehicles[VehIndex].route.getRoutes().isEmpty()) {
 				vehicles[VehIndex].appendNode(nodes[0]);
 			}
 

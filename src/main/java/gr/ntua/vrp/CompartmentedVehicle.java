@@ -28,7 +28,7 @@ public class CompartmentedVehicle extends Vehicle {
 
 	@Override
 	public void appendNode(Node Customer) {
-		routes.add(Customer);
+		route.addNode(Customer);
 		this.currentLocation = Customer.NodeId;
 	}
 
@@ -47,7 +47,7 @@ public class CompartmentedVehicle extends Vehicle {
 		for (int order : dem) {
 			bins.add(order);
 		}
-		for (Node customer : routes) {
+		for (Node customer : route.getRoutes()) {
 			if (remove.contains(customer))
 				continue;
 			if (customer.NodeId == 0)

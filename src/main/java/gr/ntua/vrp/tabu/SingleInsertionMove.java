@@ -27,8 +27,8 @@ public class SingleInsertionMove extends Move {
 
 		Vehicle[] vehicles = s.getVehicles();
 
-		routesFrom = vehicles[SrcRoute].routes;
-		routesTo = vehicles[DstRoute].routes;
+		routesFrom = vehicles[SrcRoute].route.getRoutes();
+		routesTo = vehicles[DstRoute].route.getRoutes();
 
 		Node SwapNode = routesFrom.get(SrcRouteIndex);
 
@@ -54,7 +54,7 @@ public class SingleInsertionMove extends Move {
 	public boolean isFeasible(TabuSearchSolver s) {
 		ArrayList<Node> routesFrom;
 		Vehicle[] vehicles = s.getVehicles();
-		routesFrom = vehicles[SrcRoute].routes;
+		routesFrom = vehicles[SrcRoute].route.getRoutes();
 
 		int MovingNodeDemand[] = routesFrom.get(SrcRouteIndex).demands;
 
