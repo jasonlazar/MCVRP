@@ -11,6 +11,7 @@ public abstract class Solver {
 	protected final double[][] distances;
 	protected final int noOfCustomers;
 	protected Vehicle[] vehicles;
+	protected int usedVehicles;
 
 	protected double cost;
 
@@ -84,6 +85,10 @@ public abstract class Solver {
 
 	public Vehicle[] getVehicles() {
 		return vehicles;
+	}
+
+	public int getUsedVehicles() {
+		return usedVehicles;
 	}
 
 }

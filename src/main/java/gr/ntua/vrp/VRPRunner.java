@@ -1,5 +1,7 @@
 package gr.ntua.vrp;
 
+import java.io.IOException;
+
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
@@ -7,7 +9,6 @@ import gr.ntua.vrp.acs.VrpAcsSolver;
 import gr.ntua.vrp.greedy.GreedySolver;
 import gr.ntua.vrp.tabu.TabuSearchSolver;
 import thiagodnf.jacof.util.ExecutionStats;
-import java.io.IOException;
 
 public class VRPRunner {
 	@Parameter(names = { "--algorithm", "-alg" }, required = true)
@@ -28,6 +29,8 @@ public class VRPRunner {
 	public int iterations = 5;
 	@Parameter(names = "--tabu")
 	public Integer TabuHorizon = 10;
+	@Parameter(names = { "--restarts", "-r" })
+	public int restarts = 2;
 
 	public static void main(String[] args) throws IOException {
 		VRPRunner jct = new VRPRunner();

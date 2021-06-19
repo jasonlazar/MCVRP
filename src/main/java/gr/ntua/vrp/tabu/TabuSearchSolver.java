@@ -2,6 +2,7 @@ package gr.ntua.vrp.tabu;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import gr.ntua.vrp.Node;
 import gr.ntua.vrp.Solver;
@@ -13,6 +14,7 @@ public class TabuSearchSolver extends Solver {
 	final int TABU_Horizon;
 	final int TABU_Matrix[][];
 	private final int iterations;
+	private final int restarts;
 	private final Vehicle[] BestSolutionVehicles;
 
 	private double BestSolutionCost;
@@ -21,6 +23,7 @@ public class TabuSearchSolver extends Solver {
 		super(jct);
 		this.TABU_Horizon = jct.TabuHorizon;
 		this.iterations = jct.iterations;
+		this.restarts = jct.restarts;
 
 		this.BestSolutionVehicles = new Vehicle[this.noOfVehicles];
 
@@ -32,12 +35,14 @@ public class TabuSearchSolver extends Solver {
 		greedySolver.solve();
 		this.vehicles = greedySolver.getVehicles();
 		this.cost = greedySolver.getCost();
+		this.usedVehicles = greedySolver.getUsedVehicles();
 
 		int DimensionCustomer = this.distances[1].length;
 		TABU_Matrix = new int[DimensionCustomer + 1][DimensionCustomer + 1];
 	}
 
 	public TabuSearchSolver solve() {
+		int restart_number = 0;
 		int iteration_number = 0;
 
 		Move BestMove;
@@ -75,7 +80,14 @@ public class TabuSearchSolver extends Solver {
 			}
 
 			if (iterations == iteration_number) {
-				break;
+				if (restart_number == restarts)
+					break;
+				else {
+					restart_number++;
+					iteration_number = 0;
+					restoreBest();
+					applyRandomMove();
+				}
 			}
 		}
 
@@ -97,6 +109,64 @@ public class TabuSearchSolver extends Solver {
 				}
 			}
 		}
+	}
+
+	private void restoreBest() {
+		cost = BestSolutionCost;
+		for (int j = 0; j < noOfVehicles; j++) {
+			while (!vehicles[j].routes.isEmpty())
+				vehicles[j].removeNode(0);
+			if (!BestSolutionVehicles[j].routes.isEmpty()) {
+				int routSize = BestSolutionVehicles[j].routes.size();
+				for (int k = 0; k < routSize; k++) {
+					Node n = BestSolutionVehicles[j].routes.get(k);
+					vehicles[j].appendNode(n);
+				}
+			}
+		}
+	}
+
+	private void applyRandomMove() {
+		Random ran = new Random();
+		int move = ran.nextInt(5);
+		Move m;
+		do {
+			int vehIndex1 = ran.nextInt(usedVehicles);
+			int i = ran.nextInt(vehicles[vehIndex1].routes.size() - 2) + 1;
+			int vehIndex2;
+
+			do {
+				vehIndex2 = ran.nextInt(usedVehicles);
+			} while (vehIndex2 == vehIndex1);
+
+			int j = ran.nextInt(vehicles[vehIndex2].routes.size() - 1);
+
+			switch (move) {
+			case 0:
+				m = singleInsertion(vehIndex1, vehIndex2, i, j);
+				break;
+			case 1:
+				m = swap(vehIndex1, vehIndex2, i, j);
+				break;
+			case 2:
+				m = doubleInsertion(vehIndex1, vehIndex2, i, j);
+				break;
+			case 3:
+				m = swap21(vehIndex1, vehIndex2, i, j);
+				break;
+			case 4:
+				m = cross(vehIndex1, vehIndex2, i, j);
+				break;
+			default:
+				m = new DummyMove();
+			}
+		} while (!m.isFeasible(this));
+		m.applyMove(this);
+
+		cost += m.cost;
+		int[] moveVehicles = m.getVehicleIndexes();
+		for (int i : moveVehicles)
+			cost += vehicles[i].optimizeRoute();
 	}
 
 	public Move findBestNeighbor() {
