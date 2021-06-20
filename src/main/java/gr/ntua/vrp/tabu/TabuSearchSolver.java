@@ -128,9 +128,9 @@ public class TabuSearchSolver extends Solver {
 
 	private void applyRandomMove() {
 		Random ran = new Random();
-		int move = ran.nextInt(5);
 		Move m;
 		do {
+			int move = ran.nextInt(5);
 			int vehIndex1 = ran.nextInt(usedVehicles);
 			int i = ran.nextInt(vehicles[vehIndex1].routes.size() - 2) + 1;
 			int vehIndex2;
