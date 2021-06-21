@@ -130,7 +130,7 @@ public class TabuSearchSolver extends Solver {
 		Random ran = new Random();
 		Move m;
 		do {
-			int move = ran.nextInt(5);
+			MoveType move = MoveType.randomMove();
 			int vehIndex1 = ran.nextInt(usedVehicles);
 			int i = ran.nextInt(vehicles[vehIndex1].routes.size() - 2) + 1;
 			int vehIndex2;
@@ -142,19 +142,19 @@ public class TabuSearchSolver extends Solver {
 			int j = ran.nextInt(vehicles[vehIndex2].routes.size() - 1);
 
 			switch (move) {
-			case 0:
+			case SINGLE_INSERTION:
 				m = singleInsertion(vehIndex1, vehIndex2, i, j);
 				break;
-			case 1:
+			case SWAP:
 				m = swap(vehIndex1, vehIndex2, i, j);
 				break;
-			case 2:
+			case DOUBLE_INSERTION:
 				m = doubleInsertion(vehIndex1, vehIndex2, i, j);
 				break;
-			case 3:
+			case SWAP21:
 				m = swap21(vehIndex1, vehIndex2, i, j);
 				break;
-			case 4:
+			case CROSS:
 				m = cross(vehIndex1, vehIndex2, i, j);
 				break;
 			default:
