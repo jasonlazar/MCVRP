@@ -13,11 +13,16 @@ import ilog.cplex.IloCplex;
 
 public class CompartmentedVehicle extends Vehicle {
 	private Integer[] compartments;
+	private int capacity;
 
 	public CompartmentedVehicle(double[][] distances, Integer[] comps) {
 		super(distances);
 		this.compartments = comps.clone();
 		Arrays.sort(this.compartments, Collections.reverseOrder());
+		int sum = 0;
+		for (Integer n : compartments)
+			sum += n;
+		this.capacity = sum;
 	}
 
 	@Override
@@ -49,18 +54,23 @@ public class CompartmentedVehicle extends Vehicle {
 		}
 
 		ArrayList<Integer> bins = new ArrayList<Integer>();
+		int totalDemands = 0;
+
 		for (int order : dem) {
 			bins.add(order);
+			totalDemands += order;
 		}
 		for (Node customer : routes) {
 			if (remove.contains(customer))
 				continue;
 			if (customer.NodeId == 0)
 				continue;
-			for (int order : customer.demands)
+			for (int order : customer.demands) {
 				bins.add(order);
+				totalDemands += order;
+			}
 		}
-		if (bins.size() > compartments.length)
+		if ((bins.size() > compartments.length) || totalDemands > capacity)
 			return false;
 
 		for (int order : bins) {
