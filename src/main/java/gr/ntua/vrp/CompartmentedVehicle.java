@@ -1,11 +1,10 @@
 package gr.ntua.vrp;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Deque;
+import java.util.TreeMap;
 
 import ilog.concert.IloException;
 import ilog.concert.IloIntVar;
@@ -39,9 +38,15 @@ public class CompartmentedVehicle extends Vehicle {
 
 	@Override
 	public boolean checkIfFits(int[] dem, Collection<Node> remove) {
-		Deque<Integer> items = new ArrayDeque<Integer>();
-		for (Integer comp : compartments)
-			items.addLast(comp);
+		TreeMap<Integer, Integer> items = new TreeMap<>();
+		for (Integer comp : compartments) {
+			if (items.containsKey(comp)) {
+				Integer count = items.get(comp);
+				items.put(comp, count + 1);
+			} else {
+				items.put(comp, 1);
+			}
+		}
 
 		ArrayList<Integer> bins = new ArrayList<Integer>();
 		for (int order : dem) {
@@ -55,7 +60,7 @@ public class CompartmentedVehicle extends Vehicle {
 			for (int order : customer.demands)
 				bins.add(order);
 		}
-		if (bins.size() > items.size())
+		if (bins.size() > compartments.length)
 			return false;
 
 		for (int order : bins) {
@@ -63,10 +68,23 @@ public class CompartmentedVehicle extends Vehicle {
 			while (filled < order) {
 				if (items.size() == 0)
 					return solveWithCplex(bins);
-				else if (filled + items.peekFirst() <= order)
-					filled += items.removeFirst();
-				else
-					filled += items.removeLast();
+				Integer ceil = items.ceilingKey(order - filled);
+				if (ceil != null) {
+					filled += ceil;
+					Integer count = items.get(ceil);
+					if (count > 1)
+						items.put(ceil, count - 1);
+					else
+						items.remove(ceil);
+				} else {
+					Integer maxKey = items.lastKey();
+					filled += maxKey;
+					Integer count = items.get(maxKey);
+					if (count > 1)
+						items.put(maxKey, count - 1);
+					else
+						items.remove(maxKey);
+				}
 			}
 		}
 		return true;
