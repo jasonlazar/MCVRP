@@ -11,7 +11,6 @@ public abstract class Solver {
 	protected final double[][] distances;
 	protected final int noOfCustomers;
 	protected Vehicle[] vehicles;
-	protected int usedVehicles;
 
 	protected double cost;
 
@@ -67,7 +66,7 @@ public abstract class Solver {
 		System.out.println("=========================================================");
 
 		for (int j = 0; j < this.noOfVehicles; j++) {
-			if (!this.vehicles[j].routes.isEmpty()) {
+			if (this.vehicles[j].routes.size() > 2) {
 				System.out.print("Vehicle " + j + ":");
 				int RoutSize = this.vehicles[j].routes.size();
 				for (int k = 0; k < RoutSize; k++) {
@@ -86,9 +85,4 @@ public abstract class Solver {
 	public Vehicle[] getVehicles() {
 		return vehicles;
 	}
-
-	public int getUsedVehicles() {
-		return usedVehicles;
-	}
-
 }

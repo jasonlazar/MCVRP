@@ -10,12 +10,10 @@ public class GreedySolver extends Solver {
 
 	public GreedySolver(VRPRunner jct) throws IOException {
 		super(jct);
-		usedVehicles = 0;
 	}
 
 	public GreedySolver(Solver s) {
 		super(s);
-		usedVehicles = 0;
 	}
 
 	private boolean unassignedCustomerExists(Node[] Nodes) {
@@ -81,7 +79,10 @@ public class GreedySolver extends Solver {
 		vehicles[VehIndex].appendNode(nodes[0]);
 		this.cost += EndCost;
 
-		usedVehicles = VehIndex + 1;
+		for (VehIndex = VehIndex + 1; VehIndex < noOfVehicles; ++VehIndex) {
+			vehicles[VehIndex].appendNode(nodes[0]);
+			vehicles[VehIndex].appendNode(nodes[0]);
+		}
 
 		return this;
 	}

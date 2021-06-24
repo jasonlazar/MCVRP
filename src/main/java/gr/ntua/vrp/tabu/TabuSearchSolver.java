@@ -35,7 +35,6 @@ public class TabuSearchSolver extends Solver {
 		greedySolver.solve();
 		this.vehicles = greedySolver.getVehicles();
 		this.cost = greedySolver.getCost();
-		this.usedVehicles = greedySolver.getUsedVehicles();
 
 		int DimensionCustomer = this.distances[1].length;
 		TABU_Matrix = new int[DimensionCustomer + 1][DimensionCustomer + 1];
@@ -131,14 +130,15 @@ public class TabuSearchSolver extends Solver {
 		Move m;
 		do {
 			MoveType move = MoveType.randomMove();
-			int vehIndex1 = ran.nextInt(usedVehicles);
+			int vehIndex1, vehIndex2;
+			do {
+				vehIndex1 = ran.nextInt(noOfVehicles);
+			} while (vehicles[vehIndex1].routes.size() <= 2);
 			int i = ran.nextInt(vehicles[vehIndex1].routes.size() - 2) + 1;
-			int vehIndex2;
 
 			do {
-				vehIndex2 = ran.nextInt(usedVehicles);
-			} while (vehIndex2 == vehIndex1);
-
+				vehIndex2 = ran.nextInt(noOfVehicles);
+			} while ((vehIndex2 == vehIndex1) || (vehicles[vehIndex2].routes.size() <= 2));
 			int j = ran.nextInt(vehicles[vehIndex2].routes.size() - 1);
 
 			switch (move) {
