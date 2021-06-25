@@ -121,7 +121,7 @@ public class VRPLibReader {
 			String line = readLineAndTrim();
 			String[] split = line.split("\\s+");
 			for (int j = 0; j < dimension; ++j) {
-				distance[i][j] = Integer.parseInt(split[j + 1].trim());
+				distance[i][j] = Double.parseDouble(split[j + 1].trim());
 			}
 		}
 	}
@@ -304,6 +304,29 @@ public class VRPLibReader {
 	}
 
 	public Vehicle[] getVehicles() {
-		return vehicles;
+		switch (type) {
+		case "CVRP":
+			if (vehicles != null)
+				return vehicles;
+			noOfVehicles = dimension / 3;
+			vehicles = new Vehicle[this.noOfVehicles];
+
+			for (int i = 0; i < this.noOfVehicles; i++) {
+				vehicles[i] = new SimpleVehicle(distance, vehicleCapacity);
+			}
+		case "MCVRP":
+			if (vehicles != null)
+				return vehicles;
+			noOfVehicles = dimension * 2 / 3;
+			vehicles = new Vehicle[this.noOfVehicles];
+
+			for (int i = 0; i < this.noOfVehicles; i++) {
+				vehicles[i] = new CompartmentedVehicle(distance, compartments);
+			}
+		case "HFMCVRP":
+			return vehicles;
+		default:
+			return null;
+		}
 	}
 }

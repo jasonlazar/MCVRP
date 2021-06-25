@@ -64,8 +64,7 @@ public class GreedySolver extends Solver {
 				} else // We DO NOT have any more vehicle to assign. The problem is unsolved under
 				       // these parameters
 				{
-					System.out.println("\nThe rest customers do not fit in any Vehicle\n"
-					        + "The problem cannot be resolved under these constrains");
+					System.out.println("\nThe greedy algorithm couldn't fit all the customers in those vehicles.\n");
 					System.exit(0);
 				}
 			} else {

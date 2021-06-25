@@ -25,27 +25,8 @@ public abstract class Solver {
 		}
 		nodes[0].IsRouted = true;
 
-		if (reader.getType().equalsIgnoreCase("CVRP")) {
-			this.noOfVehicles = reader.getDimension() / 3;
-			this.vehicles = new Vehicle[this.noOfVehicles];
-			int capacity = reader.getVehicleCapacity();
-
-			for (int i = 0; i < this.noOfVehicles; i++) {
-				vehicles[i] = new SimpleVehicle(distances, capacity);
-			}
-		} else if (reader.getType().equalsIgnoreCase("MCVRP")) {
-			this.noOfVehicles = reader.getDimension() * 2 / 3;
-			this.vehicles = new Vehicle[this.noOfVehicles];
-
-			Integer[] compartments = reader.getCompartments();
-
-			for (int i = 0; i < this.noOfVehicles; i++) {
-				vehicles[i] = new CompartmentedVehicle(distances, compartments);
-			}
-		} else {
-			this.vehicles = reader.getVehicles();
-			this.noOfVehicles = vehicles.length;
-		}
+		this.vehicles = reader.getVehicles();
+		this.noOfVehicles = vehicles.length;
 
 		cost = 0;
 	}
