@@ -1,12 +1,16 @@
 package gr.ntua.vrp;
 
-import thiagodnf.jacof.util.io.InstanceReader;
-
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalTime;
+
+import com.google.common.base.Preconditions;
 
 public class VRPLibReader {
 
-	private InstanceReader reader;
+	private BufferedReader reader;
 
 	private int dimension;
 	private int vehicleCapacity;
@@ -20,45 +24,74 @@ public class VRPLibReader {
 	private Integer[] compartments;
 	private String type;
 	private String edge_type;
+	private int noOfVehicles;
 
-	public VRPLibReader(InstanceReader reader) {
-		this.reader = reader;
+	private static final int MARK_BUFFER = 1000;
+
+	public VRPLibReader(File filename) throws IOException {
+		Preconditions.checkNotNull(filename, "The filename cannot be null");
+		Preconditions.checkArgument(filename.exists(), "The file does not exist");
+		Preconditions.checkArgument(filename.isFile(), "The filename cannot be a directory");
+
+		this.reader = new BufferedReader(new FileReader(filename));
 
 		readHeader();
-		if (edge_type == "DISTANCE_MATRIX")
-			readDistances();
-		else
-			readCoordinates();
-		readDemand();
-		// readPickup();
-		// readTimeWindows();
-		// readStandtime();
-		// readDepots();
-		if (edge_type != "DISTANCE_MATRIX")
-			convertCoordToDistance();
+
+		boolean endOfFile = false;
+
+		while (!endOfFile) {
+			String line = readLineAndTrim();
+
+			switch (line) {
+			case "DISTANCE_SECTION":
+				readDistances();
+				break;
+			case "NODE_COORD_SECTION":
+				readCoordinates();
+				convertCoordToDistance();
+				break;
+			case "DEMAND_SECTION":
+				readDemand();
+				break;
+			case "DEPOT_SECTION":
+				readDepots();
+				break;
+			case "EOF":
+				endOfFile = true;
+				break;
+			default:
+				throw new IOException("Unexpected line: " + line);
+			// readPickup();
+			// readTimeWindows();
+			// readStandtime();
+			}
+		}
 	}
 
-	private void readHeader() {
-		String line = reader.readLine();
+	private void readHeader() throws IOException {
+		boolean endOfHeader = false;
 
-		while (!line.equalsIgnoreCase("NODE_COORD_SECTION") && !line.equalsIgnoreCase("DISTANCE_SECTION")) {
+		while (!endOfHeader) {
+			reader.mark(MARK_BUFFER);
+			String line = readLineAndTrim();
 			String[] split = line.split(":");
 
 			String key = split[0].trim();
 
-			if (key.equalsIgnoreCase("TYPE")) {
+			switch (key.toUpperCase()) {
+			case "NAME":
+			case "COMMENT":
+				break;
+			case "TYPE":
 				type = split[1].trim();
-			}
-
-			else if (key.equalsIgnoreCase("DIMENSION")) {
+				break;
+			case "DIMENSION":
 				dimension = Integer.valueOf(split[1].trim());
-			}
-
-			else if (key.equalsIgnoreCase("EDGE_WEIGHT_TYPE")) {
+				break;
+			case "EDGE_WEIGHT_TYPE":
 				edge_type = split[1].trim();
-			}
-
-			else if (key.equalsIgnoreCase("CAPACITY")) {
+				break;
+			case "CAPACITY":
 				if (type.equalsIgnoreCase("CVRP"))
 					vehicleCapacity = Integer.valueOf(split[1].trim());
 				else {
@@ -67,36 +100,34 @@ public class VRPLibReader {
 					for (int i = 0; i < comps.length; ++i)
 						compartments[i] = Integer.valueOf(comps[i].trim());
 				}
-			}
-
-			line = reader.readLine();
-
-			if (line == null) {
 				break;
+			case "VEHICLES":
+				noOfVehicles = Integer.valueOf(split[1].trim());
+				break;
+			default:
+				reader.reset();
+				endOfHeader = true;
 			}
 		}
 	}
 
-	private void readDistances() {
+	private void readDistances() throws IOException {
 		distance = new double[dimension][dimension];
-		String line = reader.readLine();
 		for (int i = 0; i < dimension; ++i) {
+			String line = readLineAndTrim();
 			String[] split = line.split("\\s+");
 			for (int j = 0; j < dimension; ++j) {
 				distance[i][j] = Integer.parseInt(split[j + 1].trim());
 			}
-			line = reader.readLine();
 		}
 	}
 
-	private void readCoordinates() {
+	private void readCoordinates() throws IOException {
 		coord = new double[dimension][2];
 
-		String line = reader.readLine();
-		while (!line.equalsIgnoreCase("DEMAND_SECTION")) {
+		for (int i = 0; i < dimension; ++i) {
+			String line = readLineAndTrim();
 			parseRow(line, coord);
-
-			line = reader.readLine();
 		}
 	}
 
@@ -108,12 +139,11 @@ public class VRPLibReader {
 		coord[i][1] = Double.valueOf(split[2].trim());
 	}
 
-	private void readDemand() {
+	private void readDemand() throws IOException {
 		demand = new int[dimension][];
 
-		String line = reader.readLine();
-		while (!line.equalsIgnoreCase("DEPOT_SECTION")) {
-
+		for (int iter = 0; iter < dimension; ++iter) {
+			String line = readLineAndTrim();
 			String[] split = line.split("\\s+");
 
 			int i = Integer.valueOf(split[0].trim()) - 1;
@@ -124,28 +154,26 @@ public class VRPLibReader {
 			for (int j = 0; j < nr_demands; ++j) {
 				demand[i][j] = Integer.valueOf(split[j + 1].trim());
 			}
-
-			line = reader.readLine();
 		}
 	}
 
 	@SuppressWarnings("unused")
-	private void readPickup() {
+	private void readPickup() throws IOException {
 		pickup = new double[dimension][2];
 
-		String line = reader.readLine();
+		String line = readLineAndTrim();
 		while (!line.equalsIgnoreCase("TIME_WINDOW_SECTION")) {
 			parseRow(line, pickup);
 
-			line = reader.readLine();
+			line = readLineAndTrim();
 		}
 	}
 
 	@SuppressWarnings("unused")
-	private void readTimeWindows() {
+	private void readTimeWindows() throws IOException {
 		timeWindows = new LocalTime[dimension][2];
 
-		String line = reader.readLine();
+		String line = readLineAndTrim();
 		while (!line.equalsIgnoreCase("STANDTIME_SECTION")) {
 			String[] split = line.split("\\s+");
 
@@ -165,36 +193,31 @@ public class VRPLibReader {
 			timeWindows[i][0] = LocalTime.parse(startTime);
 			timeWindows[i][1] = LocalTime.parse(endTime);
 
-			line = reader.readLine();
+			line = readLineAndTrim();
 		}
 	}
 
 	@SuppressWarnings("unused")
-	private void readStandtime() {
+	private void readStandtime() throws IOException {
 		standTime = new int[dimension];
 
-		String line = reader.readLine();
+		String line = readLineAndTrim();
 		while (!line.equalsIgnoreCase("DEPOT_SECTION")) {
 			String[] split = line.split("\\s+");
 
 			int i = Integer.valueOf(split[0].trim()) - 1;
 			standTime[i] = Integer.valueOf(split[1].trim());
 
-			line = reader.readLine();
+			line = readLineAndTrim();
 		}
 	}
 
-	@SuppressWarnings("unused")
-	private void readDepots() {
+	private void readDepots() throws IOException {
 		depots = new int[2];
 
-		String line = reader.readLine();
-		int i = 0;
-		while (!line.equalsIgnoreCase("EOF")) {
+		for (int i = 0; i < 2; ++i) {
+			String line = readLineAndTrim();
 			depots[i] = Double.valueOf(line.trim()).intValue();
-			i++;
-
-			line = reader.readLine();
 		}
 	}
 
@@ -209,8 +232,10 @@ public class VRPLibReader {
 					double x2 = coord[j][0];
 					double y2 = coord[j][1];
 
-					distance[i][j] = euclideanDistance(x1, y1, x2, y2);
-					distance[j][i] = distance[i][j];
+					if (edge_type.equals("EUC_2D")) {
+						distance[i][j] = euclideanDistance(x1, y1, x2, y2);
+						distance[j][i] = distance[i][j];
+					}
 				}
 			}
 		}
@@ -221,6 +246,10 @@ public class VRPLibReader {
 		double yDistance = Math.abs(y1 - y2);
 
 		return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+	}
+
+	private String readLineAndTrim() throws IOException {
+		return reader.readLine().trim();
 	}
 
 	public int getDimension() {

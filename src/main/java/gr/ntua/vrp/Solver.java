@@ -3,8 +3,6 @@ package gr.ntua.vrp;
 import java.io.File;
 import java.io.IOException;
 
-import thiagodnf.jacof.util.io.InstanceReader;
-
 public abstract class Solver {
 	protected final int noOfVehicles;
 	protected final Node[] nodes;
@@ -15,7 +13,7 @@ public abstract class Solver {
 	protected double cost;
 
 	public Solver(VRPRunner jct) throws IOException {
-		VRPLibReader reader = new VRPLibReader(new InstanceReader(new File(jct.instance)));
+		VRPLibReader reader = new VRPLibReader(new File(jct.instance));
 		this.noOfCustomers = reader.getDimension();
 
 		this.distances = reader.getDistance();

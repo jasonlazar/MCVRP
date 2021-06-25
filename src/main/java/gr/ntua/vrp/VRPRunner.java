@@ -5,10 +5,8 @@ import java.io.IOException;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
-import gr.ntua.vrp.acs.VrpAcsSolver;
 import gr.ntua.vrp.greedy.GreedySolver;
 import gr.ntua.vrp.tabu.TabuSearchSolver;
-import thiagodnf.jacof.util.ExecutionStats;
 
 public class VRPRunner {
 	@Parameter(names = { "--algorithm", "-alg" }, required = true)
@@ -38,17 +36,12 @@ public class VRPRunner {
 		jCommander.setProgramName(VRPRunner.class.getSimpleName());
 
 		switch (jct.alg) {
-		case "acs":
-			VrpAcsSolver aco = new VrpAcsSolver(jct);
-
-			ExecutionStats.execute(aco, aco.getProblem()).printStats();
-			break;
 		case "tabu": {
 			new TabuSearchSolver(jct).solve().print();
 			break;
 		}
-		default:
-		case "greedy": {
+		case "greedy":
+		default: {
 			new GreedySolver(jct).solve().print();
 			break;
 		}

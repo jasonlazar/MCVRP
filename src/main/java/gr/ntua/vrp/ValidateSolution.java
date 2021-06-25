@@ -6,8 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.Stream;
 
-import thiagodnf.jacof.util.io.InstanceReader;
-
 public class ValidateSolution {
 
 	public static void main(String[] args) throws IOException {
@@ -24,7 +22,7 @@ public class ValidateSolution {
 			while (line != null) {
 				if (line.endsWith(".vrp")) {
 					instance = line;
-					vrp = new VRPLibReader(new InstanceReader(new File(instance)));
+					vrp = new VRPLibReader(new File(instance));
 					distances = vrp.getDistance();
 					demands = vrp.getDemand();
 					cost = 0;
