@@ -1,6 +1,6 @@
 NAME : A-n32-k5
 COMMENT : (Augerat et al, Min no of trucks: 5, Optimal value: 784)
-TYPE : MCVRP
+TYPE : HFMCVRP
 DIMENSION : 32
 EDGE_WEIGHT_TYPE : EUC_2D 
 VEHICLES: 7
@@ -71,13 +71,13 @@ DEMAND_SECTION
 31 14 
 32 9
 VEHICLE_SECTION
-1 10, 15, 20, 25, 30
-2 10, 15, 20, 25, 30
-3 10, 15, 20, 25, 30
-4 10, 15, 20, 25, 30
-5 10, 15, 20, 25, 30
-6 10, 15, 20, 25, 30
-7 10, 15, 20, 25, 30
+10, 15, 20, 25, 30
+10, 15, 20, 25, 30
+10, 15, 20, 25, 30
+10, 15, 20, 25, 30
+10, 15, 20, 25, 30
+10, 15, 20, 25, 30
+10, 15, 20, 25, 30
 DEPOT_SECTION 
  1  
  -1  

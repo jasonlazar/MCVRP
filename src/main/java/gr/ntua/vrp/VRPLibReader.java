@@ -25,6 +25,7 @@ public class VRPLibReader {
 	private String type;
 	private String edge_type;
 	private int noOfVehicles;
+	private Vehicle[] vehicles;
 
 	private static final int MARK_BUFFER = 1000;
 
@@ -52,6 +53,9 @@ public class VRPLibReader {
 				break;
 			case "DEMAND_SECTION":
 				readDemand();
+				break;
+			case "VEHICLE_SECTION":
+				readVehicles();
 				break;
 			case "DEPOT_SECTION":
 				readDepots();
@@ -153,6 +157,25 @@ public class VRPLibReader {
 
 			for (int j = 0; j < nr_demands; ++j) {
 				demand[i][j] = Integer.valueOf(split[j + 1].trim());
+			}
+		}
+	}
+
+	private void readVehicles() throws IOException {
+		vehicles = new Vehicle[noOfVehicles];
+
+		for (int i = 0; i < noOfVehicles; ++i) {
+			String line = readLineAndTrim();
+			if (type.equalsIgnoreCase("HFVRP")) {
+				int vehCap = Integer.valueOf(line);
+				vehicles[i] = new SimpleVehicle(distance, vehCap);
+			} else {
+				String split[] = line.split(", ");
+				Integer comps[] = new Integer[split.length];
+				for (int j = 0; j < split.length; ++j) {
+					comps[j] = Integer.valueOf(split[j].trim());
+				}
+				vehicles[i] = new CompartmentedVehicle(distance, comps);
 			}
 		}
 	}
@@ -278,5 +301,9 @@ public class VRPLibReader {
 
 	public String getType() {
 		return type;
+	}
+
+	public Vehicle[] getVehicles() {
+		return vehicles;
 	}
 }

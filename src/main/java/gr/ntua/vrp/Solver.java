@@ -33,9 +33,7 @@ public abstract class Solver {
 			for (int i = 0; i < this.noOfVehicles; i++) {
 				vehicles[i] = new SimpleVehicle(distances, capacity);
 			}
-		}
-
-		else {
+		} else if (reader.getType().equalsIgnoreCase("MCVRP")) {
 			this.noOfVehicles = reader.getDimension() * 2 / 3;
 			this.vehicles = new Vehicle[this.noOfVehicles];
 
@@ -44,6 +42,9 @@ public abstract class Solver {
 			for (int i = 0; i < this.noOfVehicles; i++) {
 				vehicles[i] = new CompartmentedVehicle(distances, compartments);
 			}
+		} else {
+			this.vehicles = reader.getVehicles();
+			this.noOfVehicles = vehicles.length;
 		}
 
 		cost = 0;
