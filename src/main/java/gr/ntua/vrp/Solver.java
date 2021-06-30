@@ -13,22 +13,23 @@ public abstract class Solver {
 	protected double cost;
 
 	public Solver(VRPRunner jct) throws IOException {
-		VRPLibReader reader = new VRPLibReader(new File(jct.instance));
-		this.noOfCustomers = reader.getDimension();
+		try (VRPLibReader reader = new VRPLibReader(new File(jct.instance))) {
+			this.noOfCustomers = reader.getDimension();
 
-		this.distances = reader.getDistance();
+			this.distances = reader.getDistance();
 
-		nodes = new Node[noOfCustomers];
+			nodes = new Node[noOfCustomers];
 
-		for (int i = 0; i < noOfCustomers; i++) {
-			nodes[i] = new Node(i, reader.getDemand()[i]);
+			for (int i = 0; i < noOfCustomers; i++) {
+				nodes[i] = new Node(i, reader.getDemand()[i]);
+			}
+			nodes[0].IsRouted = true;
+
+			this.vehicles = reader.getVehicles();
+			this.noOfVehicles = vehicles.length;
+
+			cost = 0;
 		}
-		nodes[0].IsRouted = true;
-
-		this.vehicles = reader.getVehicles();
-		this.noOfVehicles = vehicles.length;
-
-		cost = 0;
 	}
 
 	public Solver(Solver s) {

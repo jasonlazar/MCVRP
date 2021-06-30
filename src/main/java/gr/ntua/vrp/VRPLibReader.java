@@ -1,6 +1,7 @@
 package gr.ntua.vrp;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -8,7 +9,7 @@ import java.time.LocalTime;
 
 import com.google.common.base.Preconditions;
 
-public class VRPLibReader {
+public class VRPLibReader implements Closeable {
 
 	private BufferedReader reader;
 
@@ -328,5 +329,10 @@ public class VRPLibReader {
 		default:
 			return null;
 		}
+	}
+
+	@Override
+	public void close() throws IOException {
+		reader.close();
 	}
 }
