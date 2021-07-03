@@ -12,11 +12,13 @@ public abstract class Vehicle {
 	public ArrayList<Node> routes = new ArrayList<>();
 	public int currentLocation;
 	protected double[][] distances;
+	protected int capacity;
 
-	public Vehicle(double[][] distances) {
+	public Vehicle(double[][] distances, int capacity) {
 		this.currentLocation = 0; // In depot Initially
 		this.routes.clear();
 		this.distances = distances;
+		this.capacity = capacity;
 	}
 
 	public abstract Vehicle makeCopy();
@@ -67,5 +69,9 @@ public abstract class Vehicle {
 			cost += distances[node1][node2];
 		}
 		return cost;
+	}
+
+	public int getCapacity() {
+		return capacity;
 	}
 }

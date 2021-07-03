@@ -3,12 +3,10 @@ package gr.ntua.vrp;
 import java.util.Collection;
 
 public class SimpleVehicle extends Vehicle {
-	private int capacity;
 	private int load;
 
 	public SimpleVehicle(double[][] distances, int cap) {
-		super(distances);
-		this.capacity = cap;
+		super(distances, cap);
 		this.load = 0;
 	}
 

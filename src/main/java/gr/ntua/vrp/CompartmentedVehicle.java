@@ -13,10 +13,9 @@ import ilog.cplex.IloCplex;
 
 public class CompartmentedVehicle extends Vehicle {
 	private Integer[] compartments;
-	private int capacity;
 
 	public CompartmentedVehicle(double[][] distances, Integer[] comps) {
-		super(distances);
+		super(distances, 0);
 		this.compartments = comps.clone();
 		Arrays.sort(this.compartments, Collections.reverseOrder());
 		int sum = 0;
