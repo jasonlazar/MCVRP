@@ -15,10 +15,9 @@ public class VRPLibReader implements Closeable {
 
 	private int dimension;
 	private int vehicleCapacity;
-	private double[][] coord;
+	private int[][] coord;
 	private double[][] distance;
 	private int[][] demand;
-	private double[][] pickup;
 	private LocalTime[][] timeWindows;
 	private int[] standTime;
 	private int[] depots;
@@ -66,7 +65,6 @@ public class VRPLibReader implements Closeable {
 				break;
 			default:
 				throw new IOException("Unexpected line: " + line);
-			// readPickup();
 			// readTimeWindows();
 			// readStandtime();
 			}
@@ -128,7 +126,7 @@ public class VRPLibReader implements Closeable {
 	}
 
 	private void readCoordinates() throws IOException {
-		coord = new double[dimension][2];
+		coord = new int[dimension][2];
 
 		for (int i = 0; i < dimension; ++i) {
 			String line = readLineAndTrim();
@@ -136,12 +134,12 @@ public class VRPLibReader implements Closeable {
 		}
 	}
 
-	private void parseRow(String line, double[][] coord) {
+	private void parseRow(String line, int[][] coord) {
 		String[] split = line.split("\\s+");
 
 		int i = Integer.valueOf(split[0].trim()) - 1;
-		coord[i][0] = Double.valueOf(split[1].trim());
-		coord[i][1] = Double.valueOf(split[2].trim());
+		coord[i][0] = Integer.valueOf(split[1].trim());
+		coord[i][1] = Integer.valueOf(split[2].trim());
 	}
 
 	private void readDemand() throws IOException {
@@ -178,18 +176,6 @@ public class VRPLibReader implements Closeable {
 				}
 				vehicles[i] = new CompartmentedVehicle(distance, comps);
 			}
-		}
-	}
-
-	@SuppressWarnings("unused")
-	private void readPickup() throws IOException {
-		pickup = new double[dimension][2];
-
-		String line = readLineAndTrim();
-		while (!line.equalsIgnoreCase("TIME_WINDOW_SECTION")) {
-			parseRow(line, pickup);
-
-			line = readLineAndTrim();
 		}
 	}
 
@@ -334,5 +320,9 @@ public class VRPLibReader implements Closeable {
 	@Override
 	public void close() throws IOException {
 		reader.close();
+	}
+
+	public int[][] getCoord() {
+		return coord;
 	}
 }

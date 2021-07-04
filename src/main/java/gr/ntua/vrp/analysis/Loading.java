@@ -45,7 +45,7 @@ public class Loading {
 						System.out.println("Route: " + split[1] + " is infeasible");
 					}
 					System.out.print("Load% of vehicle " + String.valueOf(vehicleIndex) + " = ");
-					System.out.println(load * 1.0 / capacity);
+					System.out.println(load * 100.0 / capacity);
 				}
 				line = br.readLine();
 			}
