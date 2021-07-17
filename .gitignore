@@ -32,3 +32,5 @@ tuning/tuning-arena/*
 .settings/
 .classpath
 .project
+
+/*.png
