@@ -142,4 +142,8 @@ public class CompartmentedVehicle extends Vehicle {
 		}
 		return ret;
 	}
+
+	public Integer[] getCompartments() {
+		return compartments;
+	}
 }
