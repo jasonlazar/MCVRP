@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
@@ -22,6 +23,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import gr.ntua.vrp.CompartmentedVehicle;
 import gr.ntua.vrp.VRPLibReader;
 import gr.ntua.vrp.Vehicle;
+import ilog.concert.IloException;
+import ilog.concert.IloIntVar;
+import ilog.concert.IloLinearIntExpr;
+import ilog.cplex.IloCplex;
 
 public class WriteExcel {
 
@@ -50,12 +55,7 @@ public class WriteExcel {
 			int satisfied = 0;
 			while (satisfied < order) {
 				if (items.size() == 0) {
-					System.out.println("Couldn't find loading with heuristic. CPLEX needed");
-					for (int j = 0; j < demands.size(); ++j)
-						filled[j] = demands.get(j);
-					for (int j = demands.size(); j < filled.length; ++j)
-						filled[j] = 0;
-					return filled;
+					return findLoadingWithCplex(compartments, demands);
 				}
 
 				Integer ceil = items.ceilingKey(order - satisfied);
@@ -81,6 +81,62 @@ public class WriteExcel {
 		}
 
 		return filled;
+	}
+
+	private static int[] findLoadingWithCplex(Integer[] compartments, List<Integer> orders) {
+		int norders = orders.size();
+		int ncompartments = compartments.length;
+		int[] ret = new int[ncompartments];
+
+		try {
+			IloCplex cplex = new IloCplex();
+			IloIntVar[][] y = new IloIntVar[norders][ncompartments];
+			for (int i = 0; i < norders; ++i)
+				for (int j = 0; j < ncompartments; ++j)
+					y[i][j] = cplex.boolVar();
+
+			IloLinearIntExpr obj = cplex.linearIntExpr();
+			int[] coeffs = new int[ncompartments];
+			Arrays.fill(coeffs, 1);
+			for (IloIntVar[] boolArray : y) {
+				obj.addTerms(boolArray, coeffs);
+			}
+			cplex.addMinimize(obj);
+
+			for (int i = 0; i < norders; ++i) {
+				IloLinearIntExpr expr = cplex.linearIntExpr();
+				for (int j = 0; j < ncompartments; ++j) {
+					expr.addTerm(compartments[j], y[i][j]);
+				}
+				cplex.addLe(orders.get(i), expr);
+			}
+
+			for (int j = 0; j < ncompartments; ++j) {
+				IloLinearIntExpr expr = cplex.linearIntExpr();
+				for (int i = 0; i < norders; ++i)
+					expr.addTerm(y[i][j], 1);
+				cplex.addLe(expr, 1);
+			}
+			cplex.setOut(null);
+			cplex.solve();
+
+			for (int i = 0; i < norders; ++i) {
+				double[] compUsed = cplex.getValues(y[i]);
+				int filled = 0;
+				for (int j = 0; j < ncompartments; ++j) {
+					if (compUsed[j] != 0.0) {
+						int remaining = orders.get(i) - filled;
+						ret[j] = (remaining <= compartments[j]) ? remaining : compartments[j];
+						filled += ret[j];
+					}
+				}
+			}
+			cplex.end();
+			cplex.close();
+		} catch (IloException e) {
+			System.err.println("Concert exception '" + e + "' caught");
+		}
+		return ret;
 	}
 
 	public static void main(String[] args) throws IOException {
