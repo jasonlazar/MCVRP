@@ -85,8 +85,4 @@ public class GreedySolver extends Solver {
 
 		return this;
 	}
-
-	public double getCost() {
-		return cost;
-	}
 }

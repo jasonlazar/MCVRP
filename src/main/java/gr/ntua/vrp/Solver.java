@@ -66,4 +66,8 @@ public abstract class Solver {
 	public Vehicle[] getVehicles() {
 		return vehicles;
 	}
+
+	public double getCost() {
+		return cost;
+	}
 }

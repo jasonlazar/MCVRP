@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import gr.ntua.vrp.InitFromRoutesSolver;
 import gr.ntua.vrp.Node;
 import gr.ntua.vrp.Solver;
 import gr.ntua.vrp.VRPRunner;
@@ -31,10 +32,10 @@ public class TabuSearchSolver extends Solver {
 			this.BestSolutionVehicles[i] = this.vehicles[i].makeCopy();
 		}
 
-		GreedySolver greedySolver = new GreedySolver(this);
-		greedySolver.solve();
-		this.vehicles = greedySolver.getVehicles();
-		this.cost = greedySolver.getCost();
+		Solver initSolver = (jct.initFile == null) ? new GreedySolver(this) : new InitFromRoutesSolver(jct);
+		initSolver.solve();
+		this.vehicles = initSolver.getVehicles();
+		this.cost = initSolver.getCost();
 
 		int DimensionCustomer = this.distances[1].length;
 		TABU_Matrix = new int[DimensionCustomer + 1][DimensionCustomer + 1];
