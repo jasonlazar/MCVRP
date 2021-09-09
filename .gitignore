@@ -34,3 +34,8 @@ tuning/tuning-arena/*
 .project
 
 /*.png
+
+# irace files
+*.Rdata
+*.stdout
+*.stderr

@@ -1,3 +1,0 @@
-# name		    switch		        type	values
-tabu           "--tabu "            i  	    (5, 10)
-iterations     "--iterations "      i       (1, 20)

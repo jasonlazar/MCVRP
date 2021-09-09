@@ -12,7 +12,7 @@
 
 EXE='/usr/bin/java'
 
-FIXED_PARAMS=" -jar ../../target/vrp-1.0.0.jar -alg tabu "
+FIXED_PARAMS="-jar -Djava.library.path=/opt/ibm/ILOG/CPLEX_Studio201/cplex/bin/x86-64_linux ../target/vrp-1.0.0.jar -alg tabu"
 
 CONFIG_ID="$1"
 INSTANCE_ID="$2"
