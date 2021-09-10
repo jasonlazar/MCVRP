@@ -13,12 +13,14 @@ public abstract class Vehicle {
 	public int currentLocation;
 	protected double[][] distances;
 	protected int capacity;
+	protected String name;
 
 	public Vehicle(double[][] distances, int capacity) {
 		this.currentLocation = 0; // In depot Initially
 		this.routes.clear();
 		this.distances = distances;
 		this.capacity = capacity;
+		this.name = null;
 	}
 
 	public abstract Vehicle makeCopy();
@@ -73,5 +75,13 @@ public abstract class Vehicle {
 
 	public int getCapacity() {
 		return capacity;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

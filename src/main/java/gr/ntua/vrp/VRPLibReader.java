@@ -165,17 +165,25 @@ public class VRPLibReader implements Closeable {
 
 		for (int i = 0; i < noOfVehicles; ++i) {
 			String line = readLineAndTrim();
+			String split[] = line.split(":");
+			String name = null;
+			if (split.length > 1) {
+				name = split[0].trim();
+				line = split[1];
+			}
+
 			if (type.equalsIgnoreCase("HFVRP")) {
 				int vehCap = Integer.valueOf(line);
 				vehicles[i] = new SimpleVehicle(distance, vehCap);
 			} else {
-				String split[] = line.split(", ");
+				split = line.split(", ");
 				Integer comps[] = new Integer[split.length];
 				for (int j = 0; j < split.length; ++j) {
 					comps[j] = Integer.valueOf(split[j].trim());
 				}
 				vehicles[i] = new CompartmentedVehicle(distance, comps);
 			}
+			vehicles[i].setName(name);
 		}
 	}
 

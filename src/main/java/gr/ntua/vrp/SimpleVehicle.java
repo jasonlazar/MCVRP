@@ -19,7 +19,9 @@ public class SimpleVehicle extends Vehicle {
 
 	@Override
 	public Vehicle makeCopy() {
-		return new SimpleVehicle(this.distances, this.capacity);
+		Vehicle veh = new SimpleVehicle(this.distances, this.capacity);
+		veh.setName(name);
+		return veh;
 	}
 
 	@Override

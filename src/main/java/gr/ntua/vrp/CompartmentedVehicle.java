@@ -26,7 +26,9 @@ public class CompartmentedVehicle extends Vehicle {
 
 	@Override
 	public Vehicle makeCopy() {
-		return new CompartmentedVehicle(distances, compartments);
+		Vehicle veh = new CompartmentedVehicle(distances, compartments);
+		veh.setName(name);
+		return veh;
 	}
 
 	@Override
