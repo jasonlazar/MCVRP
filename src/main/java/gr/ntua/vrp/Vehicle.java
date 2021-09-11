@@ -56,6 +56,9 @@ public abstract class Vehicle {
 		}
 		List<Integer> tsp_route = new ArrayList<>();
 		double final_cost = TravelingSalesmanHeldKarp.minCost(myDist, tsp_route);
+		if (final_cost == initial_cost)
+			return 0.0;
+
 		routes.clear();
 		for (Integer node : tsp_route) {
 			routes.add(mapping.get(node));
