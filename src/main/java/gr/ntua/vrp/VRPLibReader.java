@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalTime;
+import java.util.stream.Stream;
 
 import com.google.common.base.Preconditions;
 
@@ -17,7 +18,6 @@ public class VRPLibReader implements Closeable {
 	private int vehicleCapacity;
 	private int[][] coord;
 	private double[][] distance;
-	private int[][] demand;
 	private LocalTime[][] timeWindows;
 	private int[] standTime;
 	private int[] depots;
@@ -26,6 +26,7 @@ public class VRPLibReader implements Closeable {
 	private String edge_type;
 	private int noOfVehicles;
 	private Vehicle[] vehicles;
+	private Node[] nodes;
 
 	private static final int MARK_BUFFER = 1000;
 
@@ -143,20 +144,22 @@ public class VRPLibReader implements Closeable {
 	}
 
 	private void readDemand() throws IOException {
-		demand = new int[dimension][];
+		nodes = new Node[dimension];
 
 		for (int iter = 0; iter < dimension; ++iter) {
 			String line = readLineAndTrim();
 			String[] split = line.split("\\s+");
 
-			int i = Integer.valueOf(split[0].trim()) - 1;
+			String name = split[0];
 			int nr_demands = split.length - 1;
 
-			demand[i] = new int[nr_demands];
+			int[] demand = new int[nr_demands];
 
 			for (int j = 0; j < nr_demands; ++j) {
-				demand[i][j] = Integer.valueOf(split[j + 1].trim());
+				demand[j] = Integer.valueOf(split[j + 1].trim());
 			}
+
+			nodes[iter] = new Node(iter, demand, name);
 		}
 	}
 
@@ -282,8 +285,12 @@ public class VRPLibReader implements Closeable {
 		return vehicleCapacity;
 	}
 
+	public Node[] getNodes() {
+		return nodes;
+	}
+
 	public int[][] getDemand() {
-		return demand;
+		return (int[][]) Stream.of(nodes).map((node) -> node.demands).toArray();
 	}
 
 	public int[] getDepots() {

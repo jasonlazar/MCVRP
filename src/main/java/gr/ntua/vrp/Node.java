@@ -3,19 +3,18 @@ package gr.ntua.vrp;
 public class Node {
 	public int NodeId;
 	public int demands[];
+	public String name;
 	public boolean IsRouted;
 
-	public Node(int id, int demand) // Constructor for Customers
+	public Node(int id, int demand, String name) // Constructor for Customers
 	{
-		this.NodeId = id;
-		this.demands = new int[1];
-		this.demands[0] = demand;
-		this.IsRouted = false;
+		this(id, new int[] { demand }, name);
 	}
 
-	public Node(int id, int[] demands) {
+	public Node(int id, int[] demands, String name) {
 		this.NodeId = id;
 		this.demands = demands.clone();
+		this.name = (name != null) ? name : String.valueOf(id);
 		this.IsRouted = false;
 	}
 }

@@ -18,11 +18,7 @@ public abstract class Solver {
 
 			this.distances = reader.getDistance();
 
-			nodes = new Node[noOfCustomers];
-
-			for (int i = 0; i < noOfCustomers; i++) {
-				nodes[i] = new Node(i, reader.getDemand()[i]);
-			}
+			nodes = reader.getNodes();
 			nodes[0].IsRouted = true;
 
 			this.vehicles = reader.getVehicles();
@@ -53,9 +49,9 @@ public abstract class Solver {
 				int RoutSize = this.vehicles[j].routes.size();
 				for (int k = 0; k < RoutSize; k++) {
 					if (k == RoutSize - 1) {
-						System.out.print(this.vehicles[j].routes.get(k).NodeId);
+						System.out.print(this.vehicles[j].routes.get(k).name);
 					} else {
-						System.out.print(this.vehicles[j].routes.get(k).NodeId + "->");
+						System.out.print(this.vehicles[j].routes.get(k).name + "->");
 					}
 				}
 				System.out.println();

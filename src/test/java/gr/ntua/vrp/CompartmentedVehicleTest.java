@@ -34,8 +34,8 @@ class CompartmentedVehicleTest {
 	@Test
 	@DisplayName("Test fitness while excluding a node")
 	void testCheckIfFitsWithoutNode() {
-		Node n1 = new Node(1, 20);
-		Node n2 = new Node(2, 10);
+		Node n1 = new Node(1, 20, "1");
+		Node n2 = new Node(2, 10, "2");
 		vehicle.appendNode(n1);
 		vehicle.appendNode(n2);
 		int[] order1 = { 30, 40 };
