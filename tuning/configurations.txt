@@ -1,2 +1,2 @@
-tabu    iterations   restarts
-10      5            2
+tabu
+10

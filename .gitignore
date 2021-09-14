@@ -41,3 +41,4 @@ real_instances/
 *.Rdata
 *.stdout
 *.stderr
+*.rda
