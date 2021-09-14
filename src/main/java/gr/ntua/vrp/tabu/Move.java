@@ -1,17 +1,44 @@
 package gr.ntua.vrp.tabu;
 
+import java.util.ArrayList;
+
+import gr.ntua.vrp.Node;
+import gr.ntua.vrp.Vehicle;
+
 public abstract class Move implements Comparable<Move> {
 	protected double cost;
+	protected int route1Index;
+	protected int route1NodeIndex;
+	protected int route2Index;
+	protected int route2NodeIndex;
+	protected boolean needsTransfer;
 
-	public Move(double cost) {
+	public Move(double cost, int r1, int r1Node, int r2, int r2Node) {
 		this.cost = cost;
+		this.route1Index = r1;
+		this.route1NodeIndex = r1Node;
+		this.route2Index = r2;
+		this.route2NodeIndex = r2Node;
+		this.needsTransfer = false;
 	}
 
 	public abstract void applyMove(TabuSearchSolver s);
 
 	public abstract boolean isFeasible(TabuSearchSolver s);
 
-	public abstract int[] getVehicleIndexes();
+	public abstract boolean transferFeasible(TabuSearchSolver s);
+
+	protected abstract void transfer(TabuSearchSolver s);
+
+	protected void swapRoutes(Vehicle[] vehicles, int routeFrom, int routeTo) {
+		ArrayList<Node> tmp = vehicles[routeFrom].routes;
+		vehicles[routeFrom].routes = vehicles[routeTo].routes;
+		vehicles[routeTo].routes = tmp;
+	}
+
+	public int[] getVehicleIndices() {
+		return new int[] { route1Index, route2Index };
+	}
 
 	@Override
 	public int compareTo(Move m) {

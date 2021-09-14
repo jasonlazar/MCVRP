@@ -2,7 +2,9 @@ package gr.ntua.vrp.tabu;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import gr.ntua.vrp.InitFromRoutesSolver;
 import gr.ntua.vrp.Node;
@@ -14,6 +16,7 @@ import gr.ntua.vrp.greedy.GreedySolver;
 public class TabuSearchSolver extends Solver {
 	final int TABU_Horizon;
 	final int TABU_Matrix[][];
+	Set<Integer> emptyVehicles;
 	private final int iterations;
 	private final int restarts;
 	private final Vehicle[] BestSolutionVehicles;
@@ -37,8 +40,14 @@ public class TabuSearchSolver extends Solver {
 		this.vehicles = initSolver.getVehicles();
 		this.cost = initSolver.getCost();
 
-		int DimensionCustomer = this.distances[1].length;
-		TABU_Matrix = new int[DimensionCustomer + 1][DimensionCustomer + 1];
+		int dimension = this.distances[1].length;
+		this.TABU_Matrix = new int[dimension + 1][dimension + 1];
+
+		this.emptyVehicles = new HashSet<>();
+		for (int i = 0; i < noOfVehicles; i++) {
+			if (vehicles[i].routes.size() == 2)
+				emptyVehicles.add(i);
+		}
 	}
 
 	public TabuSearchSolver solve() {
@@ -68,7 +77,7 @@ public class TabuSearchSolver extends Solver {
 
 			this.cost += BestMove.cost;
 
-			int[] MoveVehicles = BestMove.getVehicleIndexes();
+			int[] MoveVehicles = BestMove.getVehicleIndices();
 			for (int i : MoveVehicles)
 				this.cost += this.vehicles[i].optimizeRoute();
 
@@ -165,7 +174,7 @@ public class TabuSearchSolver extends Solver {
 		m.applyMove(this);
 
 		cost += m.cost;
-		int[] moveVehicles = m.getVehicleIndexes();
+		int[] moveVehicles = m.getVehicleIndices();
 		for (int i : moveVehicles)
 			cost += vehicles[i].optimizeRoute();
 	}
@@ -196,6 +205,9 @@ public class TabuSearchSolver extends Solver {
 						for (Move neigh : Neighbors) {
 							if (neigh.compareTo(BestNeighbor) < 0 && neigh.isFeasible(this))
 								BestNeighbor = neigh;
+							else if (neigh.compareTo(BestNeighbor) < 0 && neigh.transferFeasible(this)) {
+								BestNeighbor = neigh;
+							}
 						}
 					}
 				}

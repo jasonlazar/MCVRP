@@ -3,7 +3,7 @@ package gr.ntua.vrp.tabu;
 class DummyMove extends Move {
 
 	public DummyMove() {
-		super(Double.MAX_VALUE);
+		super(Double.MAX_VALUE, -1, -1, -1, -1);
 	}
 
 	@Override
@@ -16,7 +16,11 @@ class DummyMove extends Move {
 	}
 
 	@Override
-	public int[] getVehicleIndexes() {
-		return new int[] {};
+	public boolean transferFeasible(TabuSearchSolver s) {
+		return false;
+	}
+
+	@Override
+	protected void transfer(TabuSearchSolver s) {
 	}
 }

@@ -7,17 +7,9 @@ import gr.ntua.vrp.Node;
 import gr.ntua.vrp.Vehicle;
 
 public class DoubleInsertionMove extends Move {
-	private int SrcRoute;
-	private int SrcRouteIndex;
-	private int DstRoute;
-	private int DstRouteIndex;
 
 	public DoubleInsertionMove(double cost, int src, int sri, int dst, int dri) {
-		super(cost);
-		this.SrcRoute = src;
-		this.SrcRouteIndex = sri;
-		this.DstRoute = dst;
-		this.DstRouteIndex = dri;
+		super(cost, src, sri, dst, dri);
 	}
 
 	@Override
@@ -27,16 +19,20 @@ public class DoubleInsertionMove extends Move {
 
 		Vehicle[] vehicles = s.getVehicles();
 
-		routesFrom = vehicles[SrcRoute].routes;
-		routesTo = vehicles[DstRoute].routes;
+		routesFrom = vehicles[route1Index].routes;
+		routesTo = vehicles[route2Index].routes;
 
-		Node SwapNode1 = routesFrom.get(SrcRouteIndex);
-		Node SwapNode2 = routesFrom.get(SrcRouteIndex + 1);
+		if (routesTo.size() == 2) {
+			s.emptyVehicles.remove(route2Index);
+		}
 
-		int NodeIDBefore = routesFrom.get(SrcRouteIndex - 1).NodeId;
-		int NodeIDAfter = routesFrom.get(SrcRouteIndex + 2).NodeId;
-		int NodeID_F = routesTo.get(DstRouteIndex).NodeId;
-		int NodeID_G = routesTo.get(DstRouteIndex + 1).NodeId;
+		Node SwapNode1 = routesFrom.get(route1NodeIndex);
+		Node SwapNode2 = routesFrom.get(route1NodeIndex + 1);
+
+		int NodeIDBefore = routesFrom.get(route1NodeIndex - 1).NodeId;
+		int NodeIDAfter = routesFrom.get(route1NodeIndex + 2).NodeId;
+		int NodeID_F = routesTo.get(route2NodeIndex).NodeId;
+		int NodeID_G = routesTo.get(route2NodeIndex + 1).NodeId;
 
 		Random TabuRan = new Random();
 		int randomDelay1 = TabuRan.nextInt(5);
@@ -47,10 +43,14 @@ public class DoubleInsertionMove extends Move {
 		s.TABU_Matrix[SwapNode2.NodeId][NodeIDAfter] = s.TABU_Horizon + randomDelay2;
 		s.TABU_Matrix[NodeID_F][NodeID_G] = s.TABU_Horizon + randomDelay3;
 
-		vehicles[SrcRoute].removeNode(SrcRouteIndex);
-		vehicles[SrcRoute].removeNode(SrcRouteIndex);
-		vehicles[DstRoute].addNode(SwapNode2, DstRouteIndex + 1);
-		vehicles[DstRoute].addNode(SwapNode1, DstRouteIndex + 1);
+		vehicles[route1Index].removeNode(route1NodeIndex);
+		vehicles[route1Index].removeNode(route1NodeIndex);
+		vehicles[route2Index].addNode(SwapNode2, route2NodeIndex + 1);
+		vehicles[route2Index].addNode(SwapNode1, route2NodeIndex + 1);
+
+		if (vehicles[route1Index].routes.size() == 2) {
+			s.emptyVehicles.add(route1Index);
+		}
 	}
 
 	@Override
@@ -59,19 +59,26 @@ public class DoubleInsertionMove extends Move {
 		int MovingNodeDemand[];
 
 		Vehicle[] vehicles = s.getVehicles();
-		routesFrom = vehicles[SrcRoute].routes;
+		routesFrom = vehicles[route1Index].routes;
 
-		int[] firstDemands = routesFrom.get(SrcRouteIndex).demands;
-		int[] secondDemands = routesFrom.get(SrcRouteIndex + 1).demands;
+		int[] firstDemands = routesFrom.get(route1NodeIndex).demands;
+		int[] secondDemands = routesFrom.get(route1NodeIndex + 1).demands;
 		MovingNodeDemand = new int[firstDemands.length + secondDemands.length];
 		System.arraycopy(firstDemands, 0, MovingNodeDemand, 0, firstDemands.length);
 		System.arraycopy(secondDemands, 0, MovingNodeDemand, firstDemands.length, secondDemands.length);
 
-		return vehicles[DstRoute].checkIfFits(MovingNodeDemand);
+		return vehicles[route2Index].checkIfFits(MovingNodeDemand);
 	}
 
 	@Override
-	public int[] getVehicleIndexes() {
-		return new int[] { SrcRoute, DstRoute };
+	public boolean transferFeasible(TabuSearchSolver s) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	protected void transfer(TabuSearchSolver s) {
+		// TODO Auto-generated method stub
+		
 	}
 }
