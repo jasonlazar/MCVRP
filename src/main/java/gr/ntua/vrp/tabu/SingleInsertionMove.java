@@ -71,26 +71,14 @@ public class SingleInsertionMove extends Move {
 	public boolean transferFeasible(TabuSearchSolver s) {
 		Vehicle[] vehicles = s.getVehicles();
 		ArrayList<Node> routesFrom = vehicles[route1Index].routes;
-		ArrayList<Node> routesTo = vehicles[route2Index].routes;
 
-		List<Integer> tmpDemands = new ArrayList<>();
-		for (Node n : routesTo) {
-			for (int d : n.demands)
-				tmpDemands.add(d);
-		}
-		for (int d : routesFrom.get(route1NodeIndex).demands)
-			tmpDemands.add(d);
+		int[] routeDemands = vehicles[route2Index].calculateDemandsPlus(List.of(routesFrom.get(route1NodeIndex)));
 
-		int[] routeDemands = tmpDemands.stream().mapToInt(i -> i).toArray();
+		List<Integer> canMoveTo = feasibleVehicles(s, routeDemands, 1);
+		needsTransfer = canMoveTo.size() > 0;
+		if (needsTransfer)
+			transferTo = canMoveTo.get(0);
 
-		for (Integer i : s.emptyVehicles) {
-			Vehicle veh = vehicles[i];
-			if (veh.checkIfFits(routeDemands)) {
-				needsTransfer = true;
-				transferTo = i;
-				break;
-			}
-		}
 		return needsTransfer;
 	}
 

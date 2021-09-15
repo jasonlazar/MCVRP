@@ -2,6 +2,7 @@ package gr.ntua.vrp;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,5 +87,29 @@ public abstract class Vehicle {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public int[] calculateDemandsPlus(Collection<Node> add) {
+		return calculateDemandsPlusMinus(add, Collections.emptyList());
+	}
+
+	public int[] calculateDemandsMinus(Collection<Node> remove) {
+		return calculateDemandsPlusMinus(Collections.emptyList(), remove);
+	}
+
+	public int[] calculateDemandsPlusMinus(Collection<Node> add, Collection<Node> remove) {
+		List<Integer> tmpDemands = new ArrayList<>();
+		for (Node n : routes) {
+			if (remove.contains(n))
+				continue;
+			for (int d : n.demands)
+				tmpDemands.add(d);
+		}
+		for (Node n : add) {
+			for (int d : n.demands)
+				tmpDemands.add(d);
+		}
+
+		return tmpDemands.stream().mapToInt(i -> i).toArray();
 	}
 }

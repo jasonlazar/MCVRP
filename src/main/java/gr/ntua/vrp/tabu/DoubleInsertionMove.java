@@ -1,12 +1,14 @@
 package gr.ntua.vrp.tabu;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import gr.ntua.vrp.Node;
 import gr.ntua.vrp.Vehicle;
 
 public class DoubleInsertionMove extends Move {
+	private int transferTo;
 
 	public DoubleInsertionMove(double cost, int src, int sri, int dst, int dri) {
 		super(cost, src, sri, dst, dri);
@@ -51,6 +53,10 @@ public class DoubleInsertionMove extends Move {
 		if (vehicles[route1Index].routes.size() == 2) {
 			s.emptyVehicles.add(route1Index);
 		}
+
+		if (needsTransfer) {
+			transfer(s);
+		}
 	}
 
 	@Override
@@ -72,13 +78,25 @@ public class DoubleInsertionMove extends Move {
 
 	@Override
 	public boolean transferFeasible(TabuSearchSolver s) {
-		// TODO Auto-generated method stub
-		return false;
+		Vehicle[] vehicles = s.getVehicles();
+		ArrayList<Node> routesFrom = vehicles[route1Index].routes;
+		Node moved1 = routesFrom.get(route1NodeIndex);
+		Node moved2 = routesFrom.get(route1NodeIndex + 1);
+
+		int[] routeDemands = vehicles[route2Index].calculateDemandsPlus(List.of(moved1, moved2));
+
+		List<Integer> canMoveTo = feasibleVehicles(s, routeDemands, 1);
+		needsTransfer = canMoveTo.size() > 0;
+		if (needsTransfer)
+			transferTo = canMoveTo.get(0);
+		return needsTransfer;
 	}
 
 	@Override
 	protected void transfer(TabuSearchSolver s) {
-		// TODO Auto-generated method stub
-		
+		swapRoutes(s.getVehicles(), route2Index, transferTo);
+		s.emptyVehicles.add(route2Index);
+		s.emptyVehicles.remove(transferTo);
+		route2Index = transferTo;
 	}
 }

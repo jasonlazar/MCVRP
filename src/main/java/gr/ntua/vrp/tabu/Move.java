@@ -1,6 +1,7 @@
 package gr.ntua.vrp.tabu;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import gr.ntua.vrp.Node;
 import gr.ntua.vrp.Vehicle;
@@ -29,6 +30,21 @@ public abstract class Move implements Comparable<Move> {
 	public abstract boolean transferFeasible(TabuSearchSolver s);
 
 	protected abstract void transfer(TabuSearchSolver s);
+
+	protected List<Integer> feasibleVehicles(TabuSearchSolver s, int[] routeDemands, int limit) {
+		List<Integer> feasible = new ArrayList<>();
+		Vehicle[] vehicles = s.getVehicles();
+		for (Integer i : s.emptyVehicles) {
+			Vehicle veh = vehicles[i];
+			if (veh.checkIfFits(routeDemands)) {
+				needsTransfer = true;
+				feasible.add(i);
+				if (feasible.size() == limit)
+					return feasible;
+			}
+		}
+		return feasible;
+	}
 
 	protected void swapRoutes(Vehicle[] vehicles, int routeFrom, int routeTo) {
 		ArrayList<Node> tmp = vehicles[routeFrom].routes;
