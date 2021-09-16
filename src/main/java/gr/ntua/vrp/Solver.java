@@ -44,7 +44,7 @@ public abstract class Solver {
 
 		for (int j = 0; j < this.noOfVehicles; j++) {
 			if (this.vehicles[j].routes.size() > 2) {
-				String name = (vehicles[j].name != null) ? vehicles[j].name : "Vehicle " + j;
+				String name = "Vehicle " + ((vehicles[j].name != null) ? vehicles[j].name : j);
 				System.out.print(name + ":");
 				int RoutSize = this.vehicles[j].routes.size();
 				for (int k = 0; k < RoutSize; k++) {

@@ -4,9 +4,15 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
+import gr.ntua.vrp.Node;
 import gr.ntua.vrp.VRPLibReader;
+import gr.ntua.vrp.Vehicle;
 
 public class ValidateSolution {
 
@@ -15,10 +21,10 @@ public class ValidateSolution {
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 			VRPLibReader vrp;
 			double[][] distances = null;
-			int[][] demands = null;
+			Map<String, Node> node = null;
 			String instance = null;
 			double cost = 0;
-			int capacity = 0;
+			Map<String, Vehicle> vehicle = null;
 
 			String line = br.readLine();
 			while (line != null) {
@@ -26,20 +32,26 @@ public class ValidateSolution {
 					instance = line;
 					vrp = new VRPLibReader(new File(instance));
 					distances = vrp.getDistance();
-					demands = vrp.getDemand();
+					Node[] nodes = vrp.getNodes();
+					node = new HashMap<>();
+					for (Node n : nodes)
+						node.put(n.name, n);
 					cost = 0;
-					capacity = vrp.getVehicleCapacity();
+					Vehicle[] vehicles = vrp.getVehicles();
+					vehicle = new HashMap<>();
+					for (Vehicle v : vehicles)
+						vehicle.put(v.getName(), v);
 				} else if (line.startsWith("Vehicle")) {
 					String[] split = line.split(":");
-					int[] route = Stream.of(split[1].split("->")).mapToInt(Integer::parseInt).toArray();
-					int load = 0;
+					Vehicle veh = vehicle.get(split[0].replaceFirst("Vehicle", "").strip());
+					String[] route = (String[]) Stream.of(split[1].split("->")).toArray(String[]::new);
+					List<Integer> demands = new ArrayList<>();
 					for (int i = 1; i < route.length; ++i) {
-						int current = route[i];
-						int previous = route[i - 1];
-						load += demands[current][0];
+						int current = node.get(route[i]).NodeId;
+						int previous = node.get(route[i - 1]).NodeId;
 						cost += distances[previous][current];
 					}
-					if (load > capacity) {
+					if (!veh.checkIfFits(demands.stream().mapToInt(i -> i).toArray())) {
 						System.out.println("In instance " + instance + " :");
 						System.out.println("Route: " + split[1] + " is infeasible");
 					}
