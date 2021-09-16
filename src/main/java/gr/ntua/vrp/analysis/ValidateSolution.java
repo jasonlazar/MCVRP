@@ -25,6 +25,7 @@ public class ValidateSolution {
 			String instance = null;
 			double cost = 0;
 			Map<String, Vehicle> vehicle = null;
+			Map<String, Boolean> visited = null;
 
 			String line = br.readLine();
 			while (line != null) {
@@ -34,8 +35,11 @@ public class ValidateSolution {
 					distances = vrp.getDistance();
 					Node[] nodes = vrp.getNodes();
 					node = new HashMap<>();
-					for (Node n : nodes)
+					visited = new HashMap<>();
+					for (Node n : nodes) {
 						node.put(n.name, n);
+						visited.put(n.name, false);
+					}
 					cost = 0;
 					Vehicle[] vehicles = vrp.getVehicles();
 					vehicle = new HashMap<>();
@@ -50,6 +54,7 @@ public class ValidateSolution {
 						int current = node.get(route[i]).NodeId;
 						int previous = node.get(route[i - 1]).NodeId;
 						cost += distances[previous][current];
+						visited.put(route[i], true);
 					}
 					if (!veh.checkIfFits(demands.stream().mapToInt(i -> i).toArray())) {
 						System.out.println("In instance " + instance + " :");
@@ -63,7 +68,14 @@ public class ValidateSolution {
 						System.out.print("Cost" + split[1] + " is different than actual cost ");
 						System.out.println(cost);
 					} else {
-						System.out.println(instance + " feasible");
+						if (!visited.containsValue(false))
+							System.out.println(instance + " feasible");
+						else {
+							for (String key : visited.keySet()) {
+								if (visited.get(key) == false)
+									System.out.println("Node " + key + " not visited");
+							}
+						}
 					}
 				}
 				line = br.readLine();
