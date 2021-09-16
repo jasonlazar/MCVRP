@@ -1,6 +1,7 @@
 package gr.ntua.vrp.tabu;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import gr.ntua.vrp.Node;
@@ -36,7 +37,7 @@ public abstract class Move implements Comparable<Move> {
 		Vehicle[] vehicles = s.getVehicles();
 		for (Integer i : s.emptyVehicles) {
 			Vehicle veh = vehicles[i];
-			if (veh.checkIfFits(routeDemands)) {
+			if (veh.checkIfFits(routeDemands, new HashSet<Node>(veh.routes))) {
 				needsTransfer = true;
 				feasible.add(i);
 				if (feasible.size() == limit)
