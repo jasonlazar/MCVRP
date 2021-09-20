@@ -3,7 +3,7 @@ package gr.ntua.vrp.tabu;
 class DummyMove extends Move {
 
 	public DummyMove() {
-		super(Double.MAX_VALUE, -1, -1, -1, -1);
+		super(Double.MAX_VALUE, null, -1, null, -1);
 	}
 
 	@Override

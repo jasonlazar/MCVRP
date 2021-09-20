@@ -8,6 +8,7 @@ public class SimpleVehicle extends Vehicle {
 	public SimpleVehicle(double[][] distances, int cap) {
 		super(distances, cap);
 		this.load = 0;
+		this.category = capacity + "S";
 	}
 
 	@Override

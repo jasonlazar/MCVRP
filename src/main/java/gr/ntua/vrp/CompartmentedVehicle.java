@@ -22,6 +22,7 @@ public class CompartmentedVehicle extends Vehicle {
 		for (Integer n : compartments)
 			sum += n;
 		this.capacity = sum;
+		this.category = Arrays.toString(compartments);
 	}
 
 	@Override

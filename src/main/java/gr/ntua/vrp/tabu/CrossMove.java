@@ -13,8 +13,8 @@ public class CrossMove extends Move {
 	private List<Node> after1;
 	private List<Node> after2;
 
-	public CrossMove(double cost, int Route1, int Route1Index, int Route2, int Route2Index) {
-		super(cost, Route1, Route1Index, Route2, Route2Index);
+	public CrossMove(double cost, Vehicle veh1, int Route1Index, Vehicle veh2, int Route2Index) {
+		super(cost, veh1, Route1Index, veh2, Route2Index);
 	}
 
 	@Override
@@ -22,13 +22,11 @@ public class CrossMove extends Move {
 		ArrayList<Node> route1;
 		ArrayList<Node> route2;
 
-		Vehicle[] vehicles = s.getVehicles();
-
-		route1 = vehicles[route1Index].routes;
-		route2 = vehicles[route2Index].routes;
+		route1 = vehicle1.routes;
+		route2 = vehicle2.routes;
 
 		if (route2.size() == 0) {
-			s.emptyVehicles.remove(route2Index);
+			s.emptyVehicles.remove(vehicle2);
 		}
 
 		Node SwapNode1 = route1.get(route1NodeIndex);
@@ -45,17 +43,17 @@ public class CrossMove extends Move {
 		s.TABU_Matrix[SwapNode2.NodeId][NodeIDAfter2] = s.TABU_Horizon + randomDelay2;
 
 		while (route1.size() > route1NodeIndex + 1)
-			vehicles[route1Index].removeNode(route1NodeIndex + 1);
+			vehicle1.removeNode(route1NodeIndex + 1);
 		while (route2.size() > route2NodeIndex + 1)
-			vehicles[route2Index].removeNode(route2NodeIndex + 1);
+			vehicle2.removeNode(route2NodeIndex + 1);
 
 		for (Node n : after2)
-			vehicles[route1Index].appendNode(n);
+			vehicle1.appendNode(n);
 		for (Node n : after1)
-			vehicles[route2Index].appendNode(n);
+			vehicle2.appendNode(n);
 
-		if (vehicles[route2Index].routes.size() == 2) {
-			s.emptyVehicles.add(route2Index);
+		if (vehicle2.routes.size() == 2) {
+			s.emptyVehicles.add(vehicle2);
 		}
 
 		if (needsTransfer)
@@ -67,10 +65,8 @@ public class CrossMove extends Move {
 		ArrayList<Node> route1;
 		ArrayList<Node> route2;
 
-		Vehicle[] vehicles = s.getVehicles();
-
-		route1 = vehicles[route1Index].routes;
-		route2 = vehicles[route2Index].routes;
+		route1 = vehicle1.routes;
+		route2 = vehicle2.routes;
 
 		after1 = new ArrayList<>(route1.subList(route1NodeIndex + 1, route1.size()));
 		after2 = new ArrayList<>(route2.subList(route2NodeIndex + 1, route2.size()));
@@ -101,8 +97,8 @@ public class CrossMove extends Move {
 			arrayIndex += curDemands.length;
 		}
 
-		firstFeasible = (after2.size() > 1) ? vehicles[route1Index].checkIfFits(secondDemands, after1) : true;
-		secondFeasible = (after1.size() > 1) ? vehicles[route2Index].checkIfFits(firstDemands, after2) : true;
+		firstFeasible = (after2.size() > 1) ? vehicle1.checkIfFits(secondDemands, after1) : true;
+		secondFeasible = (after1.size() > 1) ? vehicle2.checkIfFits(firstDemands, after2) : true;
 
 		return (firstFeasible && secondFeasible);
 	}

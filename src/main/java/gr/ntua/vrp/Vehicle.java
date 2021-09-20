@@ -2,7 +2,6 @@ package gr.ntua.vrp;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +14,7 @@ public abstract class Vehicle {
 	protected double[][] distances;
 	protected int capacity;
 	protected String name;
+	protected String category;
 
 	public Vehicle(double[][] distances, int capacity) {
 		this.currentLocation = 0; // In depot Initially
@@ -89,12 +89,8 @@ public abstract class Vehicle {
 		this.name = name;
 	}
 
-	public int[] calculateDemandsPlus(Collection<Node> add) {
-		return calculateDemandsPlusMinus(add, Collections.emptyList());
-	}
-
-	public int[] calculateDemandsMinus(Collection<Node> remove) {
-		return calculateDemandsPlusMinus(Collections.emptyList(), remove);
+	public String getCategory() {
+		return category;
 	}
 
 	public int[] calculateDemandsPlusMinus(Collection<Node> add, Collection<Node> remove) {

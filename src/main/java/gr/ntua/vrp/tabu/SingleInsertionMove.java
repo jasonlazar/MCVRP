@@ -9,8 +9,8 @@ import gr.ntua.vrp.Node;
 import gr.ntua.vrp.Vehicle;
 
 public class SingleInsertionMove extends Move {
-	public SingleInsertionMove(double cost, int SrcRoute, int SrcRouteIndex, int DstRoute, int DstRouteIndex) {
-		super(cost, SrcRoute, SrcRouteIndex, DstRoute, DstRouteIndex);
+	public SingleInsertionMove(double cost, Vehicle SrcVeh, int SrcRouteIndex, Vehicle DstVeh, int DstRouteIndex) {
+		super(cost, SrcVeh, SrcRouteIndex, DstVeh, DstRouteIndex);
 	}
 
 	@Override
@@ -18,13 +18,11 @@ public class SingleInsertionMove extends Move {
 		ArrayList<Node> routesFrom;
 		ArrayList<Node> routesTo;
 
-		Vehicle[] vehicles = s.getVehicles();
-
-		routesFrom = vehicles[route1Index].routes;
-		routesTo = vehicles[route2Index].routes;
+		routesFrom = vehicle1.routes;
+		routesTo = vehicle2.routes;
 
 		if (routesTo.size() == 2) {
-			s.emptyVehicles.remove(route2Index);
+			s.emptyVehicles.remove(vehicle2);
 		}
 
 		Node SwapNode = routesFrom.get(route1NodeIndex);
@@ -43,11 +41,11 @@ public class SingleInsertionMove extends Move {
 		s.TABU_Matrix[SwapNode.NodeId][NodeIDAfter] = s.TABU_Horizon + randomDelay2;
 		s.TABU_Matrix[NodeID_F][NodeID_G] = s.TABU_Horizon + randomDelay3;
 
-		vehicles[route1Index].removeNode(route1NodeIndex);
-		vehicles[route2Index].addNode(SwapNode, route2NodeIndex + 1);
+		vehicle1.removeNode(route1NodeIndex);
+		vehicle2.addNode(SwapNode, route2NodeIndex + 1);
 
-		if (vehicles[route1Index].routes.size() == 2) {
-			s.emptyVehicles.add(route1Index);
+		if (vehicle1.routes.size() == 2) {
+			s.emptyVehicles.add(vehicle1);
 		}
 
 		if (needsTransfer) {
@@ -58,20 +56,18 @@ public class SingleInsertionMove extends Move {
 	@Override
 	public boolean isFeasible(TabuSearchSolver s) {
 		ArrayList<Node> routesFrom;
-		Vehicle[] vehicles = s.getVehicles();
-		routesFrom = vehicles[route1Index].routes;
+		routesFrom = vehicle1.routes;
 
 		int MovingNodeDemand[] = routesFrom.get(route1NodeIndex).demands;
 
 		firstFeasible = true;
-		secondFeasible = vehicles[route2Index].checkIfFits(MovingNodeDemand);
+		secondFeasible = vehicle2.checkIfFits(MovingNodeDemand);
 		return secondFeasible;
 	}
 
 	@Override
 	public boolean transferFeasible(TabuSearchSolver s) {
-		Vehicle[] vehicles = s.getVehicles();
-		ArrayList<Node> routesFrom = vehicles[route1Index].routes;
+		ArrayList<Node> routesFrom = vehicle1.routes;
 
 		return transferFeasible(s, List.of(routesFrom.get(route1NodeIndex)), Collections.emptyList());
 	}

@@ -2,9 +2,7 @@ package gr.ntua.vrp.tabu;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
 import gr.ntua.vrp.InitFromRoutesSolver;
 import gr.ntua.vrp.Node;
@@ -16,7 +14,7 @@ import gr.ntua.vrp.greedy.GreedySolver;
 public class TabuSearchSolver extends Solver {
 	final int TABU_Horizon;
 	final int TABU_Matrix[][];
-	Set<Integer> emptyVehicles;
+	EmptyVehicleSet emptyVehicles;
 	private final int iterations;
 	private final int restarts;
 	private final Vehicle[] BestSolutionVehicles;
@@ -43,10 +41,10 @@ public class TabuSearchSolver extends Solver {
 		int dimension = this.distances[1].length;
 		this.TABU_Matrix = new int[dimension + 1][dimension + 1];
 
-		this.emptyVehicles = new HashSet<>();
-		for (int i = 0; i < noOfVehicles; i++) {
-			if (vehicles[i].routes.size() == 2)
-				emptyVehicles.add(i);
+		this.emptyVehicles = new EmptyVehicleSet();
+		for (Vehicle veh : vehicles) {
+			if (veh.routes.size() == 2)
+				emptyVehicles.add(veh);
 		}
 	}
 
@@ -77,9 +75,9 @@ public class TabuSearchSolver extends Solver {
 
 			this.cost += BestMove.cost;
 
-			int[] MoveVehicles = BestMove.getVehicleIndices();
-			for (int i : MoveVehicles)
-				this.cost += this.vehicles[i].optimizeRoute();
+			Vehicle[] MoveVehicles = BestMove.getVehicles();
+			for (Vehicle v : MoveVehicles)
+				this.cost += v.optimizeRoute();
 
 			if (this.cost < this.BestSolutionCost) {
 				iteration_number = 0;
@@ -174,9 +172,9 @@ public class TabuSearchSolver extends Solver {
 		m.applyMove(this);
 
 		cost += m.cost;
-		int[] moveVehicles = m.getVehicleIndices();
-		for (int i : moveVehicles)
-			cost += vehicles[i].optimizeRoute();
+		Vehicle[] moveVehicles = m.getVehicles();
+		for (Vehicle v : moveVehicles)
+			cost += v.optimizeRoute();
 	}
 
 	public Move findBestNeighbor() {
@@ -242,7 +240,7 @@ public class TabuSearchSolver extends Solver {
 
 		NeighborCost = AddedCost1 + AddedCost2 + AddedCost3 - MinusCost1 - MinusCost2 - MinusCost3;
 
-		return new SingleInsertionMove(NeighborCost, VehIndexFrom, index1, VehIndexTo, index2);
+		return new SingleInsertionMove(NeighborCost, vehicles[VehIndexFrom], index1, vehicles[VehIndexTo], index2);
 	}
 
 	public Move swap(int VehIndex1, int VehIndex2, int index1, int index2) {
@@ -282,7 +280,7 @@ public class TabuSearchSolver extends Solver {
 		NeighborCost = AddedCost1 + AddedCost2 + AddedCost3 + AddedCost4 - MinusCost1 - MinusCost2 - MinusCost3
 		        - MinusCost4;
 
-		return new SwapMove(NeighborCost, VehIndex1, index1, VehIndex2, index2);
+		return new SwapMove(NeighborCost, vehicles[VehIndex1], index1, vehicles[VehIndex2], index2);
 	}
 
 	public Move doubleInsertion(int VehIndexFrom, int VehIndexTo, int index1, int index2) {
@@ -314,7 +312,7 @@ public class TabuSearchSolver extends Solver {
 
 		NeighborCost = AddedCost1 + AddedCost2 + AddedCost3 - MinusCost1 - MinusCost2 - MinusCost3;
 
-		return new DoubleInsertionMove(NeighborCost, VehIndexFrom, index1, VehIndexTo, index2);
+		return new DoubleInsertionMove(NeighborCost, vehicles[VehIndexFrom], index1, vehicles[VehIndexTo], index2);
 	}
 
 	public Move swap21(int VehIndex1, int VehIndex2, int index1, int index2) {
@@ -354,7 +352,7 @@ public class TabuSearchSolver extends Solver {
 		NeighborCost = AddedCost1 + AddedCost2 + AddedCost3 + AddedCost4 - MinusCost1 - MinusCost2 - MinusCost3
 		        - MinusCost4;
 
-		return new Swap21Move(NeighborCost, VehIndex1, index1, VehIndex2, index2);
+		return new Swap21Move(NeighborCost, vehicles[VehIndex1], index1, vehicles[VehIndex2], index2);
 	}
 
 	public Move cross(int VehIndex1, int VehIndex2, int index1, int index2) {
@@ -383,6 +381,6 @@ public class TabuSearchSolver extends Solver {
 
 		NeighborCost = AddedCost1 + AddedCost2 - MinusCost1 - MinusCost2;
 
-		return new CrossMove(NeighborCost, VehIndex1, index1, VehIndex2, index2);
+		return new CrossMove(NeighborCost, vehicles[VehIndex1], index1, vehicles[VehIndex2], index2);
 	}
 }

@@ -2,7 +2,6 @@ package gr.ntua.vrp.tabu;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import gr.ntua.vrp.Node;
@@ -10,21 +9,21 @@ import gr.ntua.vrp.Vehicle;
 
 public abstract class Move implements Comparable<Move> {
 	protected double cost;
-	protected int route1Index;
+	protected Vehicle vehicle1;
 	protected int route1NodeIndex;
-	protected int route2Index;
+	protected Vehicle vehicle2;
 	protected int route2NodeIndex;
 	protected boolean needsTransfer;
 	protected boolean firstFeasible;
 	protected boolean secondFeasible;
-	private int transfer1To;
-	private int transfer2To;
+	private Vehicle transfer1To;
+	private Vehicle transfer2To;
 
-	public Move(double cost, int r1, int r1Node, int r2, int r2Node) {
+	public Move(double cost, Vehicle v1, int r1Node, Vehicle v2, int r2Node) {
 		this.cost = cost;
-		this.route1Index = r1;
+		this.vehicle1 = v1;
 		this.route1NodeIndex = r1Node;
-		this.route2Index = r2;
+		this.vehicle2 = v2;
 		this.route2NodeIndex = r2Node;
 		this.needsTransfer = false;
 	}
@@ -36,24 +35,22 @@ public abstract class Move implements Comparable<Move> {
 	public abstract boolean transferFeasible(TabuSearchSolver s);
 
 	protected boolean transferFeasible(TabuSearchSolver s, Collection<Node> from1To2, Collection<Node> from2To1) {
-		Vehicle[] vehicles = s.getVehicles();
-		Vehicle veh1 = vehicles[route1Index];
-		Vehicle veh2 = vehicles[route2Index];
+		List<Vehicle> firstCanMoveTo = new ArrayList<>();
+		List<Vehicle> secondCanMoveTo = new ArrayList<>();
 
-		List<Integer> firstCanMoveTo = new ArrayList<>();
-		List<Integer> secondCanMoveTo = new ArrayList<>();
+		int[] firstRouteDemands = vehicle1.calculateDemandsPlusMinus(from2To1, from1To2);
+		int[] secondRouteDemands = vehicle2.calculateDemandsPlusMinus(from1To2, from2To1);
 
-		int[] firstRouteDemands = veh1.calculateDemandsPlusMinus(from2To1, from1To2);
-		int[] secondRouteDemands = veh2.calculateDemandsPlusMinus(from1To2, from2To1);
+		EmptyVehicleSet empty = s.emptyVehicles;
 
 		if (!firstFeasible) {
 
 			if (!secondFeasible || secondRouteDemands.length == 0)
-				s.emptyVehicles.add(route2Index);
+				s.emptyVehicles.add(vehicle2);
 
 			int limit = secondFeasible ? 1 : 2;
-			firstCanMoveTo = feasibleVehicles(s, firstRouteDemands, limit);
-			s.emptyVehicles.remove(route2Index);
+			firstCanMoveTo = empty.feasibleVehicles(firstRouteDemands, limit);
+			s.emptyVehicles.remove(vehicle2);
 
 			if (firstCanMoveTo.isEmpty())
 				return false;
@@ -67,11 +64,11 @@ public abstract class Move implements Comparable<Move> {
 		if (!secondFeasible) {
 
 			if (!firstFeasible || firstRouteDemands.length == 0)
-				s.emptyVehicles.add(route1Index);
+				s.emptyVehicles.add(vehicle1);
 
 			int limit = (firstCanMoveTo.size() != 1) ? 1 : 2;
-			secondCanMoveTo = feasibleVehicles(s, secondRouteDemands, limit);
-			s.emptyVehicles.remove(route1Index);
+			secondCanMoveTo = empty.feasibleVehicles(secondRouteDemands, limit);
+			s.emptyVehicles.remove(vehicle1);
 
 			if (secondCanMoveTo.isEmpty())
 				return false;
@@ -97,45 +94,29 @@ public abstract class Move implements Comparable<Move> {
 	}
 
 	protected void transfer(TabuSearchSolver s) {
+		Vehicle[] vehicles = s.getVehicles();
 		if (!firstFeasible) {
-			swapRoutes(s.getVehicles(), route1Index, transfer1To);
-			s.emptyVehicles.add(route1Index);
+			swapRoutes(vehicles, vehicle1, transfer1To);
+			s.emptyVehicles.add(vehicle1);
 			s.emptyVehicles.remove(transfer1To);
-			if (route2Index == transfer1To)
-				route2Index = route1Index;
-			route1Index = transfer1To;
+			vehicle1 = transfer1To;
 		}
 		if (!secondFeasible) {
-			swapRoutes(s.getVehicles(), route2Index, transfer2To);
-			s.emptyVehicles.add(route2Index);
+			swapRoutes(s.getVehicles(), vehicle2, transfer2To);
+			s.emptyVehicles.add(vehicle2);
 			s.emptyVehicles.remove(transfer2To);
-			route2Index = transfer2To;
+			vehicle2 = transfer2To;
 		}
 	}
 
-	protected List<Integer> feasibleVehicles(TabuSearchSolver s, int[] routeDemands, int limit) {
-		List<Integer> feasible = new ArrayList<>();
-		Vehicle[] vehicles = s.getVehicles();
-		for (Integer i : s.emptyVehicles) {
-			Vehicle veh = vehicles[i];
-			if (veh.checkIfFits(routeDemands, new HashSet<Node>(veh.routes))) {
-				needsTransfer = true;
-				feasible.add(i);
-				if (feasible.size() == limit)
-					return feasible;
-			}
-		}
-		return feasible;
+	protected void swapRoutes(Vehicle[] vehicles, Vehicle vehicleFrom, Vehicle vehicleTo) {
+		ArrayList<Node> tmp = vehicleFrom.routes;
+		vehicleFrom.routes = vehicleTo.routes;
+		vehicleTo.routes = tmp;
 	}
 
-	protected void swapRoutes(Vehicle[] vehicles, int routeFrom, int routeTo) {
-		ArrayList<Node> tmp = vehicles[routeFrom].routes;
-		vehicles[routeFrom].routes = vehicles[routeTo].routes;
-		vehicles[routeTo].routes = tmp;
-	}
-
-	public int[] getVehicleIndices() {
-		return new int[] { route1Index, route2Index };
+	public Vehicle[] getVehicles() {
+		return new Vehicle[] { vehicle1, vehicle2 };
 	}
 
 	@Override
