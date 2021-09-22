@@ -180,8 +180,8 @@ public class WriteExcel {
 					curSheet = workbook.createSheet(sheetName);
 					curSheet.setFitToPage(true);
 
-					for (int i = 1; i < demands.length; ++i) {
-						Row row = curSheet.createRow(i - 1);
+					for (int i = 0; i < demands.length; ++i) {
+						Row row = curSheet.createRow(i);
 						if (demands[i].length > maxdemands)
 							maxdemands = demands[i].length;
 						for (int j = 0; j < demands[i].length; ++j) {
@@ -218,8 +218,8 @@ public class WriteExcel {
 
 					for (int i = 1; i < route.length; ++i) {
 						int current = route[i];
-						for (int j = 0; j < demands[current].length; ++j) {
-							int curDemand = demands[current][j];
+						for (int j = 0; j < demands[current - 1].length; ++j) {
+							int curDemand = demands[current - 1][j];
 							load += curDemand;
 							routeDemands.add(curDemand);
 						}

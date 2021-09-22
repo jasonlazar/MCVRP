@@ -43,8 +43,13 @@ public class ValidateSolution {
 					cost = 0;
 					Vehicle[] vehicles = vrp.getVehicles();
 					vehicle = new HashMap<>();
-					for (Vehicle v : vehicles)
-						vehicle.put(v.getName(), v);
+					for (int i = 0; i < vehicles.length; ++i) {
+						Vehicle v = vehicles[i];
+						String vehName = v.getName();
+						if (vehName == null)
+							vehName = String.valueOf(i);
+						vehicle.put(vehName, v);
+					}
 				} else if (line.startsWith("Vehicle")) {
 					String[] split = line.split(":");
 					Vehicle veh = vehicle.get(split[0].replaceFirst("Vehicle", "").strip());

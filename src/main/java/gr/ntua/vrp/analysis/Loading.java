@@ -4,8 +4,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
+import gr.ntua.vrp.Node;
 import gr.ntua.vrp.VRPLibReader;
 import gr.ntua.vrp.Vehicle;
 
@@ -16,7 +19,7 @@ public class Loading {
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 			VRPLibReader vrp;
 			String instance = null;
-			int[][] demands = null;
+			Map<String, Node> node = null;
 			Vehicle[] vehicles = null;
 			int capacity = 0;
 
@@ -26,19 +29,23 @@ public class Loading {
 					System.out.println();
 					instance = line;
 					vrp = new VRPLibReader(new File(instance));
-					demands = vrp.getDemand();
+					node = new HashMap<>();
+					Node[] nodes = vrp.getNodes();
+					for (Node n : nodes) {
+						node.put(n.name, n);
+					}
 					vehicles = vrp.getVehicles();
 					System.out.println(instance);
 				} else if (line.startsWith("Vehicle")) {
 					String[] split = line.split(":");
-					int[] route = Stream.of(split[1].split("->")).mapToInt(Integer::parseInt).toArray();
+					Node[] route = Stream.of(split[1].split("->")).map(node::get).toArray(Node[]::new);
 					int load = 0;
 					int vehicleIndex = Integer.parseInt(split[0].split(" ")[1].strip());
 					capacity = vehicles[vehicleIndex].getCapacity();
 
-					for (int i = 1; i < route.length; ++i) {
-						int current = route[i];
-						load += demands[current][0];
+					for (Node n : route) {
+						for (int x : n.demands)
+							load += x;
 					}
 					if (load > capacity) {
 						System.out.println("In instance " + instance + " :");

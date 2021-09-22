@@ -290,7 +290,7 @@ public class VRPLibReader implements Closeable {
 	}
 
 	public int[][] getDemand() {
-		return (int[][]) Stream.of(nodes).map((node) -> node.demands).toArray();
+		return Stream.of(nodes).map((node) -> node.demands).toArray(int[][]::new);
 	}
 
 	public int[] getDepots() {
