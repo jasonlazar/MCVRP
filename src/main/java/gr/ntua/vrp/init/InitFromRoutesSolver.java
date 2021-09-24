@@ -1,4 +1,4 @@
-package gr.ntua.vrp;
+package gr.ntua.vrp.init;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import gr.ntua.vrp.Node;
+import gr.ntua.vrp.Solver;
+import gr.ntua.vrp.VRPRunner;
+import gr.ntua.vrp.Vehicle;
 
 public class InitFromRoutesSolver extends Solver {
 	private String filename;

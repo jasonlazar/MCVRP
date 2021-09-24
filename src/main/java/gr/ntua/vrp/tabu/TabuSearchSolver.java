@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-import gr.ntua.vrp.InitFromRoutesSolver;
 import gr.ntua.vrp.Node;
 import gr.ntua.vrp.Solver;
 import gr.ntua.vrp.VRPRunner;
 import gr.ntua.vrp.Vehicle;
-import gr.ntua.vrp.greedy.GreedySolver;
+import gr.ntua.vrp.init.GreedySolver;
+import gr.ntua.vrp.init.InitFromRoutesSolver;
 
 public class TabuSearchSolver extends Solver {
 	final int TABU_Horizon;

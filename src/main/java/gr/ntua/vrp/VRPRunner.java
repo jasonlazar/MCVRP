@@ -5,11 +5,12 @@ import java.io.IOException;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
-import gr.ntua.vrp.greedy.GreedySolver;
+import gr.ntua.vrp.init.GreedySolver;
+import gr.ntua.vrp.init.RandomSolver;
 import gr.ntua.vrp.tabu.TabuSearchSolver;
 
 public class VRPRunner {
-	@Parameter(names = { "--algorithm", "-alg" }, required = true)
+	@Parameter(names = { "--algorithm", "-alg" })
 	private String alg = "tabu";
 	@Parameter(names = { "--instance", "-i" })
 	public String instance = "datasets/cvrp/big/Golden_20.vrp";
@@ -27,16 +28,24 @@ public class VRPRunner {
 		JCommander jCommander = new JCommander(jct, args);
 		jCommander.setProgramName(VRPRunner.class.getSimpleName());
 
+		Solver s = null;
+
 		switch (jct.alg) {
-		case "tabu": {
-			new TabuSearchSolver(jct).solve().print();
+		case "tabu":
+			s = new TabuSearchSolver(jct);
 			break;
-		}
 		case "greedy":
-		default: {
-			new GreedySolver(jct).solve().print();
+			s = new GreedySolver(jct);
 			break;
+		case "random":
+			s = new RandomSolver(jct);
+			break;
+		default:
+			System.out.println("Unknown algorithm: " + jct.alg);
+			System.exit(1);
 		}
-		}
+
+		s.solve().print();
+
 	}
 }

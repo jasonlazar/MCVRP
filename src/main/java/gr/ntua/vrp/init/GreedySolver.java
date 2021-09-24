@@ -1,4 +1,4 @@
-package gr.ntua.vrp.greedy;
+package gr.ntua.vrp.init;
 
 import java.io.IOException;
 
