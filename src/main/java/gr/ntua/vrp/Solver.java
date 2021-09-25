@@ -17,6 +17,8 @@ public abstract class Solver {
 			this.noOfCustomers = reader.getDimension();
 
 			this.distances = reader.getDistance();
+			if (jct.round)
+				roundDistances();
 
 			nodes = reader.getNodes();
 			nodes[0].IsRouted = true;
@@ -58,6 +60,12 @@ public abstract class Solver {
 			}
 		}
 		System.out.println("\nBest Value: " + this.cost + "\n");
+	}
+
+	private void roundDistances() {
+		for (int i = 0; i < noOfCustomers; ++i)
+			for (int j = 0; j < noOfCustomers; ++j)
+				distances[i][j] = Math.round(distances[i][j]) * 1.0;
 	}
 
 	public Vehicle[] getVehicles() {

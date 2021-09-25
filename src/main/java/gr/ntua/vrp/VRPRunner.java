@@ -22,6 +22,8 @@ public class VRPRunner {
 	public int restarts = 2;
 	@Parameter(names = "--init")
 	public String initFile;
+	@Parameter(names = "--round")
+	public boolean round = false;
 
 	public static void main(String[] args) throws IOException {
 		VRPRunner jct = new VRPRunner();
