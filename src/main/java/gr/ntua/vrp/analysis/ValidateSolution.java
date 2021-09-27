@@ -26,11 +26,15 @@ public class ValidateSolution {
 			double cost = 0;
 			Map<String, Vehicle> vehicle = null;
 			Map<String, Boolean> visited = null;
+			boolean feasible = true;
 
 			String line = br.readLine();
 			while (line != null) {
+				line = line.strip();
 				if (line.endsWith(".vrp")) {
 					instance = line;
+					feasible = true;
+
 					vrp = new VRPLibReader(new File(instance));
 					distances = vrp.getDistance();
 					Node[] nodes = vrp.getNodes();
@@ -56,14 +60,19 @@ public class ValidateSolution {
 					String[] route = (String[]) Stream.of(split[1].split("->")).toArray(String[]::new);
 					List<Integer> demands = new ArrayList<>();
 					for (int i = 1; i < route.length; ++i) {
-						int current = node.get(route[i]).NodeId;
+						Node curNode = node.get(route[i]);
+						int current = curNode.NodeId;
 						int previous = node.get(route[i - 1]).NodeId;
 						cost += distances[previous][current];
 						visited.put(route[i], true);
+						for (int d : curNode.demands)
+							if (d > 0)
+								demands.add(d);
 					}
 					if (!veh.checkIfFits(demands.stream().mapToInt(i -> i).toArray())) {
 						System.out.println("In instance " + instance + " :");
 						System.out.println("Route: " + split[1] + " is infeasible");
+						feasible = false;
 					}
 				} else if (line.startsWith("Best")) {
 					String[] split = line.split(":");
@@ -72,16 +81,18 @@ public class ValidateSolution {
 						System.out.println("In instance " + instance + " :");
 						System.out.print("Cost" + split[1] + " is different than actual cost ");
 						System.out.println(cost);
-					} else {
-						if (!visited.containsValue(false))
-							System.out.println(instance + " feasible");
-						else {
-							for (String key : visited.keySet()) {
-								if (visited.get(key) == false)
-									System.out.println("Node " + key + " not visited");
-							}
+						feasible = false;
+					}
+					if (visited.containsValue(false)) {
+						feasible = false;
+						for (String key : visited.keySet()) {
+							if (visited.get(key) == false)
+								System.out.println("Node " + key + " not visited");
 						}
 					}
+
+					if (feasible)
+						System.out.println(instance + " feasible");
 				}
 				line = br.readLine();
 			}

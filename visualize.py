@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 from matplotlib.path import Path
 import matplotlib.patches as patches
 
-colours = ["b", "r", "y", "g", "c", "m", "w"]
+colours = ["b", "r", "y", "g", "c", "m"]
 
 with open(sys.argv[1], "r") as routeFile:
     dimension = 0
