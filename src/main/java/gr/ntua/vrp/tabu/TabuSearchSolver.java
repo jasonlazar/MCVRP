@@ -175,6 +175,9 @@ public class TabuSearchSolver extends Solver {
 		Vehicle[] moveVehicles = m.getVehicles();
 		for (Vehicle v : moveVehicles)
 			cost += v.optimizeRoute();
+
+		if (cost < BestSolutionCost)
+			SaveBestSolution();
 	}
 
 	public Move findBestNeighbor() {
