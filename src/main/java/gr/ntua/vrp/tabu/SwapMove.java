@@ -34,10 +34,10 @@ public class SwapMove extends Move {
 		int randomDelay3 = TabuRan.nextInt(5);
 		int randomDelay4 = TabuRan.nextInt(5);
 
-		s.TABU_Matrix[NodeIDBefore1][SwapNode1.NodeId] = s.TABU_Horizon + randomDelay1;
-		s.TABU_Matrix[SwapNode1.NodeId][NodeIDAfter1] = s.TABU_Horizon + randomDelay2;
-		s.TABU_Matrix[NodeIDBefore2][SwapNode2.NodeId] = s.TABU_Horizon + randomDelay3;
-		s.TABU_Matrix[SwapNode2.NodeId][NodeIDAfter2] = s.TABU_Horizon + randomDelay4;
+		s.tabuList[NodeIDBefore1][SwapNode1.NodeId] = s.tabuTenure + randomDelay1;
+		s.tabuList[SwapNode1.NodeId][NodeIDAfter1] = s.tabuTenure + randomDelay2;
+		s.tabuList[NodeIDBefore2][SwapNode2.NodeId] = s.tabuTenure + randomDelay3;
+		s.tabuList[SwapNode2.NodeId][NodeIDAfter2] = s.tabuTenure + randomDelay4;
 
 		vehicle1.removeNode(route1NodeIndex);
 		vehicle1.addNode(SwapNode2, route1NodeIndex);

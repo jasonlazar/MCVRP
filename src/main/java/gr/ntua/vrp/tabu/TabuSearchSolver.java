@@ -12,8 +12,8 @@ import gr.ntua.vrp.init.GreedySolver;
 import gr.ntua.vrp.init.InitFromRoutesSolver;
 
 public class TabuSearchSolver extends Solver {
-	final int TABU_Horizon;
-	final int TABU_Matrix[][];
+	final int tabuTenure;
+	final int tabuList[][];
 	EmptyVehicleSet emptyVehicles;
 	private final int iterations;
 	private final int restarts;
@@ -23,7 +23,7 @@ public class TabuSearchSolver extends Solver {
 
 	public TabuSearchSolver(VRPRunner jct) throws IOException {
 		super(jct);
-		this.TABU_Horizon = jct.TabuHorizon;
+		this.tabuTenure = jct.tenure;
 		this.iterations = jct.iterations;
 		this.restarts = jct.restarts;
 
@@ -39,7 +39,7 @@ public class TabuSearchSolver extends Solver {
 		this.cost = initSolver.getCost();
 
 		int dimension = this.distances[1].length;
-		this.TABU_Matrix = new int[dimension + 1][dimension + 1];
+		this.tabuList = new int[dimension + 1][dimension + 1];
 
 		this.emptyVehicles = new EmptyVehicleSet();
 		for (Vehicle veh : vehicles) {
@@ -63,10 +63,10 @@ public class TabuSearchSolver extends Solver {
 		while (true) {
 			BestMove = findBestNeighbor();
 
-			for (int o = 0; o < TABU_Matrix[0].length; o++) {
-				for (int p = 0; p < TABU_Matrix[0].length; p++) {
-					if (TABU_Matrix[o][p] > 0) {
-						TABU_Matrix[o][p]--;
+			for (int o = 0; o < tabuList[0].length; o++) {
+				for (int p = 0; p < tabuList[0].length; p++) {
+					if (tabuList[o][p] > 0) {
+						tabuList[o][p]--;
 					}
 				}
 			}
@@ -235,9 +235,9 @@ public class TabuSearchSolver extends Solver {
 		double AddedCost3 = this.distances[routesFrom.get(index1).NodeId][routesTo.get(index2 + 1).NodeId];
 
 		// Check if the move is a Tabu! - If it is Tabu break
-		if ((TABU_Matrix[routesFrom.get(index1 - 1).NodeId][routesFrom.get(index1 + 1).NodeId] != 0)
-		        || (TABU_Matrix[routesTo.get(index2).NodeId][routesFrom.get(index1).NodeId] != 0)
-		        || (TABU_Matrix[routesFrom.get(index1).NodeId][routesTo.get(index2 + 1).NodeId] != 0)) {
+		if ((tabuList[routesFrom.get(index1 - 1).NodeId][routesFrom.get(index1 + 1).NodeId] != 0)
+		        || (tabuList[routesTo.get(index2).NodeId][routesFrom.get(index1).NodeId] != 0)
+		        || (tabuList[routesFrom.get(index1).NodeId][routesTo.get(index2 + 1).NodeId] != 0)) {
 			return new DummyMove();
 		}
 
@@ -273,10 +273,10 @@ public class TabuSearchSolver extends Solver {
 		double AddedCost4 = this.distances[route1.get(index1).NodeId][route2.get(index2 + 1).NodeId];
 
 		// Check if the move is a Tabu! - If it is Tabu break
-		if ((TABU_Matrix[route1.get(index1 - 1).NodeId][route2.get(index2).NodeId] != 0)
-		        || (TABU_Matrix[route2.get(index2).NodeId][route1.get(index1 + 1).NodeId] != 0)
-		        || (TABU_Matrix[route2.get(index2 - 1).NodeId][route1.get(index1).NodeId] != 0)
-		        || (TABU_Matrix[route1.get(index1).NodeId][route2.get(index2 + 1).NodeId] != 0)) {
+		if ((tabuList[route1.get(index1 - 1).NodeId][route2.get(index2).NodeId] != 0)
+		        || (tabuList[route2.get(index2).NodeId][route1.get(index1 + 1).NodeId] != 0)
+		        || (tabuList[route2.get(index2 - 1).NodeId][route1.get(index1).NodeId] != 0)
+		        || (tabuList[route1.get(index1).NodeId][route2.get(index2 + 1).NodeId] != 0)) {
 			return new DummyMove();
 		}
 
@@ -307,9 +307,9 @@ public class TabuSearchSolver extends Solver {
 		double AddedCost3 = this.distances[routesFrom.get(index1 + 1).NodeId][routesTo.get(index2 + 1).NodeId];
 
 		// Check if the move is a Tabu! - If it is Tabu break
-		if ((TABU_Matrix[routesFrom.get(index1 - 1).NodeId][routesFrom.get(index1 + 2).NodeId] != 0)
-		        || (TABU_Matrix[routesTo.get(index2).NodeId][routesFrom.get(index1).NodeId] != 0)
-		        || (TABU_Matrix[routesFrom.get(index1 + 1).NodeId][routesTo.get(index2 + 1).NodeId] != 0)) {
+		if ((tabuList[routesFrom.get(index1 - 1).NodeId][routesFrom.get(index1 + 2).NodeId] != 0)
+		        || (tabuList[routesTo.get(index2).NodeId][routesFrom.get(index1).NodeId] != 0)
+		        || (tabuList[routesFrom.get(index1 + 1).NodeId][routesTo.get(index2 + 1).NodeId] != 0)) {
 			return new DummyMove();
 		}
 
@@ -345,10 +345,10 @@ public class TabuSearchSolver extends Solver {
 		double AddedCost4 = this.distances[route1.get(index1 + 1).NodeId][route2.get(index2 + 1).NodeId];
 
 		// Check if the move is a Tabu! - If it is Tabu break
-		if ((TABU_Matrix[route1.get(index1 - 1).NodeId][route2.get(index2).NodeId] != 0)
-		        || (TABU_Matrix[route2.get(index2).NodeId][route1.get(index1 + 2).NodeId] != 0)
-		        || (TABU_Matrix[route2.get(index2 - 1).NodeId][route1.get(index1).NodeId] != 0)
-		        || (TABU_Matrix[route1.get(index1 + 1).NodeId][route2.get(index2 + 1).NodeId] != 0)) {
+		if ((tabuList[route1.get(index1 - 1).NodeId][route2.get(index2).NodeId] != 0)
+		        || (tabuList[route2.get(index2).NodeId][route1.get(index1 + 2).NodeId] != 0)
+		        || (tabuList[route2.get(index2 - 1).NodeId][route1.get(index1).NodeId] != 0)
+		        || (tabuList[route1.get(index1 + 1).NodeId][route2.get(index2 + 1).NodeId] != 0)) {
 			return new DummyMove();
 		}
 
@@ -377,8 +377,8 @@ public class TabuSearchSolver extends Solver {
 		double AddedCost2 = this.distances[route2.get(index2).NodeId][route1.get(index1 + 1).NodeId];
 
 		// Check if the move is a Tabu! - If it is Tabu break
-		if ((TABU_Matrix[route1.get(index1).NodeId][route2.get(index2 + 1).NodeId] != 0)
-		        || (TABU_Matrix[route2.get(index2).NodeId][route1.get(index1 + 1).NodeId] != 0)) {
+		if ((tabuList[route1.get(index1).NodeId][route2.get(index2 + 1).NodeId] != 0)
+		        || (tabuList[route2.get(index2).NodeId][route1.get(index1 + 1).NodeId] != 0)) {
 			return new DummyMove();
 		}
 

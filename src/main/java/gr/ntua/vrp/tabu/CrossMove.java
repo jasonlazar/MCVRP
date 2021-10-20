@@ -39,8 +39,8 @@ public class CrossMove extends Move {
 		int randomDelay1 = TabuRan.nextInt(5);
 		int randomDelay2 = TabuRan.nextInt(5);
 
-		s.TABU_Matrix[SwapNode1.NodeId][NodeIDAfter1] = s.TABU_Horizon + randomDelay1;
-		s.TABU_Matrix[SwapNode2.NodeId][NodeIDAfter2] = s.TABU_Horizon + randomDelay2;
+		s.tabuList[SwapNode1.NodeId][NodeIDAfter1] = s.tabuTenure + randomDelay1;
+		s.tabuList[SwapNode2.NodeId][NodeIDAfter2] = s.tabuTenure + randomDelay2;
 
 		while (route1.size() > route1NodeIndex + 1)
 			vehicle1.removeNode(route1NodeIndex + 1);

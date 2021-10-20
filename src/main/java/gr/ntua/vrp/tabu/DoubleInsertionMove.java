@@ -38,9 +38,9 @@ public class DoubleInsertionMove extends Move {
 		int randomDelay2 = TabuRan.nextInt(5);
 		int randomDelay3 = TabuRan.nextInt(5);
 
-		s.TABU_Matrix[NodeIDBefore][SwapNode1.NodeId] = s.TABU_Horizon + randomDelay1;
-		s.TABU_Matrix[SwapNode2.NodeId][NodeIDAfter] = s.TABU_Horizon + randomDelay2;
-		s.TABU_Matrix[NodeID_F][NodeID_G] = s.TABU_Horizon + randomDelay3;
+		s.tabuList[NodeIDBefore][SwapNode1.NodeId] = s.tabuTenure + randomDelay1;
+		s.tabuList[SwapNode2.NodeId][NodeIDAfter] = s.tabuTenure + randomDelay2;
+		s.tabuList[NodeID_F][NodeID_G] = s.tabuTenure + randomDelay3;
 
 		vehicle1.removeNode(route1NodeIndex);
 		vehicle1.removeNode(route1NodeIndex);
