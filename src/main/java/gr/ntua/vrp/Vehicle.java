@@ -41,7 +41,7 @@ public abstract class Vehicle {
 	}
 
 	public double optimizeRoute() {
-		if (routes.size() <= 3)
+		if (routes.size() <= 3 || routes.size() > 13)
 			return 0.0;
 
 		double initial_cost = getCost();
