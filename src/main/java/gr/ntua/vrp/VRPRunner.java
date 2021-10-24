@@ -17,7 +17,7 @@ public class VRPRunner {
 	@Parameter(names = "--iterations")
 	public int iterations = 5;
 	@Parameter(names = "--tabu")
-	public Integer tenure = 5;
+	public Integer tenure = 10;
 	@Parameter(names = { "--restarts", "-r" })
 	public int restarts = 2;
 	@Parameter(names = "--init")

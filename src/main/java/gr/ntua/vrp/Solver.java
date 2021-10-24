@@ -60,6 +60,12 @@ public abstract class Solver {
 			}
 		}
 		System.out.println("\nBest Value: " + this.cost + "\n");
+
+		if (vehicles[0] instanceof CompartmentedVehicle) {
+			System.out.print("Out of " + CompartmentedVehicle.totalCalls + " feasibility tests ");
+			System.out.print(CompartmentedVehicle.totalCplex + " were solved with cplex(");
+			System.out.println((100.0 * CompartmentedVehicle.totalCplex / CompartmentedVehicle.totalCalls) + "%)");
+		}
 	}
 
 	private void roundDistances() {

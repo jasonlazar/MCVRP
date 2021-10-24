@@ -13,6 +13,8 @@ import ilog.cplex.IloCplex;
 
 public class CompartmentedVehicle extends Vehicle {
 	private Integer[] compartments;
+	static int totalCalls = 0;
+	static int totalCplex = 0;
 
 	public CompartmentedVehicle(double[][] distances, Integer[] comps) {
 		super(distances, 0);
@@ -45,6 +47,7 @@ public class CompartmentedVehicle extends Vehicle {
 
 	@Override
 	public boolean checkIfFits(int[] dem, Collection<Node> remove) {
+		totalCalls++;
 		TreeMap<Integer, Integer> items = new TreeMap<>();
 		for (Integer comp : compartments) {
 			if (items.containsKey(comp)) {
@@ -78,8 +81,10 @@ public class CompartmentedVehicle extends Vehicle {
 		for (int order : bins) {
 			int filled = 0;
 			while (filled < order) {
-				if (items.size() == 0)
+				if (items.size() == 0) {
+					totalCplex++;
 					return solveWithCplex(bins);
+				}
 				Integer ceil = items.ceilingKey(order - filled);
 				if (ceil != null) {
 					filled += ceil;
