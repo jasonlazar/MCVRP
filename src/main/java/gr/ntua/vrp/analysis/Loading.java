@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -22,14 +24,21 @@ public class Loading {
 			Map<String, Node> node = null;
 			Vehicle[] vehicles = null;
 			int capacity = 0;
+			List<Double> loadings = null;
 
 			String line = br.readLine();
 			while (line != null) {
 				if (line.endsWith(".vrp")) {
+					if (loadings != null) {
+						System.out.println("Gmean of loading: " + geometricMean(loadings));
+						System.out.println(
+						        "Amean of loading: " + loadings.stream().mapToDouble(d -> d).average().orElse(0.0));
+					}
 					System.out.println();
 					instance = line;
 					vrp = new VRPLibReader(new File(instance));
 					node = new HashMap<>();
+					loadings = new ArrayList<>();
 					Node[] nodes = vrp.getNodes();
 					for (Node n : nodes) {
 						node.put(n.name, n);
@@ -51,12 +60,27 @@ public class Loading {
 						System.out.println("In instance " + instance + " :");
 						System.out.println("Route: " + split[1] + " is infeasible");
 					}
+					double loading = load * 100.0 / capacity;
 					System.out.print("Load% of vehicle " + String.valueOf(vehicleIndex) + " = ");
-					System.out.println(load * 100.0 / capacity);
+					System.out.println(loading);
+					loadings.add(loading);
 				}
 				line = br.readLine();
 			}
+			if (loadings != null) {
+				System.out.println("Gmean of loading: " + geometricMean(loadings));
+				System.out.println("Amean of loading: " + loadings.stream().mapToDouble(d -> d).average().orElse(0.0));
+			}
 		}
+	}
+
+	private static double geometricMean(List<Double> data) {
+		double sum = data.get(0);
+
+		for (int i = 1; i < data.size(); i++) {
+			sum *= data.get(i);
+		}
+		return Math.pow(sum, 1.0 / data.size());
 	}
 
 }
