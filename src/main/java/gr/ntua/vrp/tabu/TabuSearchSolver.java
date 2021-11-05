@@ -17,9 +17,9 @@ public class TabuSearchSolver extends Solver {
 	EmptyVehicleSet emptyVehicles;
 	private final int iterations;
 	private final int restarts;
-	private final Vehicle[] BestSolutionVehicles;
+	private final Vehicle[] bestSolutionVehicles;
 
-	private double BestSolutionCost;
+	private double bestSolutionCost;
 
 	public TabuSearchSolver(VRPRunner jct) throws IOException {
 		super(jct);
@@ -27,10 +27,10 @@ public class TabuSearchSolver extends Solver {
 		this.iterations = jct.iterations;
 		this.restarts = jct.restarts;
 
-		this.BestSolutionVehicles = new Vehicle[this.noOfVehicles];
+		this.bestSolutionVehicles = new Vehicle[this.noOfVehicles];
 
 		for (int i = 0; i < this.noOfVehicles; i++) {
-			this.BestSolutionVehicles[i] = this.vehicles[i].makeCopy();
+			this.bestSolutionVehicles[i] = this.vehicles[i].makeCopy();
 		}
 
 		Solver initSolver = (jct.initFile == null) ? new GreedySolver(this) : new InitFromRoutesSolver(jct);
@@ -58,7 +58,7 @@ public class TabuSearchSolver extends Solver {
 			this.cost += v.optimizeRoute();
 		}
 
-		this.BestSolutionCost = this.cost;
+		this.bestSolutionCost = this.cost;
 
 		while (true) {
 			BestMove = findBestNeighbor();
@@ -79,7 +79,7 @@ public class TabuSearchSolver extends Solver {
 			for (Vehicle v : MoveVehicles)
 				this.cost += v.optimizeRoute();
 
-			if (this.cost < this.BestSolutionCost) {
+			if (this.cost < this.bestSolutionCost) {
 				iteration_number = 0;
 				this.SaveBestSolution();
 			} else {
@@ -98,35 +98,35 @@ public class TabuSearchSolver extends Solver {
 			}
 		}
 
-		this.vehicles = this.BestSolutionVehicles;
-		this.cost = this.BestSolutionCost;
+		this.vehicles = this.bestSolutionVehicles;
+		this.cost = this.bestSolutionCost;
 
 		return this;
 	}
 
 	private void SaveBestSolution() {
-		this.BestSolutionCost = this.cost;
+		this.bestSolutionCost = this.cost;
 		for (int j = 0; j < this.noOfVehicles; j++) {
-			this.BestSolutionVehicles[j].routes.clear();
+			this.bestSolutionVehicles[j].routes.clear();
 			if (!this.vehicles[j].routes.isEmpty()) {
 				int RoutSize = this.vehicles[j].routes.size();
 				for (int k = 0; k < RoutSize; k++) {
 					Node n = this.vehicles[j].routes.get(k);
-					this.BestSolutionVehicles[j].routes.add(n);
+					this.bestSolutionVehicles[j].routes.add(n);
 				}
 			}
 		}
 	}
 
 	private void restoreBest() {
-		cost = BestSolutionCost;
+		cost = bestSolutionCost;
 		for (int j = 0; j < noOfVehicles; j++) {
 			while (!vehicles[j].routes.isEmpty())
 				vehicles[j].removeNode(0);
-			if (!BestSolutionVehicles[j].routes.isEmpty()) {
-				int routSize = BestSolutionVehicles[j].routes.size();
+			if (!bestSolutionVehicles[j].routes.isEmpty()) {
+				int routSize = bestSolutionVehicles[j].routes.size();
 				for (int k = 0; k < routSize; k++) {
-					Node n = BestSolutionVehicles[j].routes.get(k);
+					Node n = bestSolutionVehicles[j].routes.get(k);
 					vehicles[j].appendNode(n);
 				}
 			}
@@ -176,7 +176,7 @@ public class TabuSearchSolver extends Solver {
 		for (Vehicle v : moveVehicles)
 			cost += v.optimizeRoute();
 
-		if (cost < BestSolutionCost)
+		if (cost < bestSolutionCost)
 			SaveBestSolution();
 	}
 
@@ -184,37 +184,37 @@ public class TabuSearchSolver extends Solver {
 		ArrayList<Node> route1;
 		ArrayList<Node> route2;
 
-		int VehIndex1, VehIndex2;
+		int vehIndex1, vehIndex2;
 
-		Move BestNeighbor = new DummyMove();
+		Move bestNeighbor = new DummyMove();
 
-		for (VehIndex1 = 0; VehIndex1 < this.vehicles.length; VehIndex1++) {
-			route1 = this.vehicles[VehIndex1].routes;
-			int Route1Length = route1.size();
+		for (vehIndex1 = 0; vehIndex1 < this.vehicles.length; vehIndex1++) {
+			route1 = this.vehicles[vehIndex1].routes;
+			int route1Length = route1.size();
 
-			for (int i = 1; i < (Route1Length - 1); i++) { // Not possible to move depot!
-				for (VehIndex2 = 0; VehIndex2 < this.vehicles.length; VehIndex2++) {
-					if (VehIndex1 == VehIndex2)
+			for (int i = 1; i < (route1Length - 1); i++) { // Not possible to move depot!
+				for (vehIndex2 = 0; vehIndex2 < this.vehicles.length; vehIndex2++) {
+					if (vehIndex1 == vehIndex2)
 						continue;
-					route2 = this.vehicles[VehIndex2].routes;
-					int Route2Length = route2.size();
+					route2 = this.vehicles[vehIndex2].routes;
+					int route2Length = route2.size();
 
-					for (int j = 0; j < (Route2Length - 1); j++) {// Not possible to move after last Depot!
-						Move[] Neighbors = new Move[] { singleInsertion(VehIndex1, VehIndex2, i, j),
-						        swap(VehIndex1, VehIndex2, i, j), doubleInsertion(VehIndex1, VehIndex2, i, j),
-						        swap21(VehIndex1, VehIndex2, i, j), cross(VehIndex1, VehIndex2, i, j) };
-						for (Move neigh : Neighbors) {
-							if (neigh.compareTo(BestNeighbor) < 0 && neigh.isFeasible(this))
-								BestNeighbor = neigh;
-							else if (neigh.compareTo(BestNeighbor) < 0 && neigh.transferFeasible(this)) {
-								BestNeighbor = neigh;
+					for (int j = 0; j < (route2Length - 1); j++) {// Not possible to move after last Depot!
+						Move[] neighbors = new Move[] { singleInsertion(vehIndex1, vehIndex2, i, j),
+						        swap(vehIndex1, vehIndex2, i, j), doubleInsertion(vehIndex1, vehIndex2, i, j),
+						        swap21(vehIndex1, vehIndex2, i, j), cross(vehIndex1, vehIndex2, i, j) };
+						for (Move neigh : neighbors) {
+							if (neigh.compareTo(bestNeighbor) < 0 && neigh.isFeasible(this))
+								bestNeighbor = neigh;
+							else if (neigh.compareTo(bestNeighbor) < 0 && neigh.transferFeasible(this)) {
+								bestNeighbor = neigh;
 							}
 						}
 					}
 				}
 			}
 		}
-		return BestNeighbor;
+		return bestNeighbor;
 	}
 
 	public Move singleInsertion(int VehIndexFrom, int VehIndexTo, int index1, int index2) {
@@ -224,26 +224,26 @@ public class TabuSearchSolver extends Solver {
 		if (routesFrom.size() == 3 && routesTo.size() == 2)
 			return new DummyMove();
 
-		double NeighborCost;
+		double neighborCost;
 
-		double MinusCost1 = this.distances[routesFrom.get(index1 - 1).NodeId][routesFrom.get(index1).NodeId];
-		double MinusCost2 = this.distances[routesFrom.get(index1).NodeId][routesFrom.get(index1 + 1).NodeId];
-		double MinusCost3 = this.distances[routesTo.get(index2).NodeId][routesTo.get(index2 + 1).NodeId];
+		double minusCost1 = this.distances[routesFrom.get(index1 - 1).nodeId][routesFrom.get(index1).nodeId];
+		double minusCost2 = this.distances[routesFrom.get(index1).nodeId][routesFrom.get(index1 + 1).nodeId];
+		double minusCost3 = this.distances[routesTo.get(index2).nodeId][routesTo.get(index2 + 1).nodeId];
 
-		double AddedCost1 = this.distances[routesFrom.get(index1 - 1).NodeId][routesFrom.get(index1 + 1).NodeId];
-		double AddedCost2 = this.distances[routesTo.get(index2).NodeId][routesFrom.get(index1).NodeId];
-		double AddedCost3 = this.distances[routesFrom.get(index1).NodeId][routesTo.get(index2 + 1).NodeId];
+		double addedCost1 = this.distances[routesFrom.get(index1 - 1).nodeId][routesFrom.get(index1 + 1).nodeId];
+		double addedCost2 = this.distances[routesTo.get(index2).nodeId][routesFrom.get(index1).nodeId];
+		double addedCost3 = this.distances[routesFrom.get(index1).nodeId][routesTo.get(index2 + 1).nodeId];
 
 		// Check if the move is a Tabu! - If it is Tabu break
-		if ((tabuList[routesFrom.get(index1 - 1).NodeId][routesFrom.get(index1 + 1).NodeId] != 0)
-		        || (tabuList[routesTo.get(index2).NodeId][routesFrom.get(index1).NodeId] != 0)
-		        || (tabuList[routesFrom.get(index1).NodeId][routesTo.get(index2 + 1).NodeId] != 0)) {
+		if ((tabuList[routesFrom.get(index1 - 1).nodeId][routesFrom.get(index1 + 1).nodeId] != 0)
+		        || (tabuList[routesTo.get(index2).nodeId][routesFrom.get(index1).nodeId] != 0)
+		        || (tabuList[routesFrom.get(index1).nodeId][routesTo.get(index2 + 1).nodeId] != 0)) {
 			return new DummyMove();
 		}
 
-		NeighborCost = AddedCost1 + AddedCost2 + AddedCost3 - MinusCost1 - MinusCost2 - MinusCost3;
+		neighborCost = addedCost1 + addedCost2 + addedCost3 - minusCost1 - minusCost2 - minusCost3;
 
-		return new SingleInsertionMove(NeighborCost, vehicles[VehIndexFrom], index1, vehicles[VehIndexTo], index2);
+		return new SingleInsertionMove(neighborCost, vehicles[VehIndexFrom], index1, vehicles[VehIndexTo], index2);
 	}
 
 	public Move swap(int VehIndex1, int VehIndex2, int index1, int index2) {
@@ -253,7 +253,7 @@ public class TabuSearchSolver extends Solver {
 		ArrayList<Node> route1 = this.vehicles[VehIndex1].routes;
 		ArrayList<Node> route2 = this.vehicles[VehIndex2].routes;
 
-		double NeighborCost;
+		double neighborCost;
 
 		int Route1Length = route1.size();
 		int Route2Length = route2.size();
@@ -262,35 +262,35 @@ public class TabuSearchSolver extends Solver {
 		if (Route1Length == 3 && Route2Length == 3)
 			return new DummyMove();
 
-		double MinusCost1 = this.distances[route1.get(index1 - 1).NodeId][route1.get(index1).NodeId];
-		double MinusCost2 = this.distances[route1.get(index1).NodeId][route1.get(index1 + 1).NodeId];
-		double MinusCost3 = this.distances[route2.get(index2 - 1).NodeId][route2.get(index2).NodeId];
-		double MinusCost4 = this.distances[route2.get(index2).NodeId][route2.get(index2 + 1).NodeId];
+		double minusCost1 = this.distances[route1.get(index1 - 1).nodeId][route1.get(index1).nodeId];
+		double minusCost2 = this.distances[route1.get(index1).nodeId][route1.get(index1 + 1).nodeId];
+		double minusCost3 = this.distances[route2.get(index2 - 1).nodeId][route2.get(index2).nodeId];
+		double minusCost4 = this.distances[route2.get(index2).nodeId][route2.get(index2 + 1).nodeId];
 
-		double AddedCost1 = this.distances[route1.get(index1 - 1).NodeId][route2.get(index2).NodeId];
-		double AddedCost2 = this.distances[route2.get(index2).NodeId][route1.get(index1 + 1).NodeId];
-		double AddedCost3 = this.distances[route2.get(index2 - 1).NodeId][route1.get(index1).NodeId];
-		double AddedCost4 = this.distances[route1.get(index1).NodeId][route2.get(index2 + 1).NodeId];
+		double addedCost1 = this.distances[route1.get(index1 - 1).nodeId][route2.get(index2).nodeId];
+		double addedCost2 = this.distances[route2.get(index2).nodeId][route1.get(index1 + 1).nodeId];
+		double addedCost3 = this.distances[route2.get(index2 - 1).nodeId][route1.get(index1).nodeId];
+		double addedCost4 = this.distances[route1.get(index1).nodeId][route2.get(index2 + 1).nodeId];
 
 		// Check if the move is a Tabu! - If it is Tabu break
-		if ((tabuList[route1.get(index1 - 1).NodeId][route2.get(index2).NodeId] != 0)
-		        || (tabuList[route2.get(index2).NodeId][route1.get(index1 + 1).NodeId] != 0)
-		        || (tabuList[route2.get(index2 - 1).NodeId][route1.get(index1).NodeId] != 0)
-		        || (tabuList[route1.get(index1).NodeId][route2.get(index2 + 1).NodeId] != 0)) {
+		if ((tabuList[route1.get(index1 - 1).nodeId][route2.get(index2).nodeId] != 0)
+		        || (tabuList[route2.get(index2).nodeId][route1.get(index1 + 1).nodeId] != 0)
+		        || (tabuList[route2.get(index2 - 1).nodeId][route1.get(index1).nodeId] != 0)
+		        || (tabuList[route1.get(index1).nodeId][route2.get(index2 + 1).nodeId] != 0)) {
 			return new DummyMove();
 		}
 
-		NeighborCost = AddedCost1 + AddedCost2 + AddedCost3 + AddedCost4 - MinusCost1 - MinusCost2 - MinusCost3
-		        - MinusCost4;
+		neighborCost = addedCost1 + addedCost2 + addedCost3 + addedCost4 - minusCost1 - minusCost2 - minusCost3
+		        - minusCost4;
 
-		return new SwapMove(NeighborCost, vehicles[VehIndex1], index1, vehicles[VehIndex2], index2);
+		return new SwapMove(neighborCost, vehicles[VehIndex1], index1, vehicles[VehIndex2], index2);
 	}
 
 	public Move doubleInsertion(int VehIndexFrom, int VehIndexTo, int index1, int index2) {
 		ArrayList<Node> routesFrom = this.vehicles[VehIndexFrom].routes;
 		ArrayList<Node> routesTo = this.vehicles[VehIndexTo].routes;
 
-		double NeighborCost;
+		double neighborCost;
 
 		int RoutFromLength = routesFrom.size();
 		int RouteToLength = routesTo.size();
@@ -298,31 +298,31 @@ public class TabuSearchSolver extends Solver {
 		if ((RoutFromLength == 4 && RouteToLength == 2) || index1 >= RoutFromLength - 2)
 			return new DummyMove();
 
-		double MinusCost1 = this.distances[routesFrom.get(index1 - 1).NodeId][routesFrom.get(index1).NodeId];
-		double MinusCost2 = this.distances[routesFrom.get(index1 + 1).NodeId][routesFrom.get(index1 + 2).NodeId];
-		double MinusCost3 = this.distances[routesTo.get(index2).NodeId][routesTo.get(index2 + 1).NodeId];
+		double minusCost1 = this.distances[routesFrom.get(index1 - 1).nodeId][routesFrom.get(index1).nodeId];
+		double minusCost2 = this.distances[routesFrom.get(index1 + 1).nodeId][routesFrom.get(index1 + 2).nodeId];
+		double minusCost3 = this.distances[routesTo.get(index2).nodeId][routesTo.get(index2 + 1).nodeId];
 
-		double AddedCost1 = this.distances[routesFrom.get(index1 - 1).NodeId][routesFrom.get(index1 + 2).NodeId];
-		double AddedCost2 = this.distances[routesTo.get(index2).NodeId][routesFrom.get(index1).NodeId];
-		double AddedCost3 = this.distances[routesFrom.get(index1 + 1).NodeId][routesTo.get(index2 + 1).NodeId];
+		double addedCost1 = this.distances[routesFrom.get(index1 - 1).nodeId][routesFrom.get(index1 + 2).nodeId];
+		double addedCost2 = this.distances[routesTo.get(index2).nodeId][routesFrom.get(index1).nodeId];
+		double addedCost3 = this.distances[routesFrom.get(index1 + 1).nodeId][routesTo.get(index2 + 1).nodeId];
 
 		// Check if the move is a Tabu! - If it is Tabu break
-		if ((tabuList[routesFrom.get(index1 - 1).NodeId][routesFrom.get(index1 + 2).NodeId] != 0)
-		        || (tabuList[routesTo.get(index2).NodeId][routesFrom.get(index1).NodeId] != 0)
-		        || (tabuList[routesFrom.get(index1 + 1).NodeId][routesTo.get(index2 + 1).NodeId] != 0)) {
+		if ((tabuList[routesFrom.get(index1 - 1).nodeId][routesFrom.get(index1 + 2).nodeId] != 0)
+		        || (tabuList[routesTo.get(index2).nodeId][routesFrom.get(index1).nodeId] != 0)
+		        || (tabuList[routesFrom.get(index1 + 1).nodeId][routesTo.get(index2 + 1).nodeId] != 0)) {
 			return new DummyMove();
 		}
 
-		NeighborCost = AddedCost1 + AddedCost2 + AddedCost3 - MinusCost1 - MinusCost2 - MinusCost3;
+		neighborCost = addedCost1 + addedCost2 + addedCost3 - minusCost1 - minusCost2 - minusCost3;
 
-		return new DoubleInsertionMove(NeighborCost, vehicles[VehIndexFrom], index1, vehicles[VehIndexTo], index2);
+		return new DoubleInsertionMove(neighborCost, vehicles[VehIndexFrom], index1, vehicles[VehIndexTo], index2);
 	}
 
 	public Move swap21(int VehIndex1, int VehIndex2, int index1, int index2) {
 		ArrayList<Node> route1 = this.vehicles[VehIndex1].routes;
 		ArrayList<Node> route2 = this.vehicles[VehIndex2].routes;
 
-		double NeighborCost;
+		double neighborCost;
 
 		int Route1Length = route1.size();
 		int Route2Length = route2.size();
@@ -334,35 +334,35 @@ public class TabuSearchSolver extends Solver {
 		if (Route1Length == 4 && Route2Length == 3)
 			return new DummyMove();
 
-		double MinusCost1 = this.distances[route1.get(index1 - 1).NodeId][route1.get(index1).NodeId];
-		double MinusCost2 = this.distances[route1.get(index1 + 1).NodeId][route1.get(index1 + 2).NodeId];
-		double MinusCost3 = this.distances[route2.get(index2 - 1).NodeId][route2.get(index2).NodeId];
-		double MinusCost4 = this.distances[route2.get(index2).NodeId][route2.get(index2 + 1).NodeId];
+		double minusCost1 = this.distances[route1.get(index1 - 1).nodeId][route1.get(index1).nodeId];
+		double minusCost2 = this.distances[route1.get(index1 + 1).nodeId][route1.get(index1 + 2).nodeId];
+		double minusCost3 = this.distances[route2.get(index2 - 1).nodeId][route2.get(index2).nodeId];
+		double minusCost4 = this.distances[route2.get(index2).nodeId][route2.get(index2 + 1).nodeId];
 
-		double AddedCost1 = this.distances[route1.get(index1 - 1).NodeId][route2.get(index2).NodeId];
-		double AddedCost2 = this.distances[route2.get(index2).NodeId][route1.get(index1 + 2).NodeId];
-		double AddedCost3 = this.distances[route2.get(index2 - 1).NodeId][route1.get(index1).NodeId];
-		double AddedCost4 = this.distances[route1.get(index1 + 1).NodeId][route2.get(index2 + 1).NodeId];
+		double addedCost1 = this.distances[route1.get(index1 - 1).nodeId][route2.get(index2).nodeId];
+		double addedCost2 = this.distances[route2.get(index2).nodeId][route1.get(index1 + 2).nodeId];
+		double addedCost3 = this.distances[route2.get(index2 - 1).nodeId][route1.get(index1).nodeId];
+		double addedCost4 = this.distances[route1.get(index1 + 1).nodeId][route2.get(index2 + 1).nodeId];
 
 		// Check if the move is a Tabu! - If it is Tabu break
-		if ((tabuList[route1.get(index1 - 1).NodeId][route2.get(index2).NodeId] != 0)
-		        || (tabuList[route2.get(index2).NodeId][route1.get(index1 + 2).NodeId] != 0)
-		        || (tabuList[route2.get(index2 - 1).NodeId][route1.get(index1).NodeId] != 0)
-		        || (tabuList[route1.get(index1 + 1).NodeId][route2.get(index2 + 1).NodeId] != 0)) {
+		if ((tabuList[route1.get(index1 - 1).nodeId][route2.get(index2).nodeId] != 0)
+		        || (tabuList[route2.get(index2).nodeId][route1.get(index1 + 2).nodeId] != 0)
+		        || (tabuList[route2.get(index2 - 1).nodeId][route1.get(index1).nodeId] != 0)
+		        || (tabuList[route1.get(index1 + 1).nodeId][route2.get(index2 + 1).nodeId] != 0)) {
 			return new DummyMove();
 		}
 
-		NeighborCost = AddedCost1 + AddedCost2 + AddedCost3 + AddedCost4 - MinusCost1 - MinusCost2 - MinusCost3
-		        - MinusCost4;
+		neighborCost = addedCost1 + addedCost2 + addedCost3 + addedCost4 - minusCost1 - minusCost2 - minusCost3
+		        - minusCost4;
 
-		return new Swap21Move(NeighborCost, vehicles[VehIndex1], index1, vehicles[VehIndex2], index2);
+		return new Swap21Move(neighborCost, vehicles[VehIndex1], index1, vehicles[VehIndex2], index2);
 	}
 
 	public Move cross(int VehIndex1, int VehIndex2, int index1, int index2) {
 		ArrayList<Node> route1 = this.vehicles[VehIndex1].routes;
 		ArrayList<Node> route2 = this.vehicles[VehIndex2].routes;
 
-		double NeighborCost;
+		double neighborCost;
 
 		int Route1Length = route1.size();
 		int Route2Length = route2.size();
@@ -370,20 +370,20 @@ public class TabuSearchSolver extends Solver {
 		if ((index1 >= Route1Length - 2) && (index2 >= Route2Length - 2))
 			return new DummyMove();
 
-		double MinusCost1 = this.distances[route1.get(index1).NodeId][route1.get(index1 + 1).NodeId];
-		double MinusCost2 = this.distances[route2.get(index2).NodeId][route2.get(index2 + 1).NodeId];
+		double minusCost1 = this.distances[route1.get(index1).nodeId][route1.get(index1 + 1).nodeId];
+		double minusCost2 = this.distances[route2.get(index2).nodeId][route2.get(index2 + 1).nodeId];
 
-		double AddedCost1 = this.distances[route1.get(index1).NodeId][route2.get(index2 + 1).NodeId];
-		double AddedCost2 = this.distances[route2.get(index2).NodeId][route1.get(index1 + 1).NodeId];
+		double addedCost1 = this.distances[route1.get(index1).nodeId][route2.get(index2 + 1).nodeId];
+		double addedCost2 = this.distances[route2.get(index2).nodeId][route1.get(index1 + 1).nodeId];
 
 		// Check if the move is a Tabu! - If it is Tabu break
-		if ((tabuList[route1.get(index1).NodeId][route2.get(index2 + 1).NodeId] != 0)
-		        || (tabuList[route2.get(index2).NodeId][route1.get(index1 + 1).NodeId] != 0)) {
+		if ((tabuList[route1.get(index1).nodeId][route2.get(index2 + 1).nodeId] != 0)
+		        || (tabuList[route2.get(index2).nodeId][route1.get(index1 + 1).nodeId] != 0)) {
 			return new DummyMove();
 		}
 
-		NeighborCost = AddedCost1 + AddedCost2 - MinusCost1 - MinusCost2;
+		neighborCost = addedCost1 + addedCost2 - minusCost1 - minusCost2;
 
-		return new CrossMove(NeighborCost, vehicles[VehIndex1], index1, vehicles[VehIndex2], index2);
+		return new CrossMove(neighborCost, vehicles[VehIndex1], index1, vehicles[VehIndex2], index2);
 	}
 }

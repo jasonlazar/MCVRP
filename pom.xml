@@ -59,39 +59,6 @@
             	<artifactId>maven-failsafe-plugin</artifactId>
             	<version>2.22.2</version>
             </plugin>
-            <plugin>
-            	<groupId>org.codehaus.mojo</groupId>
-            	<artifactId>exec-maven-plugin</artifactId>
-            	<version>3.0.0</version>
-            	<executions>
-            		<execution>
-            			<id>tabu</id>
-            			<goals>
-            				<goal>java</goal>
-            			</goals>
-		            	<configuration>
-		            		<mainClass>gr.ntua.vrp.VRPRunner</mainClass>
-		            		<arguments>
-		            			<argument>--algorithm</argument>
-		            			<argument>tabu</argument>
-		            		</arguments>
-		            	</configuration>
-	            	</execution>
-	            	<execution>
-            			<id>greedy</id>
-            			<goals>
-            				<goal>java</goal>
-            			</goals>
-		            	<configuration>
-		            		<mainClass>gr.ntua.vrp.VRPRunner</mainClass>
-		            		<arguments>
-		            			<argument>--algorithm</argument>
-		            			<argument>greedy</argument>
-		            		</arguments>
-		            	</configuration>
-	            	</execution>
-            	</executions>
-            </plugin>
         </plugins>
     </build>
     <dependencies>

@@ -61,8 +61,8 @@ public class ValidateSolution {
 					List<Integer> demands = new ArrayList<>();
 					for (int i = 1; i < route.length; ++i) {
 						Node curNode = node.get(route[i]);
-						int current = curNode.NodeId;
-						int previous = node.get(route[i - 1]).NodeId;
+						int current = curNode.nodeId;
+						int previous = node.get(route[i - 1]).nodeId;
 						cost += distances[previous][current];
 						visited.put(route[i], true);
 						for (int d : curNode.demands)

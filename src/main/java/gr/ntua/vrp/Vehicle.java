@@ -52,7 +52,7 @@ public abstract class Vehicle {
 		}
 		for (int i = 0; i < routes.size() - 1; ++i) {
 			for (int j = 0; j < routes.size() - 1; ++j) {
-				myDist[i][j] = distances[mapping.get(i).NodeId][mapping.get(j).NodeId];
+				myDist[i][j] = distances[mapping.get(i).nodeId][mapping.get(j).nodeId];
 			}
 		}
 		List<Integer> tsp_route = new ArrayList<>();
@@ -70,8 +70,8 @@ public abstract class Vehicle {
 	public double getCost() {
 		double cost = 0;
 		for (int i = 1; i < routes.size(); ++i) {
-			int node1 = routes.get(i - 1).NodeId;
-			int node2 = routes.get(i).NodeId;
+			int node1 = routes.get(i - 1).nodeId;
+			int node2 = routes.get(i).nodeId;
 			cost += distances[node1][node2];
 		}
 		return cost;

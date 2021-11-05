@@ -1,7 +1,7 @@
 package gr.ntua.vrp;
 
 public class Node {
-	public int NodeId;
+	public int nodeId;
 	public int demands[];
 	public String name;
 	public boolean IsRouted;
@@ -12,7 +12,7 @@ public class Node {
 	}
 
 	public Node(int id, int[] demands, String name) {
-		this.NodeId = id;
+		this.nodeId = id;
 		this.demands = demands.clone();
 		this.name = (name != null) ? name : String.valueOf(id);
 		this.IsRouted = false;

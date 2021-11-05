@@ -20,13 +20,13 @@ public class SwapMove extends Move {
 		route1 = vehicle1.routes;
 		route2 = vehicle2.routes;
 
-		Node SwapNode1 = route1.get(route1NodeIndex);
-		Node SwapNode2 = route2.get(route2NodeIndex);
+		Node swapNode1 = route1.get(route1NodeIndex);
+		Node swapNode2 = route2.get(route2NodeIndex);
 
-		int NodeIDBefore1 = route1.get(route1NodeIndex - 1).NodeId;
-		int NodeIDAfter1 = route1.get(route1NodeIndex + 1).NodeId;
-		int NodeIDBefore2 = route2.get(route2NodeIndex - 1).NodeId;
-		int NodeIDAfter2 = route2.get(route2NodeIndex + 1).NodeId;
+		int nodeIDBefore1 = route1.get(route1NodeIndex - 1).nodeId;
+		int nodeIDAfter1 = route1.get(route1NodeIndex + 1).nodeId;
+		int nodeIDBefore2 = route2.get(route2NodeIndex - 1).nodeId;
+		int nodeIDAfter2 = route2.get(route2NodeIndex + 1).nodeId;
 
 		Random TabuRan = new Random();
 		int randomDelay1 = TabuRan.nextInt(5);
@@ -34,15 +34,15 @@ public class SwapMove extends Move {
 		int randomDelay3 = TabuRan.nextInt(5);
 		int randomDelay4 = TabuRan.nextInt(5);
 
-		s.tabuList[NodeIDBefore1][SwapNode1.NodeId] = s.tabuTenure + randomDelay1;
-		s.tabuList[SwapNode1.NodeId][NodeIDAfter1] = s.tabuTenure + randomDelay2;
-		s.tabuList[NodeIDBefore2][SwapNode2.NodeId] = s.tabuTenure + randomDelay3;
-		s.tabuList[SwapNode2.NodeId][NodeIDAfter2] = s.tabuTenure + randomDelay4;
+		s.tabuList[nodeIDBefore1][swapNode1.nodeId] = s.tabuTenure + randomDelay1;
+		s.tabuList[swapNode1.nodeId][nodeIDAfter1] = s.tabuTenure + randomDelay2;
+		s.tabuList[nodeIDBefore2][swapNode2.nodeId] = s.tabuTenure + randomDelay3;
+		s.tabuList[swapNode2.nodeId][nodeIDAfter2] = s.tabuTenure + randomDelay4;
 
 		vehicle1.removeNode(route1NodeIndex);
-		vehicle1.addNode(SwapNode2, route1NodeIndex);
+		vehicle1.addNode(swapNode2, route1NodeIndex);
 		vehicle2.removeNode(route2NodeIndex);
-		vehicle2.addNode(SwapNode1, route2NodeIndex);
+		vehicle2.addNode(swapNode1, route2NodeIndex);
 
 		if (needsTransfer)
 			transfer(s);
@@ -56,13 +56,13 @@ public class SwapMove extends Move {
 		route1 = vehicle1.routes;
 		route2 = vehicle2.routes;
 
-		Node FirstNode = route1.get(route1NodeIndex);
-		Node SecondNode = route2.get(route2NodeIndex);
-		int FirstNodeDemand[] = route1.get(route1NodeIndex).demands;
-		int SecondNodeDemand[] = route2.get(route2NodeIndex).demands;
+		Node firstNode = route1.get(route1NodeIndex);
+		Node secondNode = route2.get(route2NodeIndex);
+		int firstNodeDemand[] = route1.get(route1NodeIndex).demands;
+		int secondNodeDemand[] = route2.get(route2NodeIndex).demands;
 
-		firstFeasible = vehicle1.checkIfFits(SecondNodeDemand, List.of(FirstNode));
-		secondFeasible = vehicle2.checkIfFits(FirstNodeDemand, List.of(SecondNode));
+		firstFeasible = vehicle1.checkIfFits(secondNodeDemand, List.of(firstNode));
+		secondFeasible = vehicle2.checkIfFits(firstNodeDemand, List.of(secondNode));
 		return firstFeasible && secondFeasible;
 	}
 

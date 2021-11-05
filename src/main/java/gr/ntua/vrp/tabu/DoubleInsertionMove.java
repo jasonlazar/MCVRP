@@ -25,27 +25,27 @@ public class DoubleInsertionMove extends Move {
 			s.emptyVehicles.remove(vehicle2);
 		}
 
-		Node SwapNode1 = routesFrom.get(route1NodeIndex);
-		Node SwapNode2 = routesFrom.get(route1NodeIndex + 1);
+		Node swapNode1 = routesFrom.get(route1NodeIndex);
+		Node swapNode2 = routesFrom.get(route1NodeIndex + 1);
 
-		int NodeIDBefore = routesFrom.get(route1NodeIndex - 1).NodeId;
-		int NodeIDAfter = routesFrom.get(route1NodeIndex + 2).NodeId;
-		int NodeID_F = routesTo.get(route2NodeIndex).NodeId;
-		int NodeID_G = routesTo.get(route2NodeIndex + 1).NodeId;
+		int nodeIDBefore = routesFrom.get(route1NodeIndex - 1).nodeId;
+		int nodeIDAfter = routesFrom.get(route1NodeIndex + 2).nodeId;
+		int nodeID_F = routesTo.get(route2NodeIndex).nodeId;
+		int nodeID_G = routesTo.get(route2NodeIndex + 1).nodeId;
 
-		Random TabuRan = new Random();
-		int randomDelay1 = TabuRan.nextInt(5);
-		int randomDelay2 = TabuRan.nextInt(5);
-		int randomDelay3 = TabuRan.nextInt(5);
+		Random tabuRan = new Random();
+		int randomDelay1 = tabuRan.nextInt(5);
+		int randomDelay2 = tabuRan.nextInt(5);
+		int randomDelay3 = tabuRan.nextInt(5);
 
-		s.tabuList[NodeIDBefore][SwapNode1.NodeId] = s.tabuTenure + randomDelay1;
-		s.tabuList[SwapNode2.NodeId][NodeIDAfter] = s.tabuTenure + randomDelay2;
-		s.tabuList[NodeID_F][NodeID_G] = s.tabuTenure + randomDelay3;
+		s.tabuList[nodeIDBefore][swapNode1.nodeId] = s.tabuTenure + randomDelay1;
+		s.tabuList[swapNode2.nodeId][nodeIDAfter] = s.tabuTenure + randomDelay2;
+		s.tabuList[nodeID_F][nodeID_G] = s.tabuTenure + randomDelay3;
 
 		vehicle1.removeNode(route1NodeIndex);
 		vehicle1.removeNode(route1NodeIndex);
-		vehicle2.addNode(SwapNode2, route2NodeIndex + 1);
-		vehicle2.addNode(SwapNode1, route2NodeIndex + 1);
+		vehicle2.addNode(swapNode2, route2NodeIndex + 1);
+		vehicle2.addNode(swapNode1, route2NodeIndex + 1);
 
 		if (vehicle1.routes.size() == 2) {
 			s.emptyVehicles.add(vehicle1);
@@ -59,17 +59,17 @@ public class DoubleInsertionMove extends Move {
 	@Override
 	public boolean isFeasible(TabuSearchSolver s) {
 		ArrayList<Node> routesFrom;
-		int MovingNodeDemand[];
+		int movingNodeDemand[];
 		routesFrom = vehicle1.routes;
 
 		int[] firstDemands = routesFrom.get(route1NodeIndex).demands;
 		int[] secondDemands = routesFrom.get(route1NodeIndex + 1).demands;
-		MovingNodeDemand = new int[firstDemands.length + secondDemands.length];
-		System.arraycopy(firstDemands, 0, MovingNodeDemand, 0, firstDemands.length);
-		System.arraycopy(secondDemands, 0, MovingNodeDemand, firstDemands.length, secondDemands.length);
+		movingNodeDemand = new int[firstDemands.length + secondDemands.length];
+		System.arraycopy(firstDemands, 0, movingNodeDemand, 0, firstDemands.length);
+		System.arraycopy(secondDemands, 0, movingNodeDemand, firstDemands.length, secondDemands.length);
 
 		firstFeasible = true;
-		secondFeasible = vehicle2.checkIfFits(MovingNodeDemand);
+		secondFeasible = vehicle2.checkIfFits(movingNodeDemand);
 		return secondFeasible;
 	}
 

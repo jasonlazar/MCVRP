@@ -20,32 +20,32 @@ public class Swap21Move extends Move {
 		route1 = vehicle1.routes;
 		route2 = vehicle2.routes;
 
-		Node SwapNode11 = route1.get(route1NodeIndex);
-		Node SwapNode12 = route1.get(route1NodeIndex + 1);
-		Node SwapNode2 = route2.get(route2NodeIndex);
+		Node swapNode11 = route1.get(route1NodeIndex);
+		Node swapNode12 = route1.get(route1NodeIndex + 1);
+		Node swapNode2 = route2.get(route2NodeIndex);
 
-		int NodeIDBefore1 = route1.get(route1NodeIndex - 1).NodeId;
-		int NodeIDAfter1 = route1.get(route1NodeIndex + 2).NodeId;
-		int NodeIDBefore2 = route2.get(route2NodeIndex - 1).NodeId;
-		int NodeIDAfter2 = route2.get(route2NodeIndex + 1).NodeId;
+		int nodeIDBefore1 = route1.get(route1NodeIndex - 1).nodeId;
+		int nodeIDAfter1 = route1.get(route1NodeIndex + 2).nodeId;
+		int nodeIDBefore2 = route2.get(route2NodeIndex - 1).nodeId;
+		int nodeIDAfter2 = route2.get(route2NodeIndex + 1).nodeId;
 
-		Random TabuRan = new Random();
-		int randomDelay1 = TabuRan.nextInt(5);
-		int randomDelay2 = TabuRan.nextInt(5);
-		int randomDelay3 = TabuRan.nextInt(5);
-		int randomDelay4 = TabuRan.nextInt(5);
+		Random tabuRan = new Random();
+		int randomDelay1 = tabuRan.nextInt(5);
+		int randomDelay2 = tabuRan.nextInt(5);
+		int randomDelay3 = tabuRan.nextInt(5);
+		int randomDelay4 = tabuRan.nextInt(5);
 
-		s.tabuList[NodeIDBefore1][SwapNode11.NodeId] = s.tabuTenure + randomDelay1;
-		s.tabuList[SwapNode12.NodeId][NodeIDAfter1] = s.tabuTenure + randomDelay2;
-		s.tabuList[NodeIDBefore2][SwapNode2.NodeId] = s.tabuTenure + randomDelay3;
-		s.tabuList[SwapNode2.NodeId][NodeIDAfter2] = s.tabuTenure + randomDelay4;
+		s.tabuList[nodeIDBefore1][swapNode11.nodeId] = s.tabuTenure + randomDelay1;
+		s.tabuList[swapNode12.nodeId][nodeIDAfter1] = s.tabuTenure + randomDelay2;
+		s.tabuList[nodeIDBefore2][swapNode2.nodeId] = s.tabuTenure + randomDelay3;
+		s.tabuList[swapNode2.nodeId][nodeIDAfter2] = s.tabuTenure + randomDelay4;
 
 		vehicle1.removeNode(route1NodeIndex);
 		vehicle1.removeNode(route1NodeIndex);
-		vehicle1.addNode(SwapNode2, route1NodeIndex);
+		vehicle1.addNode(swapNode2, route1NodeIndex);
 		vehicle2.removeNode(route2NodeIndex);
-		vehicle2.addNode(SwapNode12, route2NodeIndex);
-		vehicle2.addNode(SwapNode11, route2NodeIndex);
+		vehicle2.addNode(swapNode12, route2NodeIndex);
+		vehicle2.addNode(swapNode11, route2NodeIndex);
 
 		if (needsTransfer)
 			transfer(s);
@@ -59,19 +59,19 @@ public class Swap21Move extends Move {
 		route1 = vehicle1.routes;
 		route2 = vehicle2.routes;
 
-		Node SwapNode11 = route1.get(route1NodeIndex);
-		Node SwapNode12 = route1.get(route1NodeIndex + 1);
-		Node SwapNode2 = route2.get(route2NodeIndex);
-		int[] SwapNode11Demand = SwapNode11.demands;
-		int[] SwapNode12Demand = SwapNode12.demands;
-		int[] SwapNode2Demand = SwapNode2.demands;
+		Node swapNode11 = route1.get(route1NodeIndex);
+		Node swapNode12 = route1.get(route1NodeIndex + 1);
+		Node swapNode2 = route2.get(route2NodeIndex);
+		int[] swapNode11Demand = swapNode11.demands;
+		int[] swapNode12Demand = swapNode12.demands;
+		int[] swapNode2Demand = swapNode2.demands;
 
-		int[] MovingFrom1Demand = new int[SwapNode11Demand.length + SwapNode12Demand.length];
-		System.arraycopy(SwapNode11Demand, 0, MovingFrom1Demand, 0, SwapNode11Demand.length);
-		System.arraycopy(SwapNode12Demand, 0, MovingFrom1Demand, SwapNode11Demand.length, SwapNode12Demand.length);
+		int[] movingFrom1Demand = new int[swapNode11Demand.length + swapNode12Demand.length];
+		System.arraycopy(swapNode11Demand, 0, movingFrom1Demand, 0, swapNode11Demand.length);
+		System.arraycopy(swapNode12Demand, 0, movingFrom1Demand, swapNode11Demand.length, swapNode12Demand.length);
 
-		firstFeasible = vehicle1.checkIfFits(SwapNode2Demand, List.of(SwapNode11, SwapNode12));
-		secondFeasible = vehicle2.checkIfFits(MovingFrom1Demand, List.of(SwapNode2));
+		firstFeasible = vehicle1.checkIfFits(swapNode2Demand, List.of(swapNode11, swapNode12));
+		secondFeasible = vehicle2.checkIfFits(movingFrom1Demand, List.of(swapNode2));
 		return firstFeasible && secondFeasible;
 	}
 

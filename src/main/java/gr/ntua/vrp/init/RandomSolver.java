@@ -39,7 +39,7 @@ public class RandomSolver extends Solver {
 				previous_id = 0;
 			}
 			appendNodeAndUpdateCost(curVehicle, n, previous_id);
-			previous_id = n.NodeId;
+			previous_id = n.nodeId;
 		}
 
 		appendNodeAndUpdateCost(curVehicle, depot, previous_id);
@@ -55,7 +55,7 @@ public class RandomSolver extends Solver {
 
 	private void appendNodeAndUpdateCost(Vehicle v, Node n, int previous) {
 		v.appendNode(n);
-		cost += distances[previous][n.NodeId];
+		cost += distances[previous][n.nodeId];
 	}
 
 }

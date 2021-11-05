@@ -57,8 +57,8 @@ public class InitFromRoutesSolver extends Solver {
 		for (Vehicle veh : vehicles) {
 			List<Node> route = veh.routes;
 			for (int i = 0; i < route.size() - 1; ++i) {
-				int firstIndex = route.get(i).NodeId;
-				int secondIndex = route.get(i + 1).NodeId;
+				int firstIndex = route.get(i).nodeId;
+				int secondIndex = route.get(i + 1).nodeId;
 				cost += distances[firstIndex][secondIndex];
 			}
 		}

@@ -15,7 +15,7 @@ public class SimpleVehicle extends Vehicle {
 	public void appendNode(Node Customer) {
 		routes.add(Customer);
 		this.load += Customer.demands[0];
-		this.currentLocation = Customer.NodeId;
+		this.currentLocation = Customer.nodeId;
 	}
 
 	@Override

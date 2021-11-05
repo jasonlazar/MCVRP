@@ -29,18 +29,18 @@ public class CrossMove extends Move {
 			s.emptyVehicles.remove(vehicle2);
 		}
 
-		Node SwapNode1 = route1.get(route1NodeIndex);
-		Node SwapNode2 = route2.get(route2NodeIndex);
+		Node swapNode1 = route1.get(route1NodeIndex);
+		Node swapNode2 = route2.get(route2NodeIndex);
 
-		int NodeIDAfter1 = route1.get(route1NodeIndex + 1).NodeId;
-		int NodeIDAfter2 = route2.get(route2NodeIndex + 1).NodeId;
+		int nodeIDAfter1 = route1.get(route1NodeIndex + 1).nodeId;
+		int nodeIDAfter2 = route2.get(route2NodeIndex + 1).nodeId;
 
 		Random TabuRan = new Random();
 		int randomDelay1 = TabuRan.nextInt(5);
 		int randomDelay2 = TabuRan.nextInt(5);
 
-		s.tabuList[SwapNode1.NodeId][NodeIDAfter1] = s.tabuTenure + randomDelay1;
-		s.tabuList[SwapNode2.NodeId][NodeIDAfter2] = s.tabuTenure + randomDelay2;
+		s.tabuList[swapNode1.nodeId][nodeIDAfter1] = s.tabuTenure + randomDelay1;
+		s.tabuList[swapNode2.nodeId][nodeIDAfter2] = s.tabuTenure + randomDelay2;
 
 		while (route1.size() > route1NodeIndex + 1)
 			vehicle1.removeNode(route1NodeIndex + 1);

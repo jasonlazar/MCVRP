@@ -25,24 +25,24 @@ public class SingleInsertionMove extends Move {
 			s.emptyVehicles.remove(vehicle2);
 		}
 
-		Node SwapNode = routesFrom.get(route1NodeIndex);
+		Node swapNode = routesFrom.get(route1NodeIndex);
 
-		int NodeIDBefore = routesFrom.get(route1NodeIndex - 1).NodeId;
-		int NodeIDAfter = routesFrom.get(route1NodeIndex + 1).NodeId;
-		int NodeID_F = routesTo.get(route2NodeIndex).NodeId;
-		int NodeID_G = routesTo.get(route2NodeIndex + 1).NodeId;
+		int nodeIDBefore = routesFrom.get(route1NodeIndex - 1).nodeId;
+		int nodeIDAfter = routesFrom.get(route1NodeIndex + 1).nodeId;
+		int nodeID_F = routesTo.get(route2NodeIndex).nodeId;
+		int nodeID_G = routesTo.get(route2NodeIndex + 1).nodeId;
 
 		Random TabuRan = new Random();
 		int randomDelay1 = TabuRan.nextInt(5);
 		int randomDelay2 = TabuRan.nextInt(5);
 		int randomDelay3 = TabuRan.nextInt(5);
 
-		s.tabuList[NodeIDBefore][SwapNode.NodeId] = s.tabuTenure + randomDelay1;
-		s.tabuList[SwapNode.NodeId][NodeIDAfter] = s.tabuTenure + randomDelay2;
-		s.tabuList[NodeID_F][NodeID_G] = s.tabuTenure + randomDelay3;
+		s.tabuList[nodeIDBefore][swapNode.nodeId] = s.tabuTenure + randomDelay1;
+		s.tabuList[swapNode.nodeId][nodeIDAfter] = s.tabuTenure + randomDelay2;
+		s.tabuList[nodeID_F][nodeID_G] = s.tabuTenure + randomDelay3;
 
 		vehicle1.removeNode(route1NodeIndex);
-		vehicle2.addNode(SwapNode, route2NodeIndex + 1);
+		vehicle2.addNode(swapNode, route2NodeIndex + 1);
 
 		if (vehicle1.routes.size() == 2) {
 			s.emptyVehicles.add(vehicle1);
@@ -58,10 +58,10 @@ public class SingleInsertionMove extends Move {
 		ArrayList<Node> routesFrom;
 		routesFrom = vehicle1.routes;
 
-		int MovingNodeDemand[] = routesFrom.get(route1NodeIndex).demands;
+		int movingNodeDemand[] = routesFrom.get(route1NodeIndex).demands;
 
 		firstFeasible = true;
-		secondFeasible = vehicle2.checkIfFits(MovingNodeDemand);
+		secondFeasible = vehicle2.checkIfFits(movingNodeDemand);
 		return secondFeasible;
 	}
 
