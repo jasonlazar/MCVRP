@@ -22,7 +22,7 @@ public class Loading {
 			VRPLibReader vrp;
 			String instance = null;
 			Map<String, Node> node = null;
-			Vehicle[] vehicles = null;
+			Map<String, Vehicle> vehicle = null;
 			int capacity = 0;
 			List<Double> loadings = null;
 
@@ -43,14 +43,23 @@ public class Loading {
 					for (Node n : nodes) {
 						node.put(n.name, n);
 					}
-					vehicles = vrp.getVehicles();
+					Vehicle[] vehicles = vrp.getVehicles();
+					vehicle = new HashMap<>();
+					for (int i = 0; i < vehicles.length; ++i) {
+						Vehicle v = vehicles[i];
+						String vehName = v.getName();
+						if (vehName == null)
+							vehName = String.valueOf(i);
+						vehicle.put(vehName, v);
+					}
 					System.out.println(instance);
 				} else if (line.startsWith("Vehicle")) {
 					String[] split = line.split(":");
+					String vehName = split[0].replaceFirst("Vehicle", "").strip();
+					Vehicle veh = vehicle.get(vehName);
 					Node[] route = Stream.of(split[1].split("->")).map(node::get).toArray(Node[]::new);
 					int load = 0;
-					int vehicleIndex = Integer.parseInt(split[0].split(" ")[1].strip());
-					capacity = vehicles[vehicleIndex].getCapacity();
+					capacity = veh.getCapacity();
 
 					for (Node n : route) {
 						for (int x : n.demands)
@@ -61,7 +70,7 @@ public class Loading {
 						System.out.println("Route: " + split[1] + " is infeasible");
 					}
 					double loading = load * 100.0 / capacity;
-					System.out.print("Load% of vehicle " + String.valueOf(vehicleIndex) + " = ");
+					System.out.print("Load% of vehicle " + vehName + " = ");
 					System.out.println(loading);
 					loadings.add(loading);
 				}
