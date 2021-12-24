@@ -9,8 +9,8 @@ This problem is also referred to as the Petrol Station Replenishment Problem.
 ## Algorithm
 
 A tabu search algorithm is used for tackling the problem.
-You can find more information in my diploma thesis.
-A link will be added soon.
+You can find more information in my [diploma thesis](http://artemis.cslab.ece.ntua.gr:8080/jspui/handle/123456789/18172).
+The first pages are in Greek but the main text is in English.
 
 ## Dependencies
 
